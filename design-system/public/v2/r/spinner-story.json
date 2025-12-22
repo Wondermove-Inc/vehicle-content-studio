@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner-story",
+  "type": "registry:component",
+  "title": "Spinner Story",
+  "author": "Lloyd Richards <lloyd.d.richards@gmail.com>",
+  "description": "Interactive Storybook stories demonstrating spinner component usage and variants",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "spinner",
+    "button",
+    "badge",
+    "input-group",
+    "empty",
+    "item",
+    "progress"
+  ],
+  "files": [
+    {
+      "path": "src/registry/atoms/spinner-story/spinner.stories.tsx",
+      "content": "import React from \"react\";\nimport type { Meta, StoryObj } from \"@storybook/react-vite\";\nimport { Spinner } from \"@/components/ui/spinner\";\nimport { Button } from \"@/components/ui/button\";\nimport { Badge } from \"@/components/ui/badge\";\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n  InputGroupTextarea,\n} from \"@/components/ui/input-group\";\nimport {\n  Empty,\n  EmptyContent,\n  EmptyDescription,\n  EmptyHeader,\n  EmptyMedia,\n  EmptyTitle,\n} from \"@/components/ui/empty\";\nimport {\n  Item,\n  ItemActions,\n  ItemContent,\n  ItemDescription,\n  ItemFooter,\n  ItemMedia,\n  ItemTitle,\n} from \"@/components/ui/item\";\nimport { Progress } from \"@/components/ui/progress\";\nimport { ArrowUpIcon } from \"lucide-react\";\n\n/**\n * Spinner 컴포넌트는 로딩 상태를 표시하는 데 사용됩니다.\n * shadcn/ui 공식 문서의 예제들을 기반으로 구현되었습니다.\n */\nconst meta: Meta<typeof Spinner> = {\n  title: \"ui/Spinner\",\n  component: Spinner,\n  tags: [\"autodocs\"],\n  parameters: {\n    layout: \"centered\",\n  },\n} satisfies Meta<typeof Spinner>;\n\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\n/**\n * 기본 Spinner - Item 내에서 로딩 상태 표시\n */\nexport const Default: Story = {\n  render: () => (\n    <div className=\"flex w-full max-w-xs flex-col gap-4 [--radius:1rem]\">\n      <Item variant=\"muted\">\n        <ItemMedia>\n          <Spinner />\n        </ItemMedia>\n        <ItemContent>\n          <ItemTitle className=\"line-clamp-1\">Processing payment...</ItemTitle>\n        </ItemContent>\n        <ItemContent className=\"flex-none justify-end\">\n          <span className=\"text-sm tabular-nums\">$100.00</span>\n        </ItemContent>\n      </Item>\n    </div>\n  ),\n};\n\n/**\n * 다양한 크기의 Spinner\n */\nexport const Sizes: Story = {\n  render: () => (\n    <div className=\"flex items-center gap-6\">\n      <Spinner className=\"size-3\" />\n      <Spinner className=\"size-4\" />\n      <Spinner className=\"size-6\" />\n      <Spinner className=\"size-8\" />\n    </div>\n  ),\n};\n\n/**\n * 다양한 색상의 Spinner\n */\nexport const Colors: Story = {\n  render: () => (\n    <div className=\"flex items-center gap-6\">\n      <Spinner className=\"size-6 text-red-500\" />\n      <Spinner className=\"size-6 text-green-500\" />\n      <Spinner className=\"size-6 text-blue-500\" />\n      <Spinner className=\"size-6 text-yellow-500\" />\n      <Spinner className=\"size-6 text-purple-500\" />\n    </div>\n  ),\n};\n\n/**\n * 단순한 Spinner - 기본 크기와 색상\n */\nexport const Simple: Story = {\n  render: () => <Spinner />,\n};\n\n/**\n * 버튼과 함께 사용하는 Spinner\n */\nexport const WithButton: Story = {\n  render: () => (\n    <div className=\"flex flex-col items-center gap-4\">\n      <Button disabled size=\"sm\">\n        <Spinner />\n        Loading...\n      </Button>\n      <Button variant=\"outline\" disabled size=\"sm\">\n        <Spinner />\n        Please wait\n      </Button>\n      <Button variant=\"secondary\" disabled size=\"sm\">\n        <Spinner />\n        Processing\n      </Button>\n    </div>\n  ),\n};\n\n/**\n * 뱃지와 함께 사용하는 Spinner\n */\nexport const WithBadge: Story = {\n  render: () => (\n    <div className=\"flex items-center gap-4 [--radius:1.2rem]\">\n      <Badge>\n        <Spinner />\n        Syncing\n      </Badge>\n      <Badge variant=\"secondary\">\n        <Spinner />\n        Updating\n      </Badge>\n      <Badge variant=\"outline\">\n        <Spinner />\n        Processing\n      </Badge>\n    </div>\n  ),\n};\n\n/**\n * Input Group과 함께 사용하는 Spinner\n */\nexport const WithInputGroup: Story = {\n  render: () => (\n    <div className=\"flex w-full max-w-md flex-col gap-4\">\n      <InputGroup>\n        <InputGroupInput placeholder=\"Send a message...\" disabled />\n        <InputGroupAddon align=\"inline-end\">\n          <Spinner />\n        </InputGroupAddon>\n      </InputGroup>\n      <InputGroup>\n        <InputGroupTextarea placeholder=\"Send a message...\" disabled />\n        <InputGroupAddon align=\"block-end\">\n          <Spinner /> Validating...\n          <InputGroupButton className=\"ml-auto\" variant=\"default\">\n            <ArrowUpIcon />\n            <span className=\"sr-only\">Send</span>\n          </InputGroupButton>\n        </InputGroupAddon>\n      </InputGroup>\n    </div>\n  ),\n};\n\n/**\n * Empty 상태와 함께 사용하는 Spinner\n */\nexport const WithEmpty: Story = {\n  render: () => (\n    <Empty className=\"w-full\">\n      <EmptyHeader>\n        <EmptyMedia variant=\"icon\">\n          <Spinner />\n        </EmptyMedia>\n        <EmptyTitle>Processing your request</EmptyTitle>\n        <EmptyDescription>\n          Please wait while we process your request. Do not refresh the page.\n        </EmptyDescription>\n      </EmptyHeader>\n      <EmptyContent>\n        <Button variant=\"outline\" size=\"sm\">\n          Cancel\n        </Button>\n      </EmptyContent>\n    </Empty>\n  ),\n};\n\n/**\n * Item과 함께 사용하는 Spinner (다운로드 진행 상태)\n */\nexport const WithItem: Story = {\n  render: () => (\n    <div className=\"flex w-full max-w-md flex-col gap-4 [--radius:1rem]\">\n      <Item variant=\"outline\">\n        <ItemMedia variant=\"icon\">\n          <Spinner />\n        </ItemMedia>\n        <ItemContent>\n          <ItemTitle>Downloading...</ItemTitle>\n          <ItemDescription>129 MB / 1000 MB</ItemDescription>\n        </ItemContent>\n        <ItemActions className=\"hidden sm:flex\">\n          <Button variant=\"outline\" size=\"sm\">\n            Cancel\n          </Button>\n        </ItemActions>\n        <ItemFooter>\n          <Progress value={75} />\n        </ItemFooter>\n      </Item>\n    </div>\n  ),\n};\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "atoms",
+    "storybook",
+    "spinner",
+    "loading"
+  ]
+}

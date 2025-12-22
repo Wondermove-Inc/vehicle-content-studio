@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar-template",
+  "type": "registry:component",
+  "title": "Sidebar Template",
+  "author": "Lloyd Richards <lloyd.d.richards@gmail.com>",
+  "description": "Clean sidebar layout template using shadcn/ui sidebar components with customizable content area",
+  "dependencies": [],
+  "registryDependencies": [
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "src/registry/templates/sidebar/sidebar.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { AppSidebar } from \"@/components/app-sidebar\";\nimport { SidebarInset, SidebarProvider } from \"@/components/ui/sidebar\";\n\n/**\n * 🎯 목적: Sidebar 템플릿의 Props 타입 정의\n */\ninterface SidebarTemplateProps {\n  children?: React.ReactNode;\n}\n\n/**\n * 🎯 목적: 순수 사이드바 레이아웃 템플릿 컴포넌트\n * AppSidebar와 SidebarInset만 제공하며, 콘텐츠는 children으로 주입\n */\nexport function SidebarTemplate({ children }: SidebarTemplateProps) {\n  return (\n    <SidebarProvider>\n      <AppSidebar />\n      <SidebarInset>{children}</SidebarInset>\n    </SidebarProvider>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "templates",
+    "storybook",
+    "layout",
+    "sidebar",
+    "navigation"
+  ]
+}

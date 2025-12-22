@@ -1,0 +1,705 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction/Performance" />
+
+# Performance Optimization
+
+shadcn-storybook-registry의 성능 최적화 전략입니다.
+
+## Tree-Shaking
+
+**Tree-shaking**은 사용하지 않는 코드를 번들에서 제거하는 최적화 기법입니다.
+
+### 원리
+
+Vite와 Webpack은 ES Modules의 정적 구조를 분석하여 사용되지 않는 export를
+제거합니다:
+
+```typescript
+// ✅ Good: Named exports (Tree-shaking 가능)
+export function Button() {
+  /* ... */
+}
+export function Dialog() {
+  /* ... */
+}
+export function Card() {
+  /* ... */
+}
+
+// 사용: Button만 import하면 나머지는 번들에서 제외
+import { Button } from "@/components/ui";
+```
+
+```typescript
+// ❌ Bad: Default export with object (Tree-shaking 불가)
+export default {
+  Button: function Button() {
+    /* ... */
+  },
+  Dialog: function Dialog() {
+    /* ... */
+  },
+  Card: function Card() {
+    /* ... */
+  },
+};
+
+// 전체 객체가 번들에 포함됨
+import Components from "@/components/ui";
+const { Button } = Components;
+```
+
+### shadcn/ui의 Tree-Shaking
+
+shadcn/ui는 **개별 파일로 컴포넌트를 분리**하여 최적의 tree-shaking을
+제공합니다:
+
+```bash
+src/components/ui/
+├── button.tsx          # Button만 import 가능
+├── dialog.tsx          # Dialog만 import 가능
+├── card.tsx            # Card만 import 가능
+└── ...
+```
+
+```typescript
+// ✅ 필요한 컴포넌트만 번들에 포함
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+// Dialog는 번들에서 제외됨
+```
+
+### 측정 방법
+
+```bash
+# 프로덕션 빌드
+npm run build
+
+# 번들 크기 분석
+npm run build -- --analyze
+
+# 또는 Vite Bundle Visualizer
+npm install -D vite-bundle-visualizer
+```
+
+### Best Practices
+
+```typescript
+// ✅ Good: Named imports
+import { Button, Card } from "@/components/ui";
+
+// ✅ Good: 개별 파일 import
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+// ❌ Bad: Wildcard import
+import * as UI from "@/components/ui";
+
+// ❌ Bad: 전체 index import
+import UI from "@/components/ui";
+```
+
+## Lazy Loading
+
+**Lazy Loading**은 컴포넌트를 필요한 시점에 동적으로 로드하는 기법입니다.
+
+### React.lazy()
+
+```typescript
+import * as React from "react";
+
+// ✅ Lazy loading
+const HeavyChart = React.lazy(() => import("@/components/heavy-chart"));
+
+function Dashboard() {
+  return (
+    <React.Suspense fallback={<Skeleton className="h-[400px]" />}>
+      <HeavyChart data={data} />
+    </React.Suspense>
+  );
+}
+```
+
+### Route-based Code Splitting
+
+Next.js는 자동으로 페이지별 코드 스플리팅을 수행합니다:
+
+```typescript
+// app/dashboard/page.tsx - 자동 코드 스플리팅
+export default function DashboardPage() {
+  return <Dashboard />;
+}
+
+// app/settings/page.tsx - 별도 번들
+export default function SettingsPage() {
+  return <Settings />;
+}
+```
+
+### Dynamic Import with Next.js
+
+```typescript
+import dynamic from "next/dynamic";
+
+// ✅ SSR 비활성화 + Lazy loading
+const Chart = dynamic(() => import("@/components/ui/chart"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[400px]" />,
+});
+
+function Analytics() {
+  return (
+    <div>
+      <h1>Analytics</h1>
+      <Chart data={data} />
+    </div>
+  );
+}
+```
+
+### Component-level Splitting
+
+```typescript
+// ✅ 조건부 렌더링 + Lazy loading
+function UserProfile() {
+  const [showSettings, setShowSettings] = React.useState(false);
+
+  // Settings가 필요할 때만 로드
+  const SettingsPanel = React.lazy(() => import("./settings-panel"));
+
+  return (
+    <div>
+      <Button onClick={() => setShowSettings(true)}>Settings</Button>
+      {showSettings && (
+        <React.Suspense fallback={<Skeleton />}>
+          <SettingsPanel />
+        </React.Suspense>
+      )}
+    </div>
+  );
+}
+```
+
+### 적용 대상
+
+다음 컴포넌트는 Lazy Loading 적용을 권장합니다:
+
+- 📊 **Chart**: recharts 라이브러리가 큰 용량 (100KB+)
+- 📝 **Rich Text Editor**: 에디터 라이브러리 (200KB+)
+- 🗺️ **Map**: 지도 라이브러리 (500KB+)
+- 📁 **File Uploader**: 파일 처리 라이브러리
+- 🎨 **Color Picker**: 색상 선택 UI
+
+### 측정 방법
+
+```typescript
+// Performance API로 로딩 시간 측정
+const startTime = performance.now();
+
+const HeavyComponent = React.lazy(() => {
+  return import("./heavy-component").then((module) => {
+    const endTime = performance.now();
+    console.log(`Loaded in ${endTime - startTime}ms`);
+    return module;
+  });
+});
+```
+
+## React.memo()
+
+**React.memo()**는 props가 변경되지 않으면 리렌더링을 스킵하는 고차
+컴포넌트입니다.
+
+### 기본 사용법
+
+```typescript
+import * as React from "react";
+
+// ✅ React.memo로 감싸기
+const ExpensiveComponent = React.memo(function ExpensiveComponent({
+  data,
+}: {
+  data: string;
+}) {
+  console.log("Rendering ExpensiveComponent");
+  return <div>{data}</div>;
+});
+
+function Parent() {
+  const [count, setCount] = React.useState(0);
+  const data = "Static data";
+
+  return (
+    <div>
+      <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>
+      {/* count가 변경되어도 ExpensiveComponent는 리렌더링 안 됨 */}
+      <ExpensiveComponent data={data} />
+    </div>
+  );
+}
+```
+
+### Custom Comparison Function
+
+```typescript
+// ✅ 커스텀 비교 함수
+const UserCard = React.memo(
+  function UserCard({ user }: { user: User }) {
+    return <Card>{user.name}</Card>;
+  },
+  (prevProps, nextProps) => {
+    // true를 반환하면 리렌더링 스킵
+    return prevProps.user.id === nextProps.user.id;
+  }
+);
+```
+
+### 언제 사용할까?
+
+```typescript
+// ✅ Good: 비싼 연산이 있는 컴포넌트
+const HeavyList = React.memo(function HeavyList({ items }: { items: Item[] }) {
+  const processedItems = items.map(expensiveCalculation);
+  return <div>{processedItems}</div>;
+});
+
+// ❌ Bad: 간단한 컴포넌트 (오버헤드만 증가)
+const SimpleButton = React.memo(function SimpleButton({ label }: { label: string }) {
+  return <button>{label}</button>;
+});
+```
+
+### Props 안정성 확보
+
+```typescript
+function Parent() {
+  const [count, setCount] = React.useState(0);
+
+  // ❌ Bad: 매번 새로운 객체 생성 (memo 무효화)
+  const user = { name: "John" };
+
+  // ✅ Good: useMemo로 안정화
+  const user = React.useMemo(() => ({ name: "John" }), []);
+
+  // ❌ Bad: 매번 새로운 함수 생성 (memo 무효화)
+  const handleClick = () => console.log("Clicked");
+
+  // ✅ Good: useCallback으로 안정화
+  const handleClick = React.useCallback(() => {
+    console.log("Clicked");
+  }, []);
+
+  return <UserCard user={user} onClick={handleClick} />;
+}
+```
+
+## useMemo() & useCallback()
+
+**useMemo**와 **useCallback**은 값과 함수를 메모이제이션하여 불필요한 재계산을
+방지합니다.
+
+### useMemo()
+
+```typescript
+import * as React from "react";
+
+function SearchResults({ query, items }: { query: string; items: Item[] }) {
+  // ✅ useMemo: 비싼 연산 결과 캐싱
+  const filteredItems = React.useMemo(() => {
+    console.log("Filtering items...");
+    return items.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query, items]);
+
+  return (
+    <div>
+      {filteredItems.map((item) => (
+        <Card key={item.id}>{item.name}</Card>
+      ))}
+    </div>
+  );
+}
+```
+
+### useCallback()
+
+```typescript
+function Parent() {
+  const [count, setCount] = React.useState(0);
+
+  // ✅ useCallback: 함수 참조 안정화
+  const handleClick = React.useCallback(() => {
+    console.log("Clicked");
+  }, []);
+
+  // count가 변경되어도 handleClick 참조는 동일
+  return (
+    <div>
+      <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>
+      <MemoizedChild onClick={handleClick} />
+    </div>
+  );
+}
+
+const MemoizedChild = React.memo(function Child({
+  onClick,
+}: {
+  onClick: () => void;
+}) {
+  console.log("Rendering Child");
+  return <Button onClick={onClick}>Click me</Button>;
+});
+```
+
+### 언제 사용할까?
+
+```typescript
+// ✅ Good: 비싼 연산
+const expensiveValue = React.useMemo(() => {
+  return items.reduce((acc, item) => acc + item.value, 0);
+}, [items]);
+
+// ❌ Bad: 단순 연산 (오버헤드만 증가)
+const simpleValue = React.useMemo(() => {
+  return a + b;
+}, [a, b]);
+
+// ✅ Good: 자식에게 전달되는 함수 (React.memo와 함께)
+const handleClick = React.useCallback(() => {
+  console.log("Clicked");
+}, []);
+
+// ❌ Bad: 자식이 memo되지 않은 경우
+const handleClick = React.useCallback(() => {
+  console.log("Clicked");
+}, []);
+<NonMemoizedChild onClick={handleClick} />
+```
+
+## Virtual Scrolling
+
+**Virtual Scrolling**은 보이는 영역만 렌더링하여 대량의 데이터를 효율적으로
+표시합니다.
+
+### React Virtuoso
+
+```typescript
+import { Virtuoso } from "react-virtuoso";
+
+function VirtualList({ items }: { items: Item[] }) {
+  return (
+    <Virtuoso
+      style={{ height: "400px" }}
+      data={items}
+      itemContent={(index, item) => (
+        <Card key={item.id}>
+          {item.name}
+        </Card>
+      )}
+    />
+  );
+}
+```
+
+### Tanstack Virtual
+
+```typescript
+import { useVirtualizer } from "@tanstack/react-virtual";
+
+function VirtualList({ items }: { items: Item[] }) {
+  const parentRef = React.useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 50,
+  });
+
+  return (
+    <div ref={parentRef} style={{ height: "400px", overflow: "auto" }}>
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          position: "relative",
+        }}
+      >
+        {virtualizer.getVirtualItems().map((virtualItem) => (
+          <div
+            key={virtualItem.key}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: `${virtualItem.size}px`,
+              transform: `translateY(${virtualItem.start}px)`,
+            }}
+          >
+            <Card>{items[virtualItem.index].name}</Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### 적용 대상
+
+- 📋 **Long Lists**: 100개 이상의 아이템
+- 📊 **Table**: 대량의 행 데이터
+- 💬 **Chat Messages**: 무한 스크롤 채팅
+- 📁 **File Explorer**: 대량의 파일/폴더
+
+## Image Optimization
+
+**Image Optimization**은 이미지 로딩 성능을 최적화합니다.
+
+### Next.js Image Component
+
+```typescript
+import Image from "next/image";
+
+function ProductCard({ product }: { product: Product }) {
+  return (
+    <Card>
+      {/* ✅ Next.js Image: 자동 최적화 */}
+      <Image
+        src={product.image}
+        alt={product.name}
+        width={400}
+        height={300}
+        loading="lazy"
+        placeholder="blur"
+        blurDataURL={product.blurDataURL}
+      />
+    </Card>
+  );
+}
+```
+
+### Lazy Loading Images
+
+```typescript
+function Gallery({ images }: { images: string[] }) {
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      {images.map((src, index) => (
+        <img
+          key={index}
+          src={src}
+          alt={`Gallery ${index}`}
+          loading="lazy" // ✅ Native lazy loading
+          className="aspect-square object-cover"
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### WebP Format
+
+```typescript
+// ✅ WebP 포맷 우선 사용, fallback to JPG
+<picture>
+  <source srcSet="image.webp" type="image/webp" />
+  <source srcSet="image.jpg" type="image/jpeg" />
+  <img src="image.jpg" alt="Description" />
+</picture>
+```
+
+## Bundle Size Optimization
+
+**Bundle Size**를 최소화하여 초기 로딩 속도를 개선합니다.
+
+### Import Optimization
+
+```typescript
+// ❌ Bad: 전체 라이브러리 import
+import _ from "lodash";
+import { format } from "date-fns";
+
+// ✅ Good: 필요한 함수만 import
+import debounce from "lodash/debounce";
+import { format } from "date-fns/format";
+```
+
+### Icon Optimization
+
+```typescript
+// ❌ Bad: 전체 lucide-react import (700KB+)
+import * as Icons from "lucide-react";
+
+// ✅ Good: 필요한 아이콘만 import
+import { ChevronRight, User, Settings } from "lucide-react";
+```
+
+### Package Analysis
+
+```bash
+# 번들 크기 분석
+npm run build
+npm install -D @next/bundle-analyzer
+
+# next.config.js
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+module.exports = withBundleAnalyzer({
+  // Next.js config
+})
+
+# 실행
+ANALYZE=true npm run build
+```
+
+## React 18/19 Optimizations
+
+**React 18/19**의 새로운 최적화 기능을 활용합니다.
+
+### useTransition()
+
+```typescript
+import * as React from "react";
+
+function SearchBox() {
+  const [query, setQuery] = React.useState("");
+  const [isPending, startTransition] = React.useTransition();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value); // 즉시 업데이트
+
+    // ✅ 비긴급 업데이트는 transition으로
+    startTransition(() => {
+      // 무거운 검색 로직
+      performSearch(value);
+    });
+  };
+
+  return (
+    <div>
+      <Input
+        value={query}
+        onChange={handleChange}
+        placeholder="Search..."
+      />
+      {isPending && <Skeleton />}
+    </div>
+  );
+}
+```
+
+### useDeferredValue()
+
+```typescript
+function SearchResults({ query }: { query: string }) {
+  // ✅ 비긴급 값을 지연시켜 UI 반응성 향상
+  const deferredQuery = React.useDeferredValue(query);
+
+  const results = useMemo(() => {
+    return searchItems(deferredQuery);
+  }, [deferredQuery]);
+
+  return (
+    <div>
+      {results.map((item) => (
+        <Card key={item.id}>{item.name}</Card>
+      ))}
+    </div>
+  );
+}
+```
+
+### Concurrent Features
+
+```typescript
+// ✅ React 18 Concurrent Rendering
+import { createRoot } from "react-dom/client";
+
+const root = createRoot(document.getElementById("root")!);
+root.render(<App />);
+```
+
+## Performance Monitoring
+
+**성능 모니터링**으로 병목 지점을 식별합니다.
+
+### React DevTools Profiler
+
+```bash
+# React DevTools 설치
+# Chrome/Firefox Extension
+
+# Profiler 탭에서 성능 측정
+1. Record 버튼 클릭
+2. 테스트할 인터랙션 수행
+3. Stop 버튼 클릭
+4. Flamegraph에서 느린 컴포넌트 확인
+```
+
+### Performance API
+
+```typescript
+function measurePerformance() {
+  // ✅ 렌더링 시간 측정
+  performance.mark("render-start");
+
+  // 렌더링 로직
+  renderComponent();
+
+  performance.mark("render-end");
+  performance.measure("render", "render-start", "render-end");
+
+  const measure = performance.getEntriesByName("render")[0];
+  console.log(`Render time: ${measure.duration}ms`);
+}
+```
+
+### Web Vitals
+
+```typescript
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from "web-vitals";
+
+function reportWebVitals() {
+  getCLS(console.log); // Cumulative Layout Shift
+  getFID(console.log); // First Input Delay
+  getFCP(console.log); // First Contentful Paint
+  getLCP(console.log); // Largest Contentful Paint
+  getTTFB(console.log); // Time to First Byte
+}
+```
+
+## Best Practices Summary
+
+### DO ✅
+
+1. **Tree-shaking**: Named exports 사용
+2. **Lazy Loading**: 무거운 컴포넌트는 React.lazy()
+3. **React.memo()**: 비싼 연산 컴포넌트에만 적용
+4. **useMemo/useCallback**: 비싼 연산과 React.memo 조합
+5. **Virtual Scrolling**: 100개 이상 아이템
+6. **Image Optimization**: Next.js Image, lazy loading
+7. **Import Optimization**: 필요한 함수만 import
+8. **Concurrent Features**: useTransition, useDeferredValue
+
+### DON'T ❌
+
+1. **Over-optimization**: 단순 컴포넌트에 memo 남발
+2. **Premature Optimization**: 측정 전 최적화
+3. **Wildcard Imports**: `import * as` 지양
+4. **Inline Functions**: 자식이 memo된 경우 useCallback 필수
+5. **Large Dependencies**: 전체 라이브러리 import 지양
+
+## Resources
+
+- [React Performance Optimization](https://react.dev/learn/render-and-commit)
+- [Next.js Performance](https://nextjs.org/docs/advanced-features/measuring-performance)
+- [Web Vitals](https://web.dev/vitals/)
+- [Bundle Size Optimization](https://webpack.js.org/guides/tree-shaking/)
+- [React Virtuoso](https://virtuoso.dev/)
