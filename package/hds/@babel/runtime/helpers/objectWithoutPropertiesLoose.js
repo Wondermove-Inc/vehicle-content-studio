@@ -1,0 +1,1 @@
+import{__module as r}from"../../../../_virtual/objectWithoutPropertiesLoose.js";var e;function o(){return e||(e=1,(o=r).exports=function(r,e){if(null==r)return{};var o={};for(var t in r)if({}.hasOwnProperty.call(r,t)){if(e.indexOf(t)>=0)continue;o[t]=r[t]}return o},o.exports.__esModule=!0,o.exports.default=o.exports),r.exports;var o}export{o as __require};

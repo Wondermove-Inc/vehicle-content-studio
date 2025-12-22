@@ -1,0 +1,1 @@
+import{DIALOG_WIDTH as i,VIEW_HEIGHT as o}from"../../constants/dimensions.js";import t from"../../../../material/styles/styled.js";const e=t("div")({overflow:"hidden",width:i,maxHeight:o,display:"flex",flexDirection:"column",margin:"0 auto"});export{e as PickerViewRoot};

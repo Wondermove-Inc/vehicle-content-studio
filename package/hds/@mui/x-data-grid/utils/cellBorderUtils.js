@@ -1,0 +1,1 @@
+import{GridPinnedColumnPosition as o}from"../hooks/features/columns/gridColumnsInterfaces.js";const r=(r,s,t,e,n)=>{const c=s===t-1;return!(r!==o.LEFT||!c)||!!e&&(r===o.LEFT||(r===o.RIGHT?!c:!c||n))},s=(r,s)=>r===o.RIGHT&&0===s;export{s as shouldCellShowLeftBorder,r as shouldCellShowRightBorder};

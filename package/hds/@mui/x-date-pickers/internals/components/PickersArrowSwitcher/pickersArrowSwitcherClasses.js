@@ -1,0 +1,1 @@
+import t from"../../../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(e){return t("MuiPickersArrowSwitcher",e)}e("MuiPickersArrowSwitcher",["root","spacer","button"]);export{r as getPickersArrowSwitcherUtilityClass};

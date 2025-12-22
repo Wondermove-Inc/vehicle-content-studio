@@ -1,0 +1,2 @@
+"use client";
+import{__rest as r,__assign as o}from"../hds/tslib/tslib.es6.js";import{jsx as s}from"react/jsx-runtime";import{forwardRef as e}from"react";import{isMuiComponent as t,isSimpleHdsProp as a}from"../utils/hds-config.js";import m from"../hds/@mui/material/TableBody/TableBody.js";var i=e((function(e,i){var d=e.hdsProps,l=r(e,["hdsProps"]);return t(d)?s(m,o({ref:i},l)):(a(d)&&(d={}),s(m,o({ref:i,"data-is-hds":!0,classes:{}},l)))}));i.displayName="TableBody";export{i as TableBody,i as default};

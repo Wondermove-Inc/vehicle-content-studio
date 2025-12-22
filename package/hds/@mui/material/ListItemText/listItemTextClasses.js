@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiListItemText",t)}var s=t("MuiListItemText",["root","multiline","dense","inset","primary","secondary"]);export{s as default,i as getListItemTextUtilityClass};

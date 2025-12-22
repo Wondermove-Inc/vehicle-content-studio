@@ -1,0 +1,2 @@
+"use client";
+import*as o from"react";const t=o.createContext({});"production"!==process.env.NODE_ENV&&(t.displayName="AccordionContext");var e=t;export{e as default};

@@ -1,0 +1,1 @@
+import e from"./base.js";import s from"../core/holder.js";import"../core/change-details.js";class t extends e{updateOptions(e){super.updateOptions(e)}_update(e){super._update({...e,validate:e.mask})}}s.MaskedFunction=t;export{t as default};

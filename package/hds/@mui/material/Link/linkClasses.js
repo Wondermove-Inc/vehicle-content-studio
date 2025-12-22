@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(e){return t("MuiLink",e)}var s=e("MuiLink",["root","underlineNone","underlineHover","underlineAlways","button","focusVisible"]);export{s as default,i as getLinkUtilityClass};

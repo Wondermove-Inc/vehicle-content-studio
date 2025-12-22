@@ -1,0 +1,1 @@
+import{constructFrom as t}from"./constructFrom.js";function e(e,o){const s=o instanceof Date?t(o,0):new o(0);return s.setFullYear(e.getFullYear(),e.getMonth(),e.getDate()),s.setHours(e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds()),s}export{e as default,e as transpose};

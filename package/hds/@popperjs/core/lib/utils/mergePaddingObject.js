@@ -1,0 +1,1 @@
+import e from"./getFreshSideObject.js";function t(t){return Object.assign({},e(),t)}export{t as default};

@@ -1,0 +1,1 @@
+import o from"./style.js";import r from"./compose.js";function e(o,r){return"grey"===r?r:o}const t=o({prop:"color",themeKey:"palette",transform:e}),p=o({prop:"bgcolor",cssProperty:"backgroundColor",themeKey:"palette",transform:e}),m=o({prop:"backgroundColor",themeKey:"palette",transform:e});r(t,p,m);export{m as backgroundColor,p as bgcolor,t as color,e as paletteTransform};

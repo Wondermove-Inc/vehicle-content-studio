@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function r(t){return e("MuiBreadcrumbs",t)}var s=t("MuiBreadcrumbs",["root","ol","li","separator"]);export{s as default,r as getBreadcrumbsUtilityClass};

@@ -1,0 +1,1 @@
+import{globalStateClasses as t}from"../../utils/generateUtilityClass/generateUtilityClass.js";const e="base";function n(n,r){const s=t[r];return s?`${e}--${s}`:function(t,n){return`${e}-${t}-${n}`}(n,r)}export{n as generateUtilityClass};

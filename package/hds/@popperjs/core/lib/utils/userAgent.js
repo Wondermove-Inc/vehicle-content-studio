@@ -1,0 +1,1 @@
+function r(){var r=navigator.userAgentData;return null!=r&&r.brands&&Array.isArray(r.brands)?r.brands.map((function(r){return r.brand+"/"+r.version})).join(" "):navigator.userAgent}export{r as default};

@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiCard",e)}e("MuiCard",["root"]);export{i as getCardUtilityClass};

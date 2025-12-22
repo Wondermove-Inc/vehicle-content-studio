@@ -1,0 +1,2 @@
+"use client";
+import{__rest as r,__assign as t}from"../hds/tslib/tslib.es6.js";import{jsx as s}from"react/jsx-runtime";import{forwardRef as m}from"react";import{isMuiComponent as o,isSimpleHdsProp as a}from"../utils/hds-config.js";import e from"../hds/@mui/material/ListItemAvatar/ListItemAvatar.js";var i=m((function(m,i){var d=m.hdsProps,f=r(m,["hdsProps"]);return o(d)?s(e,t({ref:i},f)):(a(d)&&(d={}),s(e,t({ref:i,"data-is-hds":!0},f)))}));i.displayName="ListItemAvatar";export{i as ListItemAvatar,i as default};

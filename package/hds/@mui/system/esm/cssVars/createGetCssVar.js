@@ -1,0 +1,1 @@
+function t(t=""){function n(...e){if(!e.length)return"";const r=e[0];return"string"!=typeof r||r.match(/(#|\(|\)|(-?(\d*\.)?\d+)(px|em|%|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc))|^(-?(\d*\.)?\d+)$|(\d+ \d+ \d+)/)?`, ${r}`:`, var(--${t?`${t}-`:""}${r}${n(...e.slice(1))})`}return(e,...r)=>`var(--${t?`${t}-`:""}${e}${n(...r)})`}export{t as default};

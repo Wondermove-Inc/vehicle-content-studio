@@ -1,0 +1,2 @@
+"use client";
+import{__rest as s,__assign as o}from"../hds/tslib/tslib.es6.js";import{jsx as r}from"react/jsx-runtime";import{forwardRef as t}from"react";import{clsx as i}from"../utils/clsx-module.js";import{isMuiComponent as e,isSimpleHdsProp as m}from"../utils/hds-config.js";import a from"../hds/@mui/material/MenuList/MenuList.js";var l=t((function(t,l){var u=t.hdsProps,d=s(t,["hdsProps"]);return e(u)?r(a,o({ref:l},d)):(m(u)&&(u={}),r(a,o({ref:l,"data-is-hds":!0,classes:{root:i("option_list")}},d)))}));l.displayName="MenuList";export{l as MenuList,l as default};

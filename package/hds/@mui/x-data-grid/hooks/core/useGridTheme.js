@@ -1,0 +1,1 @@
+import e from"../../../../@babel/runtime/helpers/esm/extends.js";import*as t from"react";import r from"../../../material/styles/useTheme.js";const s=s=>{const m=r();s.current.state.theme||(s.current.state.theme=m);const c=t.useRef(!0);t.useEffect((()=>{c.current?c.current=!1:s.current.setState((t=>e({},t,{theme:m})))}),[s,m])};export{s as useGridTheme};

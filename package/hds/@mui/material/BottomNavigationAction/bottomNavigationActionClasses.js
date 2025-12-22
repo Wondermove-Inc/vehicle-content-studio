@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import i from"../../utils/generateUtilityClass/generateUtilityClass.js";function e(t){return i("MuiBottomNavigationAction",t)}var o=t("MuiBottomNavigationAction",["root","iconOnly","selected","label"]);export{o as default,e as getBottomNavigationActionUtilityClass};

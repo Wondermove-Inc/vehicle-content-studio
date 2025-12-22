@@ -1,0 +1,1 @@
+function t(t){return["top","bottom"].indexOf(t)>=0?"x":"y"}export{t as default};

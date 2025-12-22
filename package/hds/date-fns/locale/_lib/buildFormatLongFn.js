@@ -1,0 +1,1 @@
+function t(t){return(r={})=>{const d=r.width?String(r.width):t.defaultWidth;return t.formats[d]||t.formats[t.defaultWidth]}}export{t as buildFormatLongFn};

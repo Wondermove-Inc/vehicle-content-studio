@@ -1,0 +1,1 @@
+import e from"../../../prop-types/index.js";import{useTreeViewContext as r}from"../internals/TreeViewProvider/useTreeViewContext.js";function i(e){const{children:i,itemId:n}=e,{wrapItem:t,instance:o}=r();return t({children:i,itemId:n,instance:o})}i.propTypes={children:e.node,itemId:e.string.isRequired};export{i as TreeItem2Provider};

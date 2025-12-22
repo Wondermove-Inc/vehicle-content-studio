@@ -1,0 +1,1 @@
+const o=({slots:o,slotProps:n})=>({contextValue:{icons:{slots:{collapseIcon:o.collapseIcon,expandIcon:o.expandIcon,endIcon:o.endIcon},slotProps:{collapseIcon:n.collapseIcon,expandIcon:n.expandIcon,endIcon:n.endIcon}}}});o.params={};export{o as useTreeViewIcons};

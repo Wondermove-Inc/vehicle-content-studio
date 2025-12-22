@@ -1,0 +1,2 @@
+"use client";
+import e from"../../../prop-types/index.js";import o from"../styles/identifier.js";import s from"./boxClasses.js";import r from"../styles/createTheme.js";import t from"../../system/esm/createBox.js";import m from"../../utils/ClassNameGenerator/ClassNameGenerator.js";const a=t({themeId:o,defaultTheme:r(),defaultClassName:s.root,generateClassName:m.generate});"production"!==process.env.NODE_ENV&&(a.propTypes={children:e.node,component:e.elementType,sx:e.oneOfType([e.arrayOf(e.oneOfType([e.func,e.object,e.bool])),e.func,e.object])});var p=a;export{p as default};

@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(t){return e("MuiCollapse",t)}t("MuiCollapse",["root","horizontal","vertical","entered","hidden","wrapper","wrapperInner"]);export{r as getCollapseUtilityClass};

@@ -1,0 +1,83 @@
+{
+  "name": "@hmg-fe/hmg-design-system",
+  "version": "0.8.8",
+  "description": "Hyundai Motor Group Design System",
+  "main": "./cjs/index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./cjs/index.js"
+    },
+    "./*": {
+      "import": "./*/*.js",
+      "require": "./cjs/*/*.js"
+    },
+    "./icons-material/*": {
+      "import": "./icons-material/*.d.ts",
+      "require": "./cjs/icons-material/index.js"
+    },
+    "./icons-material": {
+      "import": "./icons-material/index.js",
+      "require": "./cjs/icons-material/index.js"
+    },
+    "./HmgIcon/*": {
+      "import": "./HmgIcon/*.d.ts",
+      "require": "./cjs/HmgIcon/index.js"
+    },
+    "./HmgIcon": {
+      "import": "./HmgIcon/index.js",
+      "require": "./cjs/HmgIcon/index.js"
+    },
+    "./css": "./index.css",
+    "./hds_css": "./hds_index.css",
+    "./scope_css": "./scope_index.css",
+    "./gw_css": "./gw_index.css"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "patch-package": "patch-package",
+    "ds:rollup": "rm -rf dist && rm -rf .rollup.cache && NODE_OPTIONS=--max_old_space_size=8192 node scripts/build-prd && node scripts/hds-prefix",
+    "ds:build:css": "sass src/assets/scss/hmg-design-system-style-guide.module.scss --no-source-map --quiet dist/index_output.css && postcss dist/index_output.css -o dist/index.css --no-map && rm dist/index_output.css",
+    "ds:build:hds:css": "sass src/assets/scss/hmg-design-system-style-guide.module.scss --no-source-map --quiet dist/hds_output.css && cp postcss.hds.config.js postcss.config.js && postcss dist/hds_output.css -o dist/hds_index.css --no-map && cp postcss.origin.config.js postcss.config.js && rm dist/hds_output.css dist/hds_output.css.json",
+    "ds:build:scope:css": "sass src/assets/scss/hmg-design-system-style-guide-scope.module.scss --no-source-map --quiet dist/scope_output.css && postcss dist/scope_output.css -o dist/scope_index.css --no-map && rm dist/scope_output.css",
+    "ds:build:gw:css": "sass src/assets/scss/hmg-design-system-style-guide-scope-gw.module.scss --no-source-map --quiet dist/gw_output.css && postcss dist/gw_output.css -o dist/gw_index.css --no-map && rm dist/gw_output.css",
+    "ds:storybook": "rm -rf node_modules/.cache && storybook dev -p 6006",
+    "ds:build-storybook": "rm -rf storybook-static && storybook build",
+    "ds:send-webhook": "ts-node ci/webhook.ts",
+    "ds:send-workflow": "ts-node ci/workflow.ts",
+    "ds:generate:hmg-icon": "node scripts/generate-hmg-icon",
+    "ds:generate:icons-material": "node scripts/generate-icons-material",
+    "ds:test-copy": "node scripts/test-copy",
+    "ds:post-rollup": "node scripts/post-rollup",
+    "test": "npx playwright test",
+    "test:update": "npx playwright test --update-snapshots",
+    "test:ui": "npx playwright test --ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.hmc.co.kr/hmg-fe/hmg-design-system"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@mui/icons-material": "5.15.20",
+    "@mui/material": "5.15.20",
+    "@mui/x-data-grid": "7.7.0",
+    "@mui/x-date-pickers": "7.7.0",
+    "@mui/x-tree-view": "7.7.0",
+    "axios": "^1.13.2",
+    "clsx": "2.1.0",
+    "date-fns": "3.6.0",
+    "dayjs": "1.11.10",
+    "react-datepicker": "6.9.0",
+    "react-imask": "7.6.1"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
+  },
+  "packageManager": "npm@10.7.0"
+}

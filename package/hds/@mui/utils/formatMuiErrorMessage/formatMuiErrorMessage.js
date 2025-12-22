@@ -1,0 +1,1 @@
+function e(e){let o="https://mui.com/production-error/?code="+e;for(let e=1;e<arguments.length;e+=1)o+="&args[]="+encodeURIComponent(arguments[e]);return"Minified MUI error #"+e+"; visit "+o+" for the full message."}export{e as default};

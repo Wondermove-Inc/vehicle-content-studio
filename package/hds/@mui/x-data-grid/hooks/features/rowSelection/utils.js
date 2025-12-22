@@ -1,0 +1,1 @@
+import{GridSignature as e}from"../../utils/useGridApiEventHandler.js";function i(i){return i.signature===e.DataGrid?i.checkboxSelection&&!0!==i.disableMultipleRowSelection:!i.disableMultipleRowSelection}export{i as isMultipleRowSelectionEnabled};

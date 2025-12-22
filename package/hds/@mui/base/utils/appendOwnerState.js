@@ -1,0 +1,1 @@
+import e from"../../../@babel/runtime/helpers/esm/extends.js";import{isHostComponent as t}from"./isHostComponent.js";function o(o,r,n){return void 0===o||t(o)?r:e({},r,{ownerState:e({},r.ownerState,n)})}export{o as appendOwnerState};

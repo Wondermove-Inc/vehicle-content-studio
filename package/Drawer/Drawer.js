@@ -1,0 +1,2 @@
+"use client";
+import{__assign as r}from"../hds/tslib/tslib.es6.js";import{jsx as e}from"react/jsx-runtime";import{forwardRef as s}from"react";import"../stores/HdsThemeProvider.js";import{useThemeProvider as o}from"../stores/useThemeProvider.js";import{clsx as m}from"../utils/clsx-module.js";import t from"../hds/@mui/material/Drawer/Drawer.js";var a=s((function(s,a){var i=o(),d=i.isScope,l=i.curClassName;return e(t,r({ref:a,classes:{root:m(l)}},d&&{"data-scope":"hds"},s))}));a.displayName="Drawer";export{a as Drawer,a as default};

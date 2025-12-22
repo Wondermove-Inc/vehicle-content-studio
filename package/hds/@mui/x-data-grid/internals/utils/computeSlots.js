@@ -1,0 +1,1 @@
+import e from"../../../../@babel/runtime/helpers/esm/extends.js";function t({defaultSlots:t,slots:s}){const o=s;if(!o||0===Object.keys(o).length)return t;const n=e({},t);return Object.keys(o).forEach((e=>{const t=e;void 0!==o[t]&&(n[t]=o[t])})),n}export{t as computeSlots};

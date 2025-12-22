@@ -1,0 +1,1 @@
+import o from"./getComputedStyle.js";function e(e){var r=o(e),t=r.overflow,l=r.overflowX,f=r.overflowY;return/auto|scroll|overlay|hidden/.test(t+f+l)}export{e as default};

@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";import{constructFrom as r}from"./constructFrom.js";function o(o){const e=t(o),s=r(o,0);return s.setFullYear(e.getFullYear(),0,1),s.setHours(0,0,0,0),s}export{o as default,o as startOfYear};

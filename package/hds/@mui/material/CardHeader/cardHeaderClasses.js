@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function a(t){return e("MuiCardHeader",t)}var r=t("MuiCardHeader",["root","avatar","action","content","title","subheader"]);export{r as default,a as getCardHeaderUtilityClass};

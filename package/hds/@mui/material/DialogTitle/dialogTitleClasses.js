@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiDialogTitle",t)}var l=t("MuiDialogTitle",["root"]);export{l as default,i as getDialogTitleUtilityClass};

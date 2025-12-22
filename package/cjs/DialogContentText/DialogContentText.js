@@ -1,0 +1,2 @@
+"use client";
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("../node_modules/tslib/tslib.es6.js"),t=require("react/jsx-runtime"),r=require("../node_modules/@mui/material/node/DialogContentText/index.js"),i=require("react").forwardRef((function(i,o){return t.jsx(r.default,e.__assign({ref:o},i))}));i.displayName="DialogContentText",exports.DialogContentText=i,exports.default=i;

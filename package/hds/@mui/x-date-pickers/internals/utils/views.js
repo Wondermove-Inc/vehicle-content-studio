@@ -1,0 +1,1 @@
+const e=(e,n)=>e.length===n.length&&n.every((n=>e.includes(n))),n=({openTo:e,defaultOpenTo:n,views:t,defaultViews:l})=>{const o=t??l;let s;if(null!=e)s=e;else if(o.includes(n))s=n;else{if(!(o.length>0))throw new Error("MUI X: The `views` prop must contain at least one view.");s=o[0]}return{views:o,openTo:s}};export{n as applyDefaultViewProps,e as areViewsEqual};

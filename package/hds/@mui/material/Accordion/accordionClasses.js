@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(e){return t("MuiAccordion",e)}var r=e("MuiAccordion",["root","rounded","expanded","disabled","gutters","region"]);export{r as default,i as getAccordionUtilityClass};

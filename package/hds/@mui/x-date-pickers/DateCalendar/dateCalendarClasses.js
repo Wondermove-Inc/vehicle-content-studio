@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";const i=e=>t("MuiDateCalendar",e);e("MuiDateCalendar",["root","viewTransitionContainer"]);export{i as getDateCalendarUtilityClass};

@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";import{constructFrom as e}from"./constructFrom.js";function o(o){const r=t(o),s=r.getFullYear(),u=r.getMonth(),a=e(o,0);return a.setFullYear(s,u+1,0),a.setHours(0,0,0,0),a.getDate()}export{o as default,o as getDaysInMonth};

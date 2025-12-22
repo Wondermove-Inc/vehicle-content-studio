@@ -1,0 +1,2 @@
+"use client";
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("../node_modules/tslib/tslib.es6.js"),r=require("react/jsx-runtime"),t=require("../node_modules/@mui/material/node/InputAdornment/index.js"),n=require("react").forwardRef((function(n,s){return r.jsx(t.default,e.__assign({ref:s},n))}));n.displayName="InputAdornment",exports.InputAdornment=n,exports.default=n;

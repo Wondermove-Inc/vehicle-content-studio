@@ -1,0 +1,2 @@
+"use client";
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("../node_modules/tslib/tslib.es6.js"),r=require("react/jsx-runtime"),s=require("../node_modules/@mui/material/node/Popover/index.js"),i=require("react"),o=require("../utils/hds-config.js"),t=i.forwardRef((function(i,t){var d=i.hdsProps,u=e.__rest(i,["hdsProps"]);return o.isMuiComponent(d)?r.jsx(s.default,e.__assign({ref:t},u)):(o.isSimpleHdsProp(d)&&(d={}),r.jsx(s.default,e.__assign({ref:t,"data-is-hds":!0},u)))}));t.displayName="Popover",exports.Popover=t,exports.default=t;

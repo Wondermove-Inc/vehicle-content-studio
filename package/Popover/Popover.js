@@ -1,0 +1,2 @@
+"use client";
+import{__rest as r,__assign as o}from"../hds/tslib/tslib.es6.js";import{jsx as s}from"react/jsx-runtime";import{forwardRef as e}from"react";import{isMuiComponent as t,isSimpleHdsProp as m}from"../utils/hds-config.js";import i from"../hds/@mui/material/Popover/Popover.js";var a=e((function(e,a){var p=e.hdsProps,d=r(e,["hdsProps"]);return t(p)?s(i,o({ref:a},d)):(m(p)&&(p={}),s(i,o({ref:a,"data-is-hds":!0},d)))}));a.displayName="Popover";export{a as Popover,a as default};

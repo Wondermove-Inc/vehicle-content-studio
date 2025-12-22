@@ -1,0 +1,1 @@
+import{millisecondsInDay as t}from"./constants.js";import{startOfDay as o}from"./startOfDay.js";import{getTimezoneOffsetInMilliseconds as r}from"./_lib/getTimezoneOffsetInMilliseconds.js";function s(s,n){const e=o(s),f=o(n),i=+e-r(e),m=+f-r(f);return Math.round((i-m)/t)}export{s as default,s as differenceInCalendarDays};

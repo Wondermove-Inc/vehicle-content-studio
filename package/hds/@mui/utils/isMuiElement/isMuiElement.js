@@ -1,0 +1,1 @@
+import*as l from"react";function e(e,a){var u,n;return l.isValidElement(e)&&-1!==a.indexOf(null!=(u=e.type.muiName)?u:null==(n=e.type)||null==(n=n._payload)||null==(n=n.value)?void 0:n.muiName)}export{e as default};

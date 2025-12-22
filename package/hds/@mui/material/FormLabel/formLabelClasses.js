@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import r from"../../utils/generateUtilityClass/generateUtilityClass.js";function t(e){return r("MuiFormLabel",e)}var i=e("MuiFormLabel",["root","colorSecondary","focused","disabled","error","filled","required","asterisk"]);export{i as default,t as getFormLabelUtilityClasses};

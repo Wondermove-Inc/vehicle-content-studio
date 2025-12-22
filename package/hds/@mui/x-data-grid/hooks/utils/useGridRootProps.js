@@ -1,0 +1,1 @@
+import*as o from"react";import{GridRootPropsContext as r}from"../../context/GridRootPropsContext.js";const t=()=>{const t=o.useContext(r);if(!t)throw new Error("MUI X: useGridRootProps should only be used inside the DataGrid, DataGridPro or DataGridPremium component.");return t};export{t as useGridRootProps};

@@ -1,0 +1,1 @@
+import r from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function e(t){return r("MuiFormGroup",t)}t("MuiFormGroup",["root","row","error"]);export{e as getFormGroupUtilityClass};

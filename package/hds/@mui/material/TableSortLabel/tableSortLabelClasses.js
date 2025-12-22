@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiTableSortLabel",t)}var r=t("MuiTableSortLabel",["root","active","icon","iconDirectionDesc","iconDirectionAsc"]);export{r as default,i as getTableSortLabelUtilityClass};

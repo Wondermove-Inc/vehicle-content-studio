@@ -1,0 +1,1 @@
+import{GridFilterInputBoolean as e}from"../components/panel/filterPanel/GridFilterInputBoolean.js";const n=()=>[{value:"is",getApplyFilterFn:e=>{if(!e.value)return null;const n="true"===String(e.value);return e=>Boolean(e)===n},InputComponent:e}];export{n as getGridBooleanOperators};

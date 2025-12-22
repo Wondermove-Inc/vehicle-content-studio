@@ -1,0 +1,1 @@
+import o from"../../../utils/resolveProps/resolveProps.js";function e(e){const{theme:s,name:t,props:n}=e;return s&&s.components&&s.components[t]&&s.components[t].defaultProps?o(s.components[t].defaultProps,n):n}export{e as default};

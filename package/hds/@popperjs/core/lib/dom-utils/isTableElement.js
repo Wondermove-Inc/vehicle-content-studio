@@ -1,0 +1,1 @@
+import t from"./getNodeName.js";function e(e){return["table","td","th"].indexOf(t(e))>=0}export{e as default};

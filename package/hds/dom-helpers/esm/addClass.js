@@ -1,0 +1,1 @@
+import s from"./hasClass.js";function a(a,t){a.classList?a.classList.add(t):s(a,t)||("string"==typeof a.className?a.className=a.className+" "+t:a.setAttribute("class",(a.className&&a.className.baseVal||"")+" "+t))}export{a as default};

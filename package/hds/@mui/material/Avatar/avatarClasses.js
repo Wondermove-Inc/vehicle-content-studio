@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(e){return t("MuiAvatar",e)}e("MuiAvatar",["root","colorDefault","circular","rounded","square","img","fallback"]);export{r as getAvatarUtilityClass};

@@ -1,0 +1,1 @@
+import*as t from"react";const e=t.createContext({});function o(){return t.useContext(e)}"production"!==process.env.NODE_ENV&&(e.displayName="StepperContext");export{e as default,o as useStepperContext};

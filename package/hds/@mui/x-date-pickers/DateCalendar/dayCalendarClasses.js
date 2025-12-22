@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";const a=t=>e("MuiDayCalendar",t);t("MuiDayCalendar",["root","header","weekDayLabel","loadingContainer","slideTransition","monthContainer","weekContainer","weekNumberLabel","weekNumber"]);export{a as getDayCalendarUtilityClass};

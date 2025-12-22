@@ -1,0 +1,1 @@
+import{constructFrom as r}from"../../../constructFrom.js";import{Parser as t}from"../Parser.js";import{parseAnyDigitsSigned as s}from"../utils.js";class e extends t{priority=20;parse(r){return s(r)}set(t,s,e){return[r(t,e),{timestampIsSet:!0}]}incompatibleTokens="*"}export{e as TimestampMillisecondsParser};

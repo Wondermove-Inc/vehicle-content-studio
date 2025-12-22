@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiStepIcon",t)}var r=t("MuiStepIcon",["root","active","completed","error","text"]);export{r as default,i as getStepIconUtilityClass};

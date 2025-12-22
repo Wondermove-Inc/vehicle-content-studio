@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(e){return t("MuiPopover",e)}var i=e("MuiPopover",["root","paper"]);export{i as default,r as getPopoverUtilityClass};

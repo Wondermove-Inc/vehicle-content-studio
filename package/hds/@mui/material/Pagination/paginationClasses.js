@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import i from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function e(i){return t("MuiPagination",i)}i("MuiPagination",["root","ul","outlined","text"]);export{e as getPaginationUtilityClass};

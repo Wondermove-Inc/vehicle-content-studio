@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import i from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function s(i){return t("MuiAccordionActions",i)}i("MuiAccordionActions",["root","spacing"]);export{s as getAccordionActionsUtilityClass};

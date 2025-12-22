@@ -1,0 +1,1 @@
+import{GridLogicOperator as r}from"../../../models/gridFilterItem.js";const e=()=>({items:[],logicOperator:r.And,quickFilterValues:[],quickFilterLogicOperator:r.And});export{e as getDefaultGridFilterModel};

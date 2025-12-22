@@ -1,0 +1,1 @@
+function e(e,t,n=void 0){const o={};return Object.keys(e).forEach((r=>{o[r]=e[r].reduce(((e,o)=>{if(o){const r=t(o);""!==r&&e.push(r),n&&n[o]&&e.push(n[o])}return e}),[]).join(" ")})),o}export{e as default};

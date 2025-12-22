@@ -1,0 +1,1 @@
+import{ValueSetter as t}from"./Setter.js";class r{run(r,e,s,i){const a=this.parse(r,e,s,i);return a?{setter:new t(a.value,this.validate,this.set,this.priority,this.subPriority),rest:a.rest}:null}validate(t,r,e){return!0}}export{r as Parser};

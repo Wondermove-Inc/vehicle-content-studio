@@ -1,0 +1,1 @@
+import{Parser as t}from"../Parser.js";import{mapValue as r,parseNDigits as e}from"../utils.js";class s extends t{priority=30;parse(t,s){return r(e(s.length,t),(t=>Math.trunc(t*Math.pow(10,3-s.length))))}set(t,r,e){return t.setMilliseconds(e),t}incompatibleTokens=["t","T"]}export{s as FractionOfSecondParser};

@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiTabScrollButton",t)}var l=t("MuiTabScrollButton",["root","vertical","horizontal","disabled"]);export{l as default,i as getTabScrollButtonUtilityClass};

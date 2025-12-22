@@ -1,0 +1,1 @@
+import{useContext as e}from"react";import{HdsThemeContext as m}from"./HdsThemeProvider.js";function s(){var s=e(m);return{isScope:s.isScope,isSystemFont:s.isSystemFont,isApp:s.isApp,themeName:s.themeName,curClassName:s.curClassName,setThemeName:s.setThemeName}}export{s as default,s as useThemeProvider};

@@ -1,0 +1,1 @@
+import e from"../../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(t){return e("MuiPickersPopper",t)}t("MuiPickersPopper",["root","paper"]);export{i as getPickersPopperUtilityClass};

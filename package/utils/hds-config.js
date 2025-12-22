@@ -1,0 +1,1 @@
+import{__assign as e}from"../hds/tslib/tslib.es6.js";var o={usePrefix:!1,useDefaultHdsProps:!1};function r(r){o=e(e({},o),r)}var s=function(e){return!1===e||void 0===e&&!1===o.useDefaultHdsProps},t=function(e){return!0===e||void 0===e};export{o as hdsConfig,s as isMuiComponent,t as isSimpleHdsProp,r as setConfig};

@@ -1,0 +1,1 @@
+import r from"./typeof.js";function t(t,e){if("object"!=r(t)||!t)return t;var i=t[Symbol.toPrimitive];if(void 0!==i){var o=i.call(t,e||"default");if("object"!=r(o))return o;throw new TypeError("@@toPrimitive must return a primitive value.")}return("string"===e?String:Number)(t)}export{t as default};

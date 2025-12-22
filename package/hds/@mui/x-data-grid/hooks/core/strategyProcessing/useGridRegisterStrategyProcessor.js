@@ -1,0 +1,1 @@
+import*as r from"react";import{useFirstRender as e}from"../../utils/useFirstRender.js";const t=(t,s,c,o)=>{const u=r.useCallback((()=>{t.current.registerStrategyProcessor(s,c,o)}),[t,o,c,s]);e((()=>{u()}));const n=r.useRef(!0);r.useEffect((()=>{n.current?n.current=!1:u()}),[u])};export{t as useGridRegisterStrategyProcessor};

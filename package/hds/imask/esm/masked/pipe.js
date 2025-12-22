@@ -1,0 +1,1 @@
+import e from"./factory.js";import o from"../core/holder.js";const r={MASKED:"value",UNMASKED:"unmaskedValue",TYPED:"typedValue"};function t(o,t,n){void 0===t&&(t=r.MASKED),void 0===n&&(n=r.MASKED);const u=e(o);return e=>u.runIsolated((o=>(o[t]=e,o[n])))}function n(e,o,r,n){return t(o,r,n)(e)}o.PIPE_TYPE=r,o.createPipe=t,o.pipe=n;export{r as PIPE_TYPE,t as createPipe,n as pipe};

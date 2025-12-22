@@ -1,0 +1,1 @@
+function e(e,t){const o=this;if(o.vars&&"function"==typeof o.getColorSchemeSelector){return{[o.getColorSchemeSelector(e).replace(/(\[[^\]]+\])/,"*:where($1)")]:t}}return o.palette.mode===e?t:{}}export{e as default};

@@ -1,0 +1,1 @@
+import e from"./getWindow.js";function t(t){var f=e(t);return{scrollLeft:f.pageXOffset,scrollTop:f.pageYOffset}}export{t as default};

@@ -1,0 +1,1 @@
+import{createSelector as t}from"../../../utils/createSelector.js";const o=.7,e=1.3,r={compact:.7,comfortable:1.3,standard:1},c=t=>t.density,a=t(c,(t=>r[t]));export{e as COMFORTABLE_DENSITY_FACTOR,o as COMPACT_DENSITY_FACTOR,a as gridDensityFactorSelector,c as gridDensitySelector};

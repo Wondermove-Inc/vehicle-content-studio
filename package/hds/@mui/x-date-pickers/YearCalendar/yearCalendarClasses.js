@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(t){return e("MuiYearCalendar",t)}t("MuiYearCalendar",["root"]);export{r as getYearCalendarUtilityClass};

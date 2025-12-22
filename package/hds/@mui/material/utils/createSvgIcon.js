@@ -1,0 +1,2 @@
+"use client";
+import e from"../../../@babel/runtime/helpers/esm/extends.js";import*as r from"react";import{jsx as o}from"react/jsx-runtime";import t from"../SvgIcon/SvgIcon.js";function m(m,n){function i(r,i){return o(t,e({"data-testid":`${n}Icon`,ref:i},r,{children:m}))}return"production"!==process.env.NODE_ENV&&(i.displayName=`${n}Icon`),i.muiName=t.muiName,r.memo(r.forwardRef(i))}export{m as default};

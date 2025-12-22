@@ -1,0 +1,1 @@
+function n(n,e){return"production"===process.env.NODE_ENV?()=>null:(n,o,r,t,u)=>{const s=r||"<<anonymous>>",c=u||o;return void 0!==n[o]?new Error(`The ${t} \`${c}\` of \`${s}\` is deprecated. ${e}`):null}}export{n as default};

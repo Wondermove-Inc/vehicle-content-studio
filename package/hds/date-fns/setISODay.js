@@ -1,0 +1,1 @@
+import{addDays as t}from"./addDays.js";import{getISODay as o}from"./getISODay.js";import{toDate as r}from"./toDate.js";function a(a,m){const s=r(a),e=o(s);return t(s,m-e)}export{a as default,a as setISODay};

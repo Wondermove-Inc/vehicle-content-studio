@@ -1,0 +1,1 @@
+import{__module as r}from"../../_virtual/index11.js";import{__require as e}from"./cjs/react-is.production.min.js";import{__require as o}from"./cjs/react-is.development.js";"production"===process.env.NODE_ENV?r.exports=e():r.exports=o();var s=r.exports;export{s as r};

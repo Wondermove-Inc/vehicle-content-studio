@@ -1,0 +1,1 @@
+var a=Math.max,t=Math.min,h=Math.round;export{a as max,t as min,h as round};

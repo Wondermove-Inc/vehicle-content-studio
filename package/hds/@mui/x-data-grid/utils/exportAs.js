@@ -1,0 +1,1 @@
+function e(e,t="csv",o=document.title||"untitled"){const n=`${o}.${t}`;if("download"in HTMLAnchorElement.prototype){const t=URL.createObjectURL(e),o=document.createElement("a");return o.href=t,o.download=n,o.click(),void setTimeout((()=>{URL.revokeObjectURL(t)}))}throw new Error("MUI X: exportAs not supported.")}export{e as exportAs};

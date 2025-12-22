@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import i from"../../utils/generateUtilityClass/generateUtilityClass.js";function e(t){return i("MuiCardActionArea",t)}var s=t("MuiCardActionArea",["root","focusVisible","focusHighlight"]);export{s as default,e as getCardActionAreaUtilityClass};

@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";import{getDefaultOptions as e}from"./_lib/defaultOptions.js";function o(o,s){const a=e(),r=s?.weekStartsOn??s?.locale?.options?.weekStartsOn??a.weekStartsOn??a.locale?.options?.weekStartsOn??0,n=t(o),i=n.getDay(),l=(i<r?7:0)+i-r;return n.setDate(n.getDate()-l),n.setHours(0,0,0,0),n}export{o as default,o as startOfWeek};

@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiListItemIcon",t)}var s=t("MuiListItemIcon",["root","alignItemsFlexStart"]);export{s as default,i as getListItemIconUtilityClass};

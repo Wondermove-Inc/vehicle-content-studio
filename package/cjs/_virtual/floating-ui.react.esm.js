@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("./_commonjsHelpers.js"),t=require("../node_modules/@floating-ui/react/dist/floating-ui.react.esm.js"),r=e.getAugmentedNamespace(t);exports.default=r;

@@ -1,0 +1,2 @@
+"use client";
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("../node_modules/tslib/tslib.es6.js"),r=require("react/jsx-runtime"),s=require("../node_modules/@mui/material/node/Popper/index.js"),i=require("react"),t=require("../utils/hds-config.js"),o=i.forwardRef((function(i,o){var d=i.hdsProps,u=e.__rest(i,["hdsProps"]);return t.isMuiComponent(d)?r.jsx(s.default,e.__assign({ref:o},u)):(t.isSimpleHdsProp(d)&&(d={}),r.jsx(s.default,e.__assign({ref:o,"data-is-hds":!0},u)))}));o.displayName="Popper",exports.Popper=o,exports.default=o;

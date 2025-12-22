@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";import{constructFrom as o}from"./constructFrom.js";function r(r,e){const a=t(r);return isNaN(e)?o(r,NaN):e?(a.setDate(a.getDate()+e),a):a}export{r as addDays,r as default};

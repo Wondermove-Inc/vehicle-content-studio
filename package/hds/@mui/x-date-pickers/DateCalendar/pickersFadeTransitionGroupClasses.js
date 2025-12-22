@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import i from"../../utils/generateUtilityClasses/generateUtilityClasses.js";const e=i=>t("MuiPickersFadeTransitionGroup",i);i("MuiPickersFadeTransitionGroup",["root"]);export{e as getPickersFadeTransitionGroupUtilityClass};

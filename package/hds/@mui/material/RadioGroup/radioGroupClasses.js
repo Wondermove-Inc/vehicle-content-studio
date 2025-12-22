@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import r from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function e(r){return t("MuiRadioGroup",r)}r("MuiRadioGroup",["root","row","error"]);export{e as getRadioGroupUtilityClass};

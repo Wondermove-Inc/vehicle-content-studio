@@ -1,0 +1,1 @@
+import t from"./getBoundingClientRect.js";import e from"./getDocumentElement.js";import o from"./getWindowScroll.js";function r(r){return t(e(r)).left+o(r).scrollLeft}export{r as default};

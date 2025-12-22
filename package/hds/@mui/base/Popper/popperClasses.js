@@ -1,0 +1,1 @@
+import{generateUtilityClass as t}from"../generateUtilityClass/index.js";import{generateUtilityClasses as e}from"../generateUtilityClasses/index.js";const r="Popper";function o(e){return t(r,e)}e(r,["root"]);export{o as getPopperUtilityClass};

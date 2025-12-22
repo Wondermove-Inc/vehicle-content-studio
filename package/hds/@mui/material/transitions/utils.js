@@ -1,0 +1,1 @@
+const n=n=>n.scrollTop;function t(n,t){var o,i;const{timeout:e,easing:r,style:a={}}=n;return{duration:null!=(o=a.transitionDuration)?o:"number"==typeof e?e:e[t.mode]||0,easing:null!=(i=a.transitionTimingFunction)?i:"object"==typeof r?r[t.mode]:r,delay:a.transitionDelay}}export{t as getTransitionProps,n as reflow};

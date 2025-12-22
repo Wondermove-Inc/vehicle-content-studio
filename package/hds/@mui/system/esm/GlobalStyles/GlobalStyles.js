@@ -1,0 +1,2 @@
+"use client";
+import"react";import e from"../../../../prop-types/index.js";import t from"../useTheme.js";import{jsx as o}from"react/jsx-runtime";import r from"../../../styled-engine/GlobalStyles/GlobalStyles.js";function s({styles:e,themeId:s,defaultTheme:n={}}){const m=t(n),p="function"==typeof e?e(s&&m[s]||m):e;return o(r,{styles:p})}"production"!==process.env.NODE_ENV&&(s.propTypes={defaultTheme:e.object,styles:e.oneOfType([e.array,e.func,e.number,e.object,e.string,e.bool]),themeId:e.string});export{s as default};

@@ -1,0 +1,1 @@
+function e(e,r,o,n,t){if("production"===process.env.NODE_ENV)return null;const u=t||r;return void 0!==e[r]?new Error(`The prop \`${u}\` is not supported. Please remove it.`):null}export{e as default};

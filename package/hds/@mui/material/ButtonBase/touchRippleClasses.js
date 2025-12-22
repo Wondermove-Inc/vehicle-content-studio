@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";const i=e("MuiTouchRipple",["root","ripple","rippleVisible","ripplePulsate","child","childLeaving","childPulsate"]);export{i as default};

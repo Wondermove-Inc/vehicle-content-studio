@@ -1,0 +1,2 @@
+"use client";
+import"react";import e from"../../../prop-types/index.js";import{Global as t}from"@emotion/react";import{jsx as r}from"react/jsx-runtime";function o(e){const{styles:o,defaultTheme:n={}}=e;return r(t,{styles:"function"==typeof o?e=>{return o(null==(t=e)||0===Object.keys(t).length?n:e);var t}:o})}"production"!==process.env.NODE_ENV&&(o.propTypes={defaultTheme:e.object,styles:e.oneOfType([e.array,e.string,e.object,e.func])});export{o as default};

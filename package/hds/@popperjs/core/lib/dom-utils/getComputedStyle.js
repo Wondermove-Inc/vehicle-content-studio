@@ -1,0 +1,1 @@
+import t from"./getWindow.js";function e(e){return t(e).getComputedStyle(e)}export{e as default};

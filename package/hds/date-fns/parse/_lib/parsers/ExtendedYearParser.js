@@ -1,0 +1,1 @@
+import{Parser as r}from"../Parser.js";import{parseNDigitsSigned as e}from"../utils.js";class t extends r{priority=130;parse(r,t){return e("u"===t?4:t.length,r)}set(r,e,t){return r.setFullYear(t,0,1),r.setHours(0,0,0,0),r}incompatibleTokens=["G","y","Y","R","w","I","i","e","c","t","T"]}export{t as ExtendedYearParser};

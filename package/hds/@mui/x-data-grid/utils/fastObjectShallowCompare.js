@@ -1,0 +1,1 @@
+const n=Object.is;function t(t,r){if(t===r)return!0;if(!(t instanceof Object&&r instanceof Object))return!1;let e=0,i=0;for(const i in t){if(e+=1,!n(t[i],r[i]))return!1;if(!(i in r))return!1}for(const n in r)i+=1;return e===i}export{t as fastObjectShallowCompare};

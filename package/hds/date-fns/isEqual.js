@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";function o(o,r){return+t(o)==+t(r)}export{o as default,o as isEqual};

@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiStep",e)}e("MuiStep",["root","horizontal","vertical","alternativeLabel","completed"]);export{i as getStepUtilityClass};

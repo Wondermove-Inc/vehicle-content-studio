@@ -1,0 +1,1 @@
+import"react";import{TreeViewContext as r}from"./TreeViewContext.js";import{jsx as e}from"react/jsx-runtime";function t(t){const{value:o,children:i}=t;return e(r.Provider,{value:o,children:o.wrapRoot({children:i})})}export{t as TreeViewProvider};

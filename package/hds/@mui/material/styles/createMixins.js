@@ -1,0 +1,1 @@
+import e from"../../../@babel/runtime/helpers/esm/extends.js";function t(t,i){return e({toolbar:{minHeight:56,[t.up("xs")]:{"@media (orientation: landscape)":{minHeight:48}},[t.up("sm")]:{minHeight:64}}},i)}export{t as default};

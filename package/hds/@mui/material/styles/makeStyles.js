@@ -1,0 +1,1 @@
+import r from"../../utils/formatMuiErrorMessage/formatMuiErrorMessage.js";function o(){throw new Error("production"!==process.env.NODE_ENV?"MUI: makeStyles is no longer exported from @mui/material/styles.\nYou have to import it from @mui/styles.\nSee https://mui.com/r/migration-v4/#mui-material-styles for more details.":r(14))}export{o as default};

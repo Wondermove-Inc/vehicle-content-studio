@@ -1,0 +1,1 @@
+import*as e from"react";const r=(r,t)=>{const l=e.useCallback((e=>{if(null==t.localeText[e])throw new Error(`Missing translation for key ${e}.`);return t.localeText[e]}),[t.localeText]);r.current.register("public",{getLocaleText:l})};export{r as useGridLocaleText};

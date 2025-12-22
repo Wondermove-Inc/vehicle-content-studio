@@ -1,0 +1,1 @@
+import{__exports as e}from"../../../../_virtual/createSvgIcon.js";import r from"../../../../_virtual/index3.js";var t;function n(){return t||(t=1,function(e){Object.defineProperty(e,"__esModule",{value:!0}),Object.defineProperty(e,"default",{enumerable:!0,get:function(){return t.createSvgIcon}});var t=r}(e)),e}export{n as __require};

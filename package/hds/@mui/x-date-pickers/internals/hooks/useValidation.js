@@ -1,0 +1,1 @@
+import*as r from"react";import{useLocalizationContext as e}from"./useUtils.js";function t(t,o,u,s){const{value:n,onError:a}=t,c=e(),f=r.useRef(s),p=o({adapter:c,value:n,props:t});return r.useEffect((()=>{a&&!u(p,f.current)&&a(p,n),f.current=p}),[u,a,f,p,n]),p}export{t as useValidation};

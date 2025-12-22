@@ -1,0 +1,2 @@
+"use client";
+import{__rest as r,__assign as s}from"../hds/tslib/tslib.es6.js";import{jsx as e}from"react/jsx-runtime";import{forwardRef as t}from"react";import{isMuiComponent as o,isSimpleHdsProp as i}from"../utils/hds-config.js";import m from"../hds/@mui/material/ListSubheader/ListSubheader.js";var a=t((function(t,a){var d=t.hdsProps,u=r(t,["hdsProps"]);return o(d)?e(m,s({ref:a},u)):(i(d)&&(d={}),e(m,s({ref:a,"data-is-hds":!0},u)))}));a.displayName="ListSubheader";export{a as ListSubheader,a as default};

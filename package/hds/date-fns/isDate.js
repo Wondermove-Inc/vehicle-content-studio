@@ -1,0 +1,1 @@
+function t(t){return t instanceof Date||"object"==typeof t&&"[object Date]"===Object.prototype.toString.call(t)}export{t as default,t as isDate};

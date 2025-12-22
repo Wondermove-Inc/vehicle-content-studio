@@ -1,0 +1,1 @@
+import{toDate as t}from"./toDate.js";import{constructFrom as e}from"./constructFrom.js";function r(r,o){const n=t(r);if(isNaN(o))return e(r,NaN);if(!o)return n;const a=n.getDate(),s=e(r,n.getTime());s.setMonth(n.getMonth()+o+1,0);return a>=s.getDate()?s:(n.setFullYear(s.getFullYear(),s.getMonth(),a),n)}export{r as addMonths,r as default};

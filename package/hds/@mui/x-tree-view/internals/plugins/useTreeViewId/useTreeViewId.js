@@ -1,0 +1,1 @@
+import*as t from"react";import e from"../../../../utils/useId/useId.js";const r=({params:r})=>{const s=e(r.id);return{getRootProps:()=>({id:s}),instance:{getTreeItemIdAttribute:t.useCallback(((t,e)=>e??`${s}-${t}`),[s])}}};r.params={id:!0};export{r as useTreeViewId};

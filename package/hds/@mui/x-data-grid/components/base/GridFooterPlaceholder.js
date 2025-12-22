@@ -1,0 +1,1 @@
+import o from"../../../../@babel/runtime/helpers/esm/extends.js";import"react";import{useGridRootProps as r}from"../../hooks/utils/useGridRootProps.js";import{jsx as t}from"react/jsx-runtime";function e(){const e=r();return e.hideFooter?null:t(e.slots.footer,o({},e.slotProps?.footer))}export{e as GridFooterPlaceholder};

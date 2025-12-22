@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function s(e){return t("MuiMenuItem",e)}var i=e("MuiMenuItem",["root","focusVisible","dense","disabled","divider","gutters","selected"]);export{i as default,s as getMenuItemUtilityClass};

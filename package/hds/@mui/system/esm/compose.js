@@ -1,0 +1,1 @@
+import e from"./merge.js";function r(...r){const o=r.reduce(((e,r)=>(r.filterProps.forEach((o=>{e[o]=r})),e)),{}),c=r=>Object.keys(r).reduce(((c,p)=>o[p]?e(c,o[p](r)):c),{});return c.propTypes="production"!==process.env.NODE_ENV?r.reduce(((e,r)=>Object.assign(e,r.propTypes)),{}):{},c.filterProps=r.reduce(((e,r)=>e.concat(r.filterProps)),[]),c}export{r as default};

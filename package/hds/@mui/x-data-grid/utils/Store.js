@@ -1,0 +1,1 @@
+class s{static create(t){return new s(t)}constructor(s){this.value=void 0,this.listeners=void 0,this.subscribe=s=>(this.listeners.add(s),()=>{this.listeners.delete(s)}),this.getSnapshot=()=>this.value,this.update=s=>{this.value=s,this.listeners.forEach((t=>t(s)))},this.value=s,this.listeners=new Set}}export{s as Store};

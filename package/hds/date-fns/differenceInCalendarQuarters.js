@@ -1,0 +1,1 @@
+import{getQuarter as t}from"./getQuarter.js";import{toDate as r}from"./toDate.js";function e(e,o){const a=r(e),u=r(o);return 4*(a.getFullYear()-u.getFullYear())+(t(a)-t(u))}export{e as default,e as differenceInCalendarQuarters};

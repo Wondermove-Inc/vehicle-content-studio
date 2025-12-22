@@ -1,0 +1,1 @@
+function n(n){if(null==n)return window;if("[object Window]"!==n.toString()){var t=n.ownerDocument;return t&&t.defaultView||window}return n}export{n as default};

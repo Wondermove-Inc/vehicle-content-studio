@@ -1,0 +1,1 @@
+function t(t,n=[]){if(void 0===t)return{};const e={};return Object.keys(t).filter((e=>e.match(/^on[A-Z]/)&&"function"==typeof t[e]&&!n.includes(e))).forEach((n=>{e[n]=t[n]})),e}export{t as extractEventHandlers};

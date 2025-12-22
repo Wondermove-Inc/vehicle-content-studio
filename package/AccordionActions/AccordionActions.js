@@ -1,0 +1,2 @@
+"use client";
+import{__rest as o,__assign as r}from"../hds/tslib/tslib.es6.js";import{jsx as s}from"react/jsx-runtime";import{forwardRef as i}from"react";import{isMuiComponent as t,isSimpleHdsProp as m}from"../utils/hds-config.js";import e from"../hds/@mui/material/AccordionActions/AccordionActions.js";var d=i((function(i,d){var c=i.hdsProps,n=o(i,["hdsProps"]);return t(c)?s(e,r({ref:d},n)):(m(c)&&(c={}),s(e,r({ref:d,"data-is-hds":!0},n)))}));d.displayName="AccordionActions";export{d as AccordionActions,d as default};

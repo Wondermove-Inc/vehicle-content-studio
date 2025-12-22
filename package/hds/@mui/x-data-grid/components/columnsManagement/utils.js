@@ -1,0 +1,1 @@
+const e=(e,t)=>{const r=new Set(Object.keys(e).filter((t=>!1===e[t]))),s=new Set(Object.keys(t).filter((e=>!1===t[e])));if(r.size!==s.size)return!1;let i=!0;return r.forEach((e=>{s.has(e)||(i=!1)})),i},t=(e,t)=>(e.headerName||e.field).toLowerCase().indexOf(t)>-1;export{e as checkColumnVisibilityModelsSame,t as defaultSearchPredicate};

@@ -1,0 +1,1 @@
+function e(e,n){return n.reduce((function(n,r){return n[r]=e,n}),{})}export{e as default};

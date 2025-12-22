@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiFormControl",e)}e("MuiFormControl",["root","marginNone","marginNormal","marginDense","fullWidth","disabled"]);export{i as getFormControlUtilityClasses};

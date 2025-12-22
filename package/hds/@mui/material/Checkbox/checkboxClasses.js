@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(e){return t("MuiCheckbox",e)}var r=e("MuiCheckbox",["root","checked","disabled","indeterminate","colorPrimary","colorSecondary","sizeSmall","sizeMedium"]);export{r as default,i as getCheckboxUtilityClass};

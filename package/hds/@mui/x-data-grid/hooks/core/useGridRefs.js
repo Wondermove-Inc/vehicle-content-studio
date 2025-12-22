@@ -1,0 +1,1 @@
+import*as e from"react";const r=r=>{const t=e.useRef(null),l=e.useRef(null),n=e.useRef(null);r.current.register("public",{rootElementRef:t}),r.current.register("private",{mainElementRef:l,virtualScrollerRef:n})};export{r as useGridRefs};

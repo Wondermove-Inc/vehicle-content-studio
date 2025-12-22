@@ -1,0 +1,1 @@
+import{setMonth as t}from"./setMonth.js";import{toDate as o}from"./toDate.js";function n(n,r){const e=o(n),s=r-(Math.trunc(e.getMonth()/3)+1);return t(e,e.getMonth()+3*s)}export{n as default,n as setQuarter};

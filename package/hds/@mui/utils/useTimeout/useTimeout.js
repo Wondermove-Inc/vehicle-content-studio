@@ -1,0 +1,2 @@
+"use client";
+import t from"../useLazyRef/useLazyRef.js";import e from"../useOnMount/useOnMount.js";class r{constructor(){this.currentId=null,this.clear=()=>{null!==this.currentId&&(clearTimeout(this.currentId),this.currentId=null)},this.disposeEffect=()=>this.clear}static create(){return new r}start(t,e){this.clear(),this.currentId=setTimeout((()=>{this.currentId=null,e()}),t)}}function s(){const s=t(r.create).current;return e(s.disposeEffect),s}export{r as Timeout,s as default};

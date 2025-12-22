@@ -1,0 +1,2 @@
+"use client";
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("../node_modules/tslib/tslib.es6.js"),r=require("react/jsx-runtime"),s=require("../node_modules/@mui/material/node/CardMedia/index.js"),d=require("react").forwardRef((function(d,a){d.hdsProps;var i=e.__rest(d,["hdsProps"]);return r.jsx(s.default,e.__assign({ref:a},i))}));d.displayName="CardMedia",exports.CardMedia=d,exports.default=d;

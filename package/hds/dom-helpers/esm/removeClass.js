@@ -1,0 +1,1 @@
+function s(s,e){return s.replace(new RegExp("(^|\\s)"+e+"(?:\\s|$)","g"),"$1").replace(/\s+/g," ").replace(/^\s*|\s*$/g,"")}function e(e,a){e.classList?e.classList.remove(a):"string"==typeof e.className?e.className=s(e.className,a):e.setAttribute("class",s(e.className&&e.className.baseVal||"",a))}export{e as default};

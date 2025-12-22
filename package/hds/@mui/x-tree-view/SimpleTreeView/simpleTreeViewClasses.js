@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(t){return e("MuiSimpleTreeView",t)}t("MuiSimpleTreeView",["root"]);export{i as getSimpleTreeViewUtilityClass};

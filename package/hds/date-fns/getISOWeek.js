@@ -1,0 +1,1 @@
+import{millisecondsInWeek as t}from"./constants.js";import{startOfISOWeek as r}from"./startOfISOWeek.js";import{startOfISOWeekYear as o}from"./startOfISOWeekYear.js";import{toDate as s}from"./toDate.js";function e(e){const a=s(e),f=+r(a)-+o(a);return Math.round(f/t)+1}export{e as default,e as getISOWeek};

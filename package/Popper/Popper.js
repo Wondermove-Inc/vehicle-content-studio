@@ -1,0 +1,2 @@
+"use client";
+import{__rest as r,__assign as o}from"../hds/tslib/tslib.es6.js";import{jsx as s}from"react/jsx-runtime";import{forwardRef as e}from"react";import{isMuiComponent as t,isSimpleHdsProp as m}from"../utils/hds-config.js";import i from"../hds/@mui/material/Popper/Popper.js";var p=e((function(e,p){var a=e.hdsProps,d=r(e,["hdsProps"]);return t(a)?s(i,o({ref:p},d)):(m(a)&&(a={}),s(i,o({ref:p,"data-is-hds":!0},d)))}));p.displayName="Popper";export{p as Popper,p as default};

@@ -1,0 +1,2 @@
+"use client";
+import"react";import e from"../../../prop-types/index.js";import{CacheProvider as o}from"@emotion/react";import r from"@emotion/cache";import{jsx as t}from"react/jsx-runtime";let i;function n(e){const{injectFirst:r,children:n}=e;return r&&i?t(o,{value:i,children:n}):n}"object"==typeof document&&(i=r({key:"css",prepend:!0})),"production"!==process.env.NODE_ENV&&(n.propTypes={children:e.node,injectFirst:e.bool});export{n as default};

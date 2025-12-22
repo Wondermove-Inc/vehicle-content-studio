@@ -1,0 +1,1 @@
+import{hdsConfig as s}from"./hds-config.js";var t=function(t){s.usePrefix&&t.querySelectorAll("*").forEach((function(s){s.classList.forEach((function(t){t.startsWith("hds__")||t.startsWith("css")||t.startsWith("Mui")||(s.classList.add("hds__".concat(t)),s.classList.remove(t))}))}))};export{t as addPrefixToClasses};

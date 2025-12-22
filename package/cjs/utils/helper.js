@@ -1,0 +1,1 @@
+"use strict";var s=require("./hds-config.js");exports.addPrefixToClasses=function(t){s.hdsConfig.usePrefix&&t.querySelectorAll("*").forEach((function(s){s.classList.forEach((function(t){t.startsWith("hds__")||t.startsWith("css")||t.startsWith("Mui")||(s.classList.add("hds__".concat(t)),s.classList.remove(t))}))}))};

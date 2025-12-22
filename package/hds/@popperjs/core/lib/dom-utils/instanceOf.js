@@ -1,0 +1,1 @@
+import n from"./getWindow.js";function o(o){return o instanceof n(o).Element||o instanceof Element}function t(o){return o instanceof n(o).HTMLElement||o instanceof HTMLElement}function e(o){return"undefined"!=typeof ShadowRoot&&(o instanceof n(o).ShadowRoot||o instanceof ShadowRoot)}export{o as isElement,t as isHTMLElement,e as isShadowRoot};

@@ -1,0 +1,1 @@
+import{getISOWeekYear as r}from"./getISOWeekYear.js";import{startOfISOWeek as t}from"./startOfISOWeek.js";import{constructFrom as e}from"./constructFrom.js";function o(o){const s=r(o),m=e(o,0);return m.setFullYear(s,0,4),m.setHours(0,0,0,0),t(m)}export{o as default,o as startOfISOWeekYear};

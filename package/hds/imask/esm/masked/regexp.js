@@ -1,0 +1,1 @@
+import e from"./base.js";import s from"../core/holder.js";import"../core/change-details.js";class a extends e{updateOptions(e){super.updateOptions(e)}_update(e){const s=e.mask;s&&(e.validate=e=>e.search(s)>=0),super._update(e)}}s.MaskedRegExp=a;export{a as default};

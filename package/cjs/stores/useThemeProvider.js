@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("react"),s=require("./HdsThemeProvider.js");function t(){var t=e.useContext(s.HdsThemeContext);return{isScope:t.isScope,isSystemFont:t.isSystemFont,isApp:t.isApp,themeName:t.themeName,curClassName:t.curClassName,setThemeName:t.setThemeName}}exports.default=t,exports.useThemeProvider=t;

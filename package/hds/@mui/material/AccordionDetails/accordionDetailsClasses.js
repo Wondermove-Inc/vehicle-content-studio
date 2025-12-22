@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import i from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function e(i){return t("MuiAccordionDetails",i)}i("MuiAccordionDetails",["root"]);export{e as getAccordionDetailsUtilityClass};

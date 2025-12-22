@@ -1,0 +1,2 @@
+"use client";
+import e from"../../../@babel/runtime/helpers/esm/extends.js";import"react";import r from"../../../prop-types/index.js";import t from"../styles/defaultTheme.js";import o from"../styles/identifier.js";import{jsx as s}from"react/jsx-runtime";import m from"../../system/esm/GlobalStyles/GlobalStyles.js";function p(r){return s(m,e({},r,{defaultTheme:t,themeId:o}))}"production"!==process.env.NODE_ENV&&(p.propTypes={styles:r.oneOfType([r.array,r.func,r.number,r.object,r.string,r.bool])});export{p as default};

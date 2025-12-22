@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiStepButton",t)}var r=t("MuiStepButton",["root","horizontal","vertical","touchRipple"]);export{r as default,i as getStepButtonUtilityClass};

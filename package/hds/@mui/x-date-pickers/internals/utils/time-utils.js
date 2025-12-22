@@ -1,0 +1,1 @@
+const e=["hours","minutes","seconds"],s=s=>e.includes(s),t=(e,s)=>3600*s.getHours(e)+60*s.getMinutes(e)+s.getSeconds(e),n=(e,s)=>(n,o)=>e?s.isAfter(n,o):t(n,s)>t(o,s);export{n as createIsAfterIgnoreDatePart,t as getSecondsInDay,s as isTimeView};

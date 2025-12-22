@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiList",e)}e("MuiList",["root","padding","dense","subheader"]);export{i as getListUtilityClass};

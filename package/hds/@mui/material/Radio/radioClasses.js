@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(e){return t("MuiRadio",e)}var r=e("MuiRadio",["root","checked","disabled","colorPrimary","colorSecondary","sizeSmall"]);export{r as default,i as getRadioUtilityClass};

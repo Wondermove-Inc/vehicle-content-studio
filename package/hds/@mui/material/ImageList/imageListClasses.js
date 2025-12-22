@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiImageList",e)}e("MuiImageList",["root","masonry","quilted","standard","woven"]);export{i as getImageListUtilityClass};

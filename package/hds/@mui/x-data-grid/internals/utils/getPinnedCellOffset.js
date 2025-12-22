@@ -1,0 +1,1 @@
+import{GridPinnedColumnPosition as s}from"../../hooks/features/columns/gridColumnsInterfaces.js";const e=(e,o,r,t,a)=>{const c=a.hasScrollY?a.scrollbarSize:0;let l;switch(e){case s.LEFT:l=t[r];break;case s.RIGHT:l=a.columnsTotalWidth-t[r]-o+c;break;default:l=0}return l};export{e as getPinnedCellOffset};

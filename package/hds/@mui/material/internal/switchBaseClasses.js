@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClass/generateUtilityClass.js";import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(t){return e("PrivateSwitchBase",t)}t("PrivateSwitchBase",["root","checked","disabled","input","edgeStart","edgeEnd"]);export{i as getSwitchBaseUtilityClass};

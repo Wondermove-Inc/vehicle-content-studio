@@ -1,0 +1,1 @@
+function e(e,n){return Array.isArray(n)?n.every((n=>-1!==e.indexOf(n))):-1!==e.indexOf(n)}const n=(e=document)=>{const o=e.activeElement;return o?o.shadowRoot?n(o.shadowRoot):o:null};export{e as arrayIncludes,n as getActiveElement};

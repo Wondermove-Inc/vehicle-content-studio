@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("./_commonjsHelpers.js"),r=require("../node_modules/@mui/utils/node/formatMuiErrorMessage/index.js").__require(),s=e.getDefaultExportFromCjs(r);exports.default=s;

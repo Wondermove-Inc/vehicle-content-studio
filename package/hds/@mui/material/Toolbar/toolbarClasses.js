@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function r(e){return t("MuiToolbar",e)}e("MuiToolbar",["root","gutters","regular","dense"]);export{r as getToolbarUtilityClass};

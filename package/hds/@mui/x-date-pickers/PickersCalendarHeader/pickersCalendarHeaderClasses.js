@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";const i=e=>t("MuiPickersCalendarHeader",e),s=e("MuiPickersCalendarHeader",["root","labelContainer","label","switchViewButton","switchViewIcon"]);export{i as getPickersCalendarHeaderUtilityClass,s as pickersCalendarHeaderClasses};

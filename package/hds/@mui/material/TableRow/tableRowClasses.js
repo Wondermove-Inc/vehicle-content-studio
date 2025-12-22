@@ -1,0 +1,1 @@
+import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import t from"../../utils/generateUtilityClass/generateUtilityClass.js";function s(e){return t("MuiTableRow",e)}var i=e("MuiTableRow",["root","selected","hover","head","footer"]);export{i as default,s as getTableRowUtilityClass};

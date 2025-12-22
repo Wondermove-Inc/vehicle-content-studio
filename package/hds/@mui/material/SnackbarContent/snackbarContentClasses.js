@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClass/generateUtilityClass.js";import e from"../../utils/generateUtilityClasses/generateUtilityClasses.js";function i(e){return t("MuiSnackbarContent",e)}e("MuiSnackbarContent",["root","message","action"]);export{i as getSnackbarContentUtilityClass};

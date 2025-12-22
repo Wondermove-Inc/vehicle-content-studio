@@ -1,0 +1,1 @@
+"use strict";var s=require("../node_modules/tslib/tslib.es6.js");exports.hdsConfig={usePrefix:!1,useDefaultHdsProps:!1};exports.isMuiComponent=function(s){return!1===s||void 0===s&&!1===exports.hdsConfig.useDefaultHdsProps},exports.isSimpleHdsProp=function(s){return!0===s||void 0===s},exports.setConfig=function(e){exports.hdsConfig=s.__assign(s.__assign({},exports.hdsConfig),e)};

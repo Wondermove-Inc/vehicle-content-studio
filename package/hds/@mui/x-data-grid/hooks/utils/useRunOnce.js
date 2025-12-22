@@ -1,0 +1,1 @@
+import*as e from"react";import r from"../../../utils/useEnhancedEffect/useEnhancedEffect.js";const t=()=>{},c=(c,n)=>{const s=e.useRef(!1);r((()=>s.current||!c?t:(s.current=!0,n())),[s.current||c])};export{c as useRunOnce};

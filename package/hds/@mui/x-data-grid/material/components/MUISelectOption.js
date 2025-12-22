@@ -1,0 +1,1 @@
+import e from"../../../../@babel/runtime/helpers/esm/extends.js";import t from"../../../../@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js";import"react";import{jsx as r}from"react/jsx-runtime";import o from"../../../material/MenuItem/MenuItem.js";const m=["native"];function i(i){let{native:n}=i,s=t(i,m);return r(n?"option":o,e({},s))}export{i as default};

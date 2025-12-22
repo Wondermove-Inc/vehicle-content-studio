@@ -1,0 +1,1 @@
+class r{constructor(){this.registry=new FinalizationRegistry((r=>{"function"==typeof r&&r()}))}register(r,t,e){this.registry.register(r,t,e)}unregister(r){this.registry.unregister(r)}reset(){}}export{r as FinalizationRegistryBasedCleanupTracking};

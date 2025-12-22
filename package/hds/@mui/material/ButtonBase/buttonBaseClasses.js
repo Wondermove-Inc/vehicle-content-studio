@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function s(t){return e("MuiButtonBase",t)}const i=t("MuiButtonBase",["root","disabled","focusVisible"]);export{i as default,s as getButtonBaseUtilityClass};

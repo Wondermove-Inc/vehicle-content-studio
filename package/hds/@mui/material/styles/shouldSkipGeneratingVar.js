@@ -1,0 +1,1 @@
+function t(t){var a;return!!t[0].match(/(cssVarPrefix|typography|mixins|breakpoints|direction|transitions)/)||!!t[0].match(/sxConfig$/)||"palette"===t[0]&&!(null==(a=t[1])||!a.match(/(mode|contrastThreshold|tonalOffset)/))}export{t as default};

@@ -1,0 +1,1 @@
+import t from"../../utils/generateUtilityClasses/generateUtilityClasses.js";import e from"../../utils/generateUtilityClass/generateUtilityClass.js";function i(t){return e("MuiPickersSectionList",t)}const s=t("MuiPickersSectionList",["root","section","sectionContent"]);export{i as getPickersSectionListUtilityClass,s as pickersSectionListClasses};
