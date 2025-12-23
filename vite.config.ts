@@ -11,6 +11,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
+      '@hmg-fe/hmg-design-system',
       '@hmg-fe/hmg-design-system/Box',
       '@hmg-fe/hmg-design-system/Stack',
       '@hmg-fe/hmg-design-system/Typography',
@@ -20,10 +21,19 @@ export default defineConfig({
       '@hmg-fe/hmg-design-system/IconButton',
       '@hmg-fe/hmg-design-system/InputAdornment',
       '@hmg-fe/hmg-design-system/Link',
+      '@hmg-fe/hmg-design-system/HmgIcon',
       '@emotion/react',
       '@emotion/styled',
       '@mui/material',
+      'react',
+      'react-dom',
+      'react-router-dom',
     ],
+  },
+  server: {
+    warmup: {
+      clientFiles: ['./src/main.tsx', './src/pages/Login.tsx'],
+    },
   },
   build: {
     rollupOptions: {

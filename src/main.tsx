@@ -7,11 +7,16 @@ import { setConfig, HdsThemeProvider } from '@hmg-fe/hmg-design-system'
 setConfig({ useDefaultHdsProps: true })
 
 import Login from './pages/Login'
+import Project from './pages/Project'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Login />,
+  },
+  {
+    path: '/project',
+    element: <Project />,
   },
 ])
 

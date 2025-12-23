@@ -1,4 +1,6 @@
+
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -7,32 +9,47 @@ import Button from '@hmg-fe/hmg-design-system/Button'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
 import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
-import DirectionsCar from '@hmg-fe/hmg-design-system/icons-material/DirectionsCar'
-import Visibility from '@hmg-fe/hmg-design-system/icons-material/Visibility'
-import VisibilityOff from '@hmg-fe/hmg-design-system/icons-material/VisibilityOff'
-import HelpOutline from '@hmg-fe/hmg-design-system/icons-material/HelpOutline'
+import {
+  Ic_folder_filled,
+  Ic_view_regular,
+  Ic_view_hidden_regular,
+  Ic_help_regular,
+} from '@hmg-fe/hmg-design-system/HmgIcon'
 
 function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState(false)
+  const [loginAttempts, setLoginAttempts] = useState(0)
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Login:', { email, password })
+
+    // 이메일 형식 검증 (@가 포함되어야 함)
+    if (!email.includes('@')) {
+      setError(true)
+      setLoginAttempts((prev) => prev + 1)
+      return
+    }
+
+    // 에러 초기화 후 로그인 처리
+    setError(false)
+    navigate('/project')
   }
 
   return (
     <Box
       sx={{
         width: '100%',
-        minHeight: '100vh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px',
         backgroundColor: '#fff',
+        boxSizing: 'border-box',
       }}
     >
       <Stack
@@ -40,7 +57,6 @@ function Login() {
         sx={{
           width: '380px',
           alignItems: 'center',
-          marginTop: '-40px',
         }}
       >
         {/* Header Section */}
@@ -49,16 +65,18 @@ function Login() {
             {/* Car Icon */}
             <Box
               sx={{
-                background: 'linear-gradient(180deg, rgba(18, 20, 22, 1) 0%, rgba(18, 20, 22, 0.85) 100%)',
-                padding: '8px',
-                borderRadius: '12px',
+                width: 40,
+                height: 40,
+                background: 'linear-gradient(180deg, rgba(18, 20, 22, 1) 0%, rgba(18, 20, 22, 0.8) 100%)',
+                borderRadius: '10px',
+                border: '1px solid var(--hds-palette-variant-snackbar)',
                 boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.08)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <DirectionsCar sx={{ color: '#fff', fontSize: 20 }} />
+              <Ic_folder_filled size="20px" color="#fff" />
             </Box>
 
             {/* Title */}
@@ -91,14 +109,15 @@ function Login() {
 
             {/* Subtitle */}
             <Typography
-              hdsProps={{ variant: 'body', size: 'small' }}
+              hdsProps={{ variant: 'body', size: 'medium' }}
               sx={{
-                color: 'var(--hds-palette-on-surface-ultimate)',
+                color: 'var(--on_surface_high)',
                 textAlign: 'center',
                 marginTop: '8px',
+                fontSize: 15,
               }}
             >
-              차량 컨텐츠 제작을 진행하기 위해 로그인 해주세요
+              차량 컨텐츠 제작은 로그인 후 이용할 수 있어요.
             </Typography>
           </Stack>
 
@@ -113,9 +132,9 @@ function Login() {
                 ID (Email)
               </Typography>
               <TextField
-                hdsProps={{ size: 'medium' }}
+                hdsProps={{ size: 'medium', isInvalid: error }}
                 placeholder="이메일 입력"
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 fullWidth
@@ -131,7 +150,7 @@ function Login() {
                 비밀번호
               </Typography>
               <TextField
-                hdsProps={{ size: 'medium' }}
+                hdsProps={{ size: 'medium', isInvalid: error }}
                 placeholder="비밀번호 입력"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
@@ -145,12 +164,26 @@ function Login() {
                         edge="end"
                         size="small"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPassword ? <Ic_view_hidden_regular size="20px" /> : <Ic_view_regular size="20px" />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
               />
+              {error && (
+                <Typography
+                  component="p"
+                  sx={{
+                    fontFamily: 'AstaSans, Malgun Gothic, 맑은고딕, Apple SD Gothic Neo, sans-serif',
+                    fontSize: '12px',
+                    lineHeight: '18px',
+                    color: 'var(--red)',
+                    marginTop: '4px',
+                  }}
+                >
+                  아이디 또는 비밀번호가 올바르지 않습니다. ({loginAttempts}/5)
+                </Typography>
+              )}
             </Stack>
 
             {/* Login Button */}
@@ -158,6 +191,7 @@ function Login() {
               hdsProps={{ size: 'large', style: 'primary', type: 'fill' }}
               type="submit"
               fullWidth
+              disabled={!email || !password}
             >
               로그인
             </Button>
@@ -194,9 +228,15 @@ function Login() {
                   maxWidth: '40px',
                   padding: '0 !important',
                   flexShrink: 0,
+                  display: 'flex !important',
+                  alignItems: 'center !important',
+                  justifyContent: 'center !important',
+                  '& .MuiButton-startIcon, & .MuiButton-endIcon': {
+                    margin: 0,
+                  },
                 }}
               >
-                <HelpOutline sx={{ fontSize: 16 }} />
+                <Ic_help_regular size="16px" style={{ display: 'block', margin: 0 }} />
               </Button>
             </Box>
           </Stack>
