@@ -339,11 +339,10 @@ function Project() {
         sx={{
           width: '280px',
           height: '100%',
-          backgroundColor: '#fff',
+          backgroundColor: 'var(--surface_container_lowest)',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 0,
-          borderRight: '1px solid #E9EAEC',
         }}
       >
         {/* 헤더 */}
@@ -353,7 +352,6 @@ function Project() {
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '24px',
-            borderBottom: '1px solid #E9EAEC',
           }}
         >
           <Typography
@@ -373,23 +371,17 @@ function Project() {
 
         {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
         <Box sx={{ padding: '0 16px', paddingTop: '0', paddingBottom: '8px' }}>
-          <SidebarGroupLabel label="프로젝트 및 컨텐츠" count={720} />
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_home_filled size="16px" color="#111111" />}
               label="프로젝트"
-              isActive={activeMenu === '프로젝트'}
+              isActive={true}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
               icon={<Ic_file_regular size="16px" color="#6B6B6B" />}
               label="컨텐츠 요청"
               onClick={() => setActiveMenu('컨텐츠 요청')}
-            />
-            <SidebarItem
-              icon={<Ic_folder_regular size="16px" color="#6B6B6B" />}
-              label="프로젝트 관리"
-              onClick={() => setActiveMenu('프로젝트 관리')}
             />
             <SidebarItem
               icon={<Ic_setting_regular size="16px" color="#6B6B6B" />}
@@ -406,7 +398,6 @@ function Project() {
 
         {/* 메뉴 그룹 2 */}
         <Box sx={{ padding: '8px 16px' }}>
-          <SidebarGroupLabel label="프로젝트 및 컨텐츠" />
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_person_regular size="16px" color="#6B6B6B" />}
@@ -419,11 +410,6 @@ function Project() {
               badge={14}
               onClick={() => setActiveMenu('알림')}
             />
-            <SidebarItem
-              icon={<Ic_search_regular size="16px" color="#6B6B6B" />}
-              label="검색"
-              onClick={() => setActiveMenu('검색')}
-            />
           </Stack>
         </Box>
 
@@ -434,7 +420,6 @@ function Project() {
 
         {/* 즐겨찾기 섹션 */}
         <Box sx={{ flex: 1, padding: '8px 16px', overflowY: 'auto' }}>
-          <SidebarGroupLabel label="프로젝트 및 컨텐츠" />
           <Stack spacing={0}>
             <Box
               onClick={() => setExpandedFavorites(!expandedFavorites)}
@@ -478,22 +463,30 @@ function Project() {
       <Box
         sx={{
           flex: 1,
+          minWidth: 0,
+          maxWidth: 'calc(100% - 280px)',
           display: 'flex',
           flexDirection: 'column',
           padding: '20px',
-          paddingRight: '20px',
+          paddingLeft: 0,
           gap: '10px',
-          overflow: 'hidden',
+          overflow: 'visible',
+          backgroundColor: 'var(--surface_container_lowest)',
         }}
       >
         <Box
           sx={{
             flex: 1,
-            backgroundColor: '#fff',
-            borderRadius: '8px',
+            width: '100%',
+            minWidth: 0,
+            backgroundColor: '#ffffff',
+            borderRadius: '10px',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.08), 0px 2px 6px rgba(0, 0, 0, 0.05)',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
           {/* 헤더 영역 */}
@@ -502,8 +495,8 @@ function Project() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '24px',
-              borderBottom: '1px solid #E9EAEC',
+              padding: '24px 24px 16px 24px',
+              borderBottom: '1px solid var(--outline)',
             }}
           >
             <Typography
@@ -516,20 +509,16 @@ function Project() {
             >
               프로젝트
             </Typography>
-            <Stack direction="row" spacing={1}>
-              <Button
-                hdsProps={{ size: 'medium', type: 'outline' }}
-                startIcon={<Ic_plus_regular size="16px" />}
-              >
-                컨텐츠 추가하기
-              </Button>
-              <Button
-                hdsProps={{ size: 'medium', style: 'primary', type: 'fill' }}
-                startIcon={<Ic_plus_regular size="16px" />}
-              >
-                프로젝트 추가하기
-              </Button>
-            </Stack>
+            <Button
+              hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              프로젝트 추가하기
+            </Button>
           </Box>
 
           {/* 메인 영역 */}
@@ -537,8 +526,8 @@ function Project() {
             {/* 좌측 패널 - 프로젝트 상세 */}
             <Box
               sx={{
-                width: '320px',
-                borderRight: '1px solid #E9EAEC',
+                width: '280px',
+                borderRight: '1px solid var(--outline)',
                 display: 'flex',
                 flexDirection: 'column',
                 flexShrink: 0,
@@ -593,37 +582,6 @@ function Project() {
                 </Stack>
               </Box>
 
-              {/* 하단 필터 */}
-              <Box sx={{ padding: '20px 24px', borderTop: '1px solid #E9EAEC' }}>
-                <Stack spacing={1}>
-                  <Box
-                    onClick={() => setSelectedFilter('전체 프로젝트')}
-                    sx={{
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      backgroundColor: selectedFilter === '전체 프로젝트' ? '#F5F5F5' : 'transparent',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#111111' }}>
-                      전체 프로젝트 (20)
-                    </Typography>
-                  </Box>
-                  <Box
-                    onClick={() => setSelectedFilter('프로젝트')}
-                    sx={{
-                      padding: '8px 12px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      backgroundColor: selectedFilter === '프로젝트' ? '#F5F5F5' : 'transparent',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: 15, fontWeight: 700, color: '#3B3B3B' }}>
-                      프로젝트 (14)
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Box>
             </Box>
 
             {/* 우측 패널 - 테이블 */}
