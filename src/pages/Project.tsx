@@ -529,11 +529,11 @@ const depth2Items = ['cn7-0a25', 'cn7-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-
 
 // 썸네일 이미지 목록
 const thumbnailImages = [
-  '/images/thumbnails/car_01.png',
-  '/images/thumbnails/car_02.png',
-  '/images/thumbnails/car_03.png',
-  '/images/thumbnails/car_04.png',
-  '/images/thumbnails/car_05.png',
+  '/images/car_01.png',
+  '/images/car_02.png',
+  '/images/car_03.png',
+  '/images/car_04.png',
+  '/images/car_05.png',
 ]
 
 // 경로 생성 함수
@@ -598,11 +598,22 @@ function Project() {
     return channelMap[channel] || channel
   }
 
+  // Breadcrumb 이름 번역 함수
+  const getBreadcrumbLabel = (id: string, name: string): string => {
+    const labelMap: Record<string, string> = {
+      'all': t('project.header.title'),
+      'hyundai': t('common.brand.hyundai'),
+      'kia': t('common.brand.kia'),
+      'genesis': t('common.brand.genesis'),
+    }
+    return labelMap[id] || name
+  }
+
   // 트리 데이터 구조
   const treeData = [
     {
       id: 'hyundai',
-      label: '현대자동차',
+      label: t('common.brand.hyundai'),
       count: 2,
       children: [
         {
@@ -629,7 +640,7 @@ function Project() {
     },
     {
       id: 'kia',
-      label: '기아',
+      label: t('common.brand.kia'),
       count: 8,
       children: [
         {
@@ -656,7 +667,7 @@ function Project() {
     },
     {
       id: 'genesis',
-      label: '제네시스',
+      label: t('common.brand.genesis'),
       count: 10,
       children: [
         {
@@ -1159,7 +1170,7 @@ function Project() {
                         },
                       }}
                     >
-                      {item.name}
+                      {getBreadcrumbLabel(item.id, item.name)}
                     </Typography>
                   </Box>
                 ))}
@@ -1319,6 +1330,15 @@ function Project() {
                       '& .MuiTreeItem-group .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
                         backgroundColor: '#FAFAFA',
                       },
+                      // 3뎁스 설정 아이콘 기본 숨김
+                      '& .tree-settings-icon': {
+                        opacity: 0,
+                        transition: 'opacity 0.15s ease',
+                      },
+                      // hover 또는 선택된 상태에서 설정 아이콘 표시
+                      '& .MuiTreeItem-content:hover .tree-settings-icon, & .MuiTreeItem-content.Mui-selected .tree-settings-icon': {
+                        opacity: 1,
+                      },
                       '& .MuiTreeItem-group': {
                         marginLeft: '12px',
                       },
@@ -1349,7 +1369,42 @@ function Project() {
                               <TreeItem
                                 key={project.id}
                                 itemId={project.id}
-                                label={project.label}
+                                label={
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
+                                      width: '100%',
+                                      pr: '4px',
+                                    }}
+                                  >
+                                    <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: '22px', color: '#111111' }}>
+                                      {project.label}
+                                    </Typography>
+                                    <Box
+                                      className="tree-settings-icon"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        console.log('Settings clicked:', project.id)
+                                      }}
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: 20,
+                                        height: 20,
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                                        },
+                                      }}
+                                    >
+                                      <Ic_setting_filled size="16px" color="var(--on_surface_mid)" />
+                                    </Box>
+                                  </Box>
+                                }
                                 hdsProps={{ type: 'default' }}
                               />
                             ))}
