@@ -587,6 +587,9 @@ function Project() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set([
     'hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'
   ]))
+  const [expandedItems, setExpandedItems] = useState<string[]>([
+    'hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24'
+  ])
 
   // 즐겨찾기 토글 함수
   const toggleFavorite = (projectId: string) => {
@@ -750,25 +753,6 @@ function Project() {
 
   const filteredTreeData = filterTree(treeData, searchQuery)
 
-  // 검색 시 모든 노드 확장
-  const getExpandedItems = (): string[] => {
-    if (!searchQuery.trim()) {
-      return ['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24']
-    }
-    // 검색 시 모든 필터된 노드 확장
-    const expandedIds: string[] = []
-    const collectIds = (nodes: TreeNode[]) => {
-      nodes.forEach((node) => {
-        if (node.children && node.children.length > 0) {
-          expandedIds.push(node.id)
-          collectIds(node.children)
-        }
-      })
-    }
-    collectIds(filteredTreeData)
-    return expandedIds
-  }
-
   const breadcrumb = getBreadcrumb(selectedProject)
 
   // 프로젝트 선택 또는 컨텐츠 유형 변경 시 페이지 초기화
@@ -782,6 +766,28 @@ function Project() {
       setIsFavoritesExpanded(false)
     }
   }, [isSidebarCollapsed])
+
+  // 검색어 변경 시 트리 노드 자동 확장
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      // 검색 중일 때는 모든 필터된 노드 확장
+      const filtered = filterTree(treeData, searchQuery)
+      const expandedIds: string[] = []
+      const collectIds = (nodes: TreeNode[]) => {
+        nodes.forEach((node) => {
+          if (node.children && node.children.length > 0) {
+            expandedIds.push(node.id)
+            collectIds(node.children)
+          }
+        })
+      }
+      collectIds(filtered)
+      setExpandedItems(expandedIds)
+    } else {
+      // 검색어가 없을 때는 기본 확장 상태로 복원
+      setExpandedItems(['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24'])
+    }
+  }, [searchQuery])
 
   // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
   const treeItemToProjectCode: Record<string, string> = {
@@ -1377,7 +1383,10 @@ function Project() {
                       {/* 트리 뷰 */}
                       <SimpleTreeView
                     hdsProps={{ size: 'medium', type: 'line' }}
-                    expandedItems={getExpandedItems()}
+                    expandedItems={expandedItems}
+                    onExpandedItemsChange={(_, itemIds) => {
+                      setExpandedItems(itemIds as string[])
+                    }}
                     selectedItems={selectedProject === 'all' ? '' : (selectedProject || '')}
                     onSelectedItemsChange={(_, itemId) => {
                       if (itemId) {
@@ -1398,11 +1407,23 @@ function Project() {
                       '& .MuiTreeItem-content': {
                         height: '34px',
                         minHeight: '34px',
+                        display: 'flex',
                         alignItems: 'center',
                         borderRadius: '4px',
                         '&:hover': {
                           backgroundColor: '#FAFAFA',
                         },
+                      },
+                      '& .MuiTreeItem-iconContainer': {
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: 0,
+                      },
+                      '& .MuiTreeItem-label': {
+                        display: 'flex',
+                        alignItems: 'center',
+                        paddingLeft: 0,
                       },
                       '& .MuiTreeItem-content.Mui-selected': {
                         '&:hover': {
@@ -1439,7 +1460,7 @@ function Project() {
                         key={brand.id}
                         itemId={brand.id}
                         label={
-                          <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>
+                          <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
                             {brand.label} ({brand.count})
                           </Typography>
                         }
@@ -1466,7 +1487,7 @@ function Project() {
                                       pr: '4px',
                                     }}
                                   >
-                                    <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: '22px', color: '#111111' }}>
+                                    <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
                                       {project.label}
                                     </Typography>
                                     <Box
