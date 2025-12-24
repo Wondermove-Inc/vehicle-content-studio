@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -10,7 +10,7 @@ import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
   Ic_file_filled,
@@ -21,6 +21,9 @@ import {
   Ic_plus_regular,
   Ic_menu_regular,
   Ic_arrow_forward_regular,
+  Ic_world_filled,
+  Ic_refresh_bold,
+  Ic_picture_filled,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -45,7 +48,7 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps
         cursor: 'pointer',
         backgroundColor: isActive ? '#E9EAEC' : 'transparent',
         '&:hover': {
-          backgroundColor: isActive ? '#E9EAEC' : '#F5F5F5',
+          backgroundColor: isActive ? '#E9EAEC' : '#EEEEEE',
         },
       }}
     >
@@ -134,6 +137,7 @@ interface ProjectData {
 
 // 샘플 데이터
 const sampleProjects: ProjectData[] = [
+  // 현대자동차 - CN7_HEV_25 (hev-25-fmc)
   {
     id: 1,
     brand: '현대자동차',
@@ -154,8 +158,8 @@ const sampleProjects: ProjectData[] = [
     brand: '현대자동차',
     projectCode: 'CN7_HEV_25',
     projectType: 'FMC',
-    contentType: 'VCM',
-    contentTypeColor: '#1967FF',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-12-16',
@@ -169,93 +173,65 @@ const sampleProjects: ProjectData[] = [
     brand: '현대자동차',
     projectCode: 'CN7_HEV_25',
     projectType: 'FMC',
-    contentType: 'Web CC',
-    contentTypeColor: '#8333E6',
+    contentType: '2D 360',
+    contentTypeColor: '#2C5A0C',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-12-16',
     targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'IVI', '기존 홈페이지'],
-    manager: '박미현, 여하은',
-    comments: 8,
+    activeChannels: ['원앱', 'IVI'],
+    manager: '박미현',
+    comments: 3,
   },
   {
     id: 4,
     brand: '현대자동차',
-    projectCode: 'DO 23_25',
+    projectCode: 'CN7_HEV_25',
     projectType: 'FMC',
-    contentType: 'VCM',
-    contentTypeColor: '#1967FF',
+    contentType: 'PI',
+    contentTypeColor: '#B8860B',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-12-16',
     targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'IVI', '기존 홈페이지'],
-    manager: '박미현, 여하은',
-    comments: 8,
+    activeChannels: ['In-Store'],
+    manager: '여하은',
+    comments: 0,
   },
+  // 현대자동차 - CN7_HEV_26 (hev-26-my)
   {
     id: 5,
     brand: '현대자동차',
-    projectCode: 'DO 23_25',
+    projectCode: 'CN7_HEV_26',
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
     derivative: '--',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2026-06-15',
     targetChannel: 'WebCC',
-    activeChannels: ['IVI', '원웹'],
-    manager: '박미현, 여하은',
-    comments: 8,
+    activeChannels: ['원앱', '원웹'],
+    manager: '박미현',
+    comments: 5,
   },
   {
     id: 6,
     brand: '현대자동차',
-    projectCode: 'NE 25MY FMC',
+    projectCode: 'CN7_HEV_26',
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
     derivative: '--',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2026-06-15',
     targetChannel: 'WebCC',
     activeChannels: ['원웹'],
     manager: '박미현',
-    comments: 8,
+    comments: 2,
   },
+  // 기아 - EV6_26MY (ev6-26-my)
   {
     id: 7,
-    brand: '기아',
-    projectCode: 'CN7_HEV_25',
-    projectType: 'MY',
-    contentType: '2D 360',
-    contentTypeColor: '#2C5A0C',
-    derivative: '--',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'IVI', '원웹'],
-    manager: '박미현',
-    comments: 0,
-  },
-  {
-    id: 8,
-    brand: '제네시스',
-    projectCode: 'CN7_HEV_25_27',
-    projectType: 'FMC',
-    contentType: '2D 360',
-    contentTypeColor: '#2C5A0C',
-    derivative: '--',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', '원웹', 'In-Store'],
-    manager: '박미현',
-    comments: 0,
-  },
-  {
-    id: 9,
     brand: '기아',
     projectCode: 'EV6_26MY',
     projectType: 'MY',
@@ -270,10 +246,56 @@ const sampleProjects: ProjectData[] = [
     comments: 12,
   },
   {
+    id: 8,
+    brand: '기아',
+    projectCode: 'EV6_26MY',
+    projectType: 'MY',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
+    derivative: 'GT-Line',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-03-15',
+    targetChannel: 'WebCC',
+    activeChannels: ['원웹', 'IVI'],
+    manager: '김지수',
+    comments: 8,
+  },
+  {
+    id: 9,
+    brand: '기아',
+    projectCode: 'EV6_26MY',
+    projectType: 'MY',
+    contentType: '2D 360',
+    contentTypeColor: '#2C5A0C',
+    derivative: 'GT-Line',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-03-15',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'IVI', '원웹'],
+    manager: '김지수',
+    comments: 0,
+  },
+  // 기아 - K8_25MY (k8-25-my)
+  {
     id: 10,
     brand: '기아',
     projectCode: 'K8_25MY',
-    projectType: 'FMC',
+    projectType: 'MY',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-08-20',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹'],
+    manager: '이서연',
+    comments: 6,
+  },
+  {
+    id: 11,
+    brand: '기아',
+    projectCode: 'K8_25MY',
+    projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
     derivative: '--',
@@ -284,8 +306,9 @@ const sampleProjects: ProjectData[] = [
     manager: '이서연, 최민준',
     comments: 5,
   },
+  // 제네시스 - GV80_26MY (gv80-26-my)
   {
-    id: 11,
+    id: 12,
     brand: '제네시스',
     projectCode: 'GV80_26MY',
     projectType: 'MY',
@@ -295,30 +318,61 @@ const sampleProjects: ProjectData[] = [
     modifiedDate: 'YYYY-MM-DD',
     sop: '2026-01-10',
     targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'In-Store'],
+    activeChannels: ['원앱', '원웹', 'In-Store'],
     manager: '정하늘',
-    comments: 3,
-  },
-  {
-    id: 12,
-    brand: '현대자동차',
-    projectCode: 'IONIQ6_25',
-    projectType: 'FMC',
-    contentType: 'VCM',
-    contentTypeColor: '#1967FF',
-    derivative: 'Long Range',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-05-22',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', '원웹', 'IVI'],
-    manager: '박미현, 김지수',
-    comments: 15,
+    comments: 7,
   },
   {
     id: 13,
     brand: '제네시스',
-    projectCode: 'G90_25FL',
-    projectType: 'FL',
+    projectCode: 'GV80_26MY',
+    projectType: 'MY',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-01-10',
+    targetChannel: 'WebCC',
+    activeChannels: ['원웹'],
+    manager: '정하늘',
+    comments: 4,
+  },
+  {
+    id: 14,
+    brand: '제네시스',
+    projectCode: 'GV80_26MY',
+    projectType: 'MY',
+    contentType: 'PI',
+    contentTypeColor: '#B8860B',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-01-10',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'In-Store'],
+    manager: '정하늘',
+    comments: 3,
+  },
+  // 제네시스 - G90_25MY (g90-25-my)
+  {
+    id: 15,
+    brand: '제네시스',
+    projectCode: 'G90_25MY',
+    projectType: 'MY',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-09-30',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹'],
+    manager: '여하은',
+    comments: 2,
+  },
+  {
+    id: 16,
+    brand: '제네시스',
+    projectCode: 'G90_25MY',
+    projectType: 'MY',
     contentType: '2D 360',
     contentTypeColor: '#2C5A0C',
     derivative: '--',
@@ -329,59 +383,15 @@ const sampleProjects: ProjectData[] = [
     manager: '여하은',
     comments: 0,
   },
-  {
-    id: 14,
-    brand: '기아',
-    projectCode: 'SORENTO_26',
-    projectType: 'FMC',
-    contentType: 'Web CC',
-    contentTypeColor: '#8333E6',
-    derivative: 'Hybrid',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-02-28',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'IVI', '원웹'],
-    manager: '최민준',
-    comments: 7,
-  },
-  {
-    id: 15,
-    brand: '현대자동차',
-    projectCode: 'TUCSON_25MY',
-    projectType: 'MY',
-    contentType: 'VCM',
-    contentTypeColor: '#1967FF',
-    derivative: 'N Line',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-07-15',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', '원웹'],
-    manager: '박미현',
-    comments: 4,
-  },
-  {
-    id: 16,
-    brand: '현대자동차',
-    projectCode: 'PALISADE_26',
-    projectType: 'FMC',
-    contentType: '2D 360',
-    contentTypeColor: '#2C5A0C',
-    derivative: 'Calligraphy',
-    modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-04-10',
-    targetChannel: 'WebCC',
-    activeChannels: ['원앱', 'In-Store', '기존 홈페이지'],
-    manager: '이서연',
-    comments: 9,
-  },
+  // 기아 - EV6_25FMC (ev6-25-fmc)
   {
     id: 17,
     brand: '기아',
-    projectCode: 'CARNIVAL_25',
-    projectType: 'FL',
+    projectCode: 'EV6_25FMC',
+    projectType: 'FMC',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: 'Hi-Limousine',
+    derivative: 'GT',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-11-05',
     targetChannel: 'WebCC',
@@ -545,10 +555,224 @@ function Project() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [activeChannelWidth, setActiveChannelWidth] = useState(120)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
+
+  // 트리 데이터 구조
+  const treeData = [
+    {
+      id: 'hyundai',
+      label: '현대자동차',
+      count: 2,
+      children: [
+        {
+          id: 'cn7-0a25',
+          label: 'CN7',
+          count: 6,
+          children: [
+            { id: 'hev-27-my', label: 'HEV_27_MY' },
+            { id: 'hev-26-my', label: 'HEV_26_MY' },
+            { id: 'hev-25-fmc', label: 'HEV_25_FMC' },
+          ],
+        },
+        {
+          id: 'cn7-oa22',
+          label: 'CN7',
+          count: 3,
+          children: [
+            { id: 'ice-24-my', label: 'ICE_24_MY' },
+            { id: 'ice-23-my', label: 'ICE_23_MY' },
+            { id: 'ice-22-fl', label: 'ICE_22_FL' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'kia',
+      label: '기아',
+      count: 8,
+      children: [
+        {
+          id: 'ev6-25',
+          label: 'EV6',
+          count: 4,
+          children: [
+            { id: 'ev6-27-my', label: 'EV6_27_MY' },
+            { id: 'ev6-26-my', label: 'EV6_26_MY' },
+            { id: 'ev6-25-fmc', label: 'EV6_25_FMC' },
+          ],
+        },
+        {
+          id: 'k8-24',
+          label: 'K8',
+          count: 4,
+          children: [
+            { id: 'k8-26-my', label: 'K8_26_MY' },
+            { id: 'k8-25-my', label: 'K8_25_MY' },
+            { id: 'k8-24-fl', label: 'K8_24_FL' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'genesis',
+      label: '제네시스',
+      count: 10,
+      children: [
+        {
+          id: 'gv80-25',
+          label: 'GV80',
+          count: 5,
+          children: [
+            { id: 'gv80-27-my', label: 'GV80_27_MY' },
+            { id: 'gv80-26-my', label: 'GV80_26_MY' },
+            { id: 'gv80-25-fmc', label: 'GV80_25_FMC' },
+          ],
+        },
+        {
+          id: 'g90-24',
+          label: 'G90',
+          count: 5,
+          children: [
+            { id: 'g90-26-my', label: 'G90_26_MY' },
+            { id: 'g90-25-my', label: 'G90_25_MY' },
+            { id: 'g90-24-fl', label: 'G90_24_FL' },
+          ],
+        },
+      ],
+    },
+  ]
+
+  // 검색어로 트리 필터링
+  type TreeNode = {
+    id: string
+    label: string
+    count?: number
+    children?: TreeNode[]
+  }
+
+  const filterTree = (nodes: TreeNode[], query: string): TreeNode[] => {
+    if (!query.trim()) return nodes
+
+    const lowerQuery = query.toLowerCase()
+    const result: TreeNode[] = []
+
+    for (const node of nodes) {
+      const labelMatch = node.label.toLowerCase().includes(lowerQuery)
+      const filteredChildren = node.children ? filterTree(node.children, query) : []
+
+      if (labelMatch || filteredChildren.length > 0) {
+        result.push({
+          ...node,
+          children: labelMatch ? node.children : filteredChildren,
+        })
+      }
+    }
+
+    return result
+  }
+
+  const filteredTreeData = filterTree(treeData, searchQuery)
+
+  // 검색 시 모든 노드 확장
+  const getExpandedItems = (): string[] => {
+    if (!searchQuery.trim()) {
+      return ['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24']
+    }
+    // 검색 시 모든 필터된 노드 확장
+    const expandedIds: string[] = []
+    const collectIds = (nodes: TreeNode[]) => {
+      nodes.forEach((node) => {
+        if (node.children && node.children.length > 0) {
+          expandedIds.push(node.id)
+          collectIds(node.children)
+        }
+      })
+    }
+    collectIds(filteredTreeData)
+    return expandedIds
+  }
 
   const breadcrumb = getBreadcrumb(selectedProject)
 
-  const sortedProjects = [...sampleProjects].sort((a, b) => {
+  // 프로젝트 선택 또는 컨텐츠 유형 변경 시 페이지 초기화
+  useEffect(() => {
+    setPage(0)
+  }, [selectedProject, contentType])
+
+  // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
+  const treeItemToProjectCode: Record<string, string> = {
+    // 현대자동차 - CN7
+    'hev-27-my': 'CN7_HEV_27',
+    'hev-26-my': 'CN7_HEV_26',
+    'hev-25-fmc': 'CN7_HEV_25',
+    'ice-24-my': 'CN7_ICE_24',
+    'ice-23-my': 'CN7_ICE_23',
+    'ice-22-fl': 'CN7_ICE_22',
+    // 기아 - EV6, K8
+    'ev6-27-my': 'EV6_27MY',
+    'ev6-26-my': 'EV6_26MY',
+    'ev6-25-fmc': 'EV6_25FMC',
+    'k8-26-my': 'K8_26MY',
+    'k8-25-my': 'K8_25MY',
+    'k8-24-fl': 'K8_24FL',
+    // 제네시스 - GV80, G90
+    'gv80-27-my': 'GV80_27MY',
+    'gv80-26-my': 'GV80_26MY',
+    'gv80-25-fmc': 'GV80_25FMC',
+    'g90-26-my': 'G90_26MY',
+    'g90-25-my': 'G90_25MY',
+    'g90-24-fl': 'G90_24FL',
+  }
+
+  // 선택된 프로젝트에 따른 브랜드 필터링
+  const getBrandFromSelectedProject = (projectId: string | null): string | null => {
+    if (!projectId || projectId === 'all') return null
+    // 3뎁스 아이템이면 브랜드도 함께 필터링
+    if (projectId === 'hyundai' || projectId.startsWith('cn7') || projectId.startsWith('hev') || projectId.startsWith('ice')) {
+      return '현대자동차'
+    }
+    if (projectId === 'kia' || projectId.startsWith('ev6') || projectId.startsWith('k8')) {
+      return '기아'
+    }
+    if (projectId === 'genesis' || projectId.startsWith('gv80') || projectId.startsWith('g90')) {
+      return '제네시스'
+    }
+    return null
+  }
+
+  const selectedBrand = getBrandFromSelectedProject(selectedProject)
+  const selectedProjectCode = selectedProject ? treeItemToProjectCode[selectedProject] : null
+
+  // 컨텐츠 유형 셀렉트 값 → 실제 컨텐츠 유형 매핑
+  const contentTypeMap: Record<string, string> = {
+    'vcm': 'VCM',
+    'webcc': 'Web CC',
+    '360': '2D 360',
+    'pi': 'PI',
+  }
+
+  const filteredProjects = sampleProjects.filter((project) => {
+    // 프로젝트 필터링
+    let projectMatch = true
+    if (selectedProjectCode) {
+      // 3뎁스 선택 시: 프로젝트 코드로 필터링
+      projectMatch = project.projectCode === selectedProjectCode
+    } else if (selectedBrand) {
+      // 1뎁스(브랜드) 또는 2뎁스 선택 시: 브랜드로 필터링
+      projectMatch = project.brand === selectedBrand
+    }
+
+    // 컨텐츠 유형 필터링
+    let contentTypeMatch = true
+    if (contentType !== 'all') {
+      contentTypeMatch = project.contentType === contentTypeMap[contentType]
+    }
+
+    return projectMatch && contentTypeMatch
+  })
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
     if (!sopSortOrder) return 0
     const dateA = new Date(a.sop).getTime()
     const dateB = new Date(b.sop).getTime()
@@ -580,7 +804,7 @@ function Project() {
     const startWidth = activeChannelWidth
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const newWidth = Math.max(60, startWidth + (moveEvent.clientX - startX))
+      const newWidth = Math.max(100, startWidth + (moveEvent.clientX - startX))
       setActiveChannelWidth(newWidth)
     }
 
@@ -689,19 +913,88 @@ function Project() {
 
         {/* 즐겨찾기 섹션 */}
         <Box sx={{ flex: 1, padding: '8px 16px', overflowY: 'auto' }}>
-          <SimpleTreeView
-            hdsProps={{ size: 'medium', type: 'line' }}
-            defaultExpandedItems={['favorites']}
+          <Box
+            onClick={() => setIsFavoritesExpanded(!isFavoritesExpanded)}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 16px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: '#F5F5F5',
+              },
+            }}
           >
-            <TreeItem itemId="favorites" label="즐겨찾기" hdsProps={{ type: 'default' }}>
-              <TreeItem itemId="fav-1" label="26MY FMC" hdsProps={{ type: 'default' }} />
-              <TreeItem itemId="fav-2" label="27MY FMC" hdsProps={{ type: 'default' }} />
-              <TreeItem itemId="fav-3" label="28MY FMC" hdsProps={{ type: 'default' }} />
-              <TreeItem itemId="fav-4" label="29MY FMC" hdsProps={{ type: 'default' }} />
-              <TreeItem itemId="fav-5" label="29MY FMC Web CC" hdsProps={{ type: 'default' }} />
-              <TreeItem itemId="fav-6" label="29MY FMC VCM" hdsProps={{ type: 'default' }} />
-            </TreeItem>
-          </SimpleTreeView>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 20,
+                height: 24,
+                transition: 'transform 0.2s ease',
+                transform: isFavoritesExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+              }}
+            >
+              <Ic_arrow_forward_regular size="20px" color="var(--surface_highest)" />
+            </Box>
+            <Typography
+              sx={{
+                flex: 1,
+                fontSize: 15,
+                fontWeight: 700,
+                lineHeight: '22px',
+                color: 'var(--on_surface_high)',
+              }}
+            >
+              즐겨찾기
+            </Typography>
+          </Box>
+          {isFavoritesExpanded && (
+            <Stack spacing={0} sx={{ paddingLeft: '28px' }}>
+              {[
+                { id: 'hev-26-my', label: 'HEV_26_MY' },
+                { id: 'hev-27-my', label: 'HEV_27_MY' },
+                { id: 'ev6-26-my', label: 'EV6_26_MY' },
+                { id: 'ev6-27-my', label: 'EV6_27_MY' },
+                { id: 'gv80-26-my', label: 'GV80_26_MY' },
+                { id: 'g90-25-my', label: 'G90_25_MY' },
+              ].map((item) => (
+                <Box
+                  key={item.id}
+                  onClick={() => setSelectedProject(item.id)}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      '& .favorite-label': {
+                        color: '#111111',
+                        fontWeight: 700,
+                      },
+                    },
+                  }}
+                >
+                  <Typography
+                    className="favorite-label"
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: selectedProject === item.id ? 700 : 500,
+                      lineHeight: '22px',
+                      color: selectedProject === item.id ? '#000000' : 'var(--on_surface_highest)',
+                      transition: 'color 0.15s ease, font-weight 0.15s ease',
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                </Box>
+              ))}
+            </Stack>
+          )}
         </Box>
       </Box>
 
@@ -776,7 +1069,7 @@ function Project() {
                         fontSize: 24,
                         fontWeight: 600,
                         lineHeight: '36px',
-                        color: index === breadcrumb.length - 1 ? '#0A0A0A' : '#6B6B6B',
+                        color: 'var(--on_surface)',
                         cursor: index === breadcrumb.length - 1 ? 'default' : 'pointer',
                         '&:hover': {
                           textDecoration: index === breadcrumb.length - 1 ? 'none' : 'underline',
@@ -812,32 +1105,14 @@ function Project() {
                 backgroundColor: '#fff',
               }}
             >
-              {/* 검색 필드 + 트리 영역 */}
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px',
-                  padding: '16px 0 20px 20px',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box
-                  sx={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px',
-                    overflowY: 'auto',
-                    paddingRight: '20px',
-                  }}
-                >
-                {/* 검색 필드 */}
+              {/* 검색 필드 */}
+              <Box sx={{ padding: '16px 20px 0 20px' }}>
                 <TextField
-                  hdsProps={{ size: 'medium' }}
+                  hdsProps={{ size: 'medium', isClear: true }}
                   placeholder="프로젝트 검색"
                   fullWidth
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -845,42 +1120,83 @@ function Project() {
                       </InputAdornment>
                     ),
                   }}
+                  inputProps={{
+                    onClickClearButton: () => setSearchQuery(''),
+                  }}
                 />
+              </Box>
+
+              {/* 트리 영역 */}
+              <Box
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '16px 0 20px 20px',
+                  overflow: 'hidden',
+                }}
+              >
+                <Box
+                  sx={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    paddingRight: '14px',
+                    '&::-webkit-scrollbar': {
+                      width: '6px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      background: 'transparent',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: 'var(--outline)',
+                      borderRadius: '3px',
+                    },
+                  }}
+                >
 
                 {/* 프로젝트 트리 */}
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  {/* 전체 프로젝트 */}
-                  <Box
-                    onClick={() => setSelectedProject('all')}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      height: '38px',
-                      padding: '0 10px',
-                      backgroundColor: selectedProject === 'all' ? '#F5F5F5' : 'transparent',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: selectedProject === 'all' ? '#F5F5F5' : '#FAFAFA',
-                      },
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontSize: 15,
-                        fontWeight: 700,
-                        lineHeight: '22px',
-                        color: '#111111',
-                      }}
-                    >
-                      전체 프로젝트 (20)
-                    </Typography>
-                  </Box>
+                  {/* 검색 결과 없음 */}
+                  {searchQuery.trim() && filteredTreeData.length === 0 ? (
+                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '80px' }}>
+                      <EmptyError hdsProps={{ size: 'small', title: undefined, description: '검색 결과가 없습니다.', buttons: undefined }} />
+                    </Box>
+                  ) : (
+                    <>
+                      {/* 전체 프로젝트 - 검색 중이 아닐 때만 표시 */}
+                      {!searchQuery.trim() && (
+                        <Box
+                          onClick={() => setSelectedProject('all')}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '38px',
+                            padding: '0 10px',
+                            backgroundColor: selectedProject === 'all' ? '#F5F5F5' : 'transparent',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            '&:hover': {
+                              backgroundColor: selectedProject === 'all' ? '#F5F5F5' : '#FAFAFA',
+                            },
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: 15,
+                              fontWeight: 700,
+                              lineHeight: '22px',
+                              color: '#111111',
+                            }}
+                          >
+                            전체 프로젝트 (20)
+                          </Typography>
+                        </Box>
+                      )}
 
-                  {/* 트리 뷰 */}
-                  <SimpleTreeView
+                      {/* 트리 뷰 */}
+                      <SimpleTreeView
                     hdsProps={{ size: 'medium', type: 'line' }}
-                    defaultExpandedItems={['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24']}
+                    expandedItems={getExpandedItems()}
                     selectedItems={selectedProject === 'all' ? '' : (selectedProject || '')}
                     onSelectedItemsChange={(_, itemId) => {
                       if (itemId) {
@@ -911,43 +1227,39 @@ function Project() {
                       },
                     }}
                   >
-                    <TreeItem itemId="hyundai" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>현대자동차 (2)</Typography>} hdsProps={{ type: 'default' }}>
-                      <TreeItem itemId="cn7-0a25" label="CN7 (6)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="hev-27-my" label="HEV_27_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="hev-26-my" label="HEV_26_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="hev-25-fmc" label="HEV_25_FMC" hdsProps={{ type: 'default' }} />
+                    {filteredTreeData.map((brand) => (
+                      <TreeItem
+                        key={brand.id}
+                        itemId={brand.id}
+                        label={
+                          <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>
+                            {brand.label} ({brand.count})
+                          </Typography>
+                        }
+                        hdsProps={{ type: 'default' }}
+                      >
+                        {brand.children?.map((model) => (
+                          <TreeItem
+                            key={model.id}
+                            itemId={model.id}
+                            label={`${model.label} (${model.count})`}
+                            hdsProps={{ type: 'default' }}
+                          >
+                            {model.children?.map((project) => (
+                              <TreeItem
+                                key={project.id}
+                                itemId={project.id}
+                                label={project.label}
+                                hdsProps={{ type: 'default' }}
+                              />
+                            ))}
+                          </TreeItem>
+                        ))}
                       </TreeItem>
-                      <TreeItem itemId="cn7-oa22" label="CN7 (3)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="ice-24-my" label="ICE_24_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="ice-23-my" label="ICE_23_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="ice-22-fl" label="ICE_22_FL" hdsProps={{ type: 'default' }} />
-                      </TreeItem>
-                    </TreeItem>
-                    <TreeItem itemId="kia" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>기아 (8)</Typography>} hdsProps={{ type: 'default' }}>
-                      <TreeItem itemId="ev6-25" label="EV6 (4)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="ev6-27-my" label="EV6_27_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="ev6-26-my" label="EV6_26_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="ev6-25-fmc" label="EV6_25_FMC" hdsProps={{ type: 'default' }} />
-                      </TreeItem>
-                      <TreeItem itemId="k8-24" label="K8 (4)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="k8-26-my" label="K8_26_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="k8-25-my" label="K8_25_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="k8-24-fl" label="K8_24_FL" hdsProps={{ type: 'default' }} />
-                      </TreeItem>
-                    </TreeItem>
-                    <TreeItem itemId="genesis" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>제네시스 (10)</Typography>} hdsProps={{ type: 'default' }}>
-                      <TreeItem itemId="gv80-25" label="GV80 (5)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="gv80-27-my" label="GV80_27_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="gv80-26-my" label="GV80_26_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="gv80-25-fmc" label="GV80_25_FMC" hdsProps={{ type: 'default' }} />
-                      </TreeItem>
-                      <TreeItem itemId="g90-24" label="G90 (5)" hdsProps={{ type: 'default' }}>
-                        <TreeItem itemId="g90-26-my" label="G90_26_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="g90-25-my" label="G90_25_MY" hdsProps={{ type: 'default' }} />
-                        <TreeItem itemId="g90-24-fl" label="G90_24_FL" hdsProps={{ type: 'default' }} />
-                      </TreeItem>
-                    </TreeItem>
-                  </SimpleTreeView>
+                    ))}
+                      </SimpleTreeView>
+                    </>
+                  )}
                 </Box>
                 </Box>
               </Box>
@@ -987,6 +1299,9 @@ function Project() {
                     '& .MuiTab-root': {
                       fontSize: '16px !important',
                     },
+                    '& .MuiTab-root .tab_text': {
+                      fontSize: '16px !important',
+                    },
                     '& .MuiTab-root:not(.Mui-selected)': {
                       borderBottom: 'none',
                       boxShadow: 'none',
@@ -996,8 +1311,8 @@ function Project() {
                     },
                   }}
                 >
-                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important' }} />
-                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
                 </Tabs>
 
                 {/* 우측: Select + 버튼 */}
@@ -1013,6 +1328,7 @@ function Project() {
                     <MenuItem value="vcm">VCM</MenuItem>
                     <MenuItem value="webcc">Web CC</MenuItem>
                     <MenuItem value="360">2D 360</MenuItem>
+                    <MenuItem value="pi">PI</MenuItem>
                   </Select>
 
                   {/* 컨텐츠 추가하기 버튼 */}
@@ -1030,16 +1346,46 @@ function Project() {
               </Box>
 
               {/* 테이블 */}
-              <TableContainer sx={{ flex: 1, paddingTop: '16px', overflow: 'auto', maxHeight: '100%' }}>
+              <Box sx={{ height: '16px', flexShrink: 0 }} />
+              {filteredProjects.length === 0 ? (
+                <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <EmptyError hdsProps={{ size: 'small', title: undefined, description: '해당 프로젝트에 컨텐츠가 없습니다.', buttons: undefined }} />
+                </Box>
+              ) : (
+              <>
+              <TableContainer sx={{
+                flex: 1,
+                overflowY: 'auto',
+                overflowX: 'auto',
+                '&::-webkit-scrollbar': {
+                  width: '6px',
+                  height: '6px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'var(--outline)',
+                  borderRadius: '3px',
+                },
+              }}>
                 <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'auto', '& .MuiTableCell-root': { whiteSpace: 'nowrap' }, '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', height: '64px !important', minHeight: '64px !important', maxHeight: '64px !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { height: '64px !important', display: 'flex', alignItems: 'center' } }}>
-                  <TableHead>
-                    <TableRow sx={{ height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', lineHeight: '36px !important' }, '& .MuiTableCell-root .cell_text': { height: '36px !important', display: 'flex', alignItems: 'center' } }}>
-                      <TableCell sx={{ width: 106, minWidth: 106, maxWidth: 106 }}>썸네일</TableCell>
-                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>브랜드</TableCell>
-                      <TableCell sx={{ width: 160, minWidth: 160, maxWidth: 160 }}>프로젝트 코드</TableCell>
-                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>프로젝트 유형</TableCell>
-                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>컨텐츠 유형</TableCell>
-                      <TableCell sx={{ width: 120, minWidth: 120, maxWidth: 120 }}>
+                  <TableHead sx={{
+                      '& .MuiTableCell-root': { fontSize: '14px !important' },
+                      '& .MuiTableCell-root *': { fontSize: '14px !important' },
+                      '& .MuiTableCell-root .cell_text': { fontSize: '14px !important' },
+                      '& .MuiTableCell-root .cell_text *': { fontSize: '14px !important' },
+                      '& .MuiTableSortLabel-root': { fontSize: '14px !important' },
+                      '& span': { fontSize: '14px !important' },
+                      '& .label_medium': { fontSize: '14px !important' },
+                    }}>
+                    <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
+                      <TableCell sx={{ width: '1%', minWidth: 106 }}>썸네일</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>브랜드</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 160 }}>프로젝트 코드</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>프로젝트 유형</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>컨텐츠 유형</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 120 }}>
                         <TableSortLabel
                           active={sopSortOrder !== null}
                           direction={sopSortOrder === 'asc' ? 'asc' : 'desc'}
@@ -1048,8 +1394,8 @@ function Project() {
                           SOP
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'center' }}>코멘트</TableCell>
-                      <TableCell sx={{ width: activeChannelWidth, minWidth: 60, position: 'relative' }}>
+                      <TableCell sx={{ width: '1%', minWidth: 80, textAlign: 'center' }}>코멘트</TableCell>
+                      <TableCell sx={{ minWidth: 100, position: 'relative' }}>
                         활성 채널
                         <Box
                           onMouseDown={handleResizeStart}
@@ -1067,7 +1413,8 @@ function Project() {
                           }}
                         />
                       </TableCell>
-                      <TableCell>담당자</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>담당자</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 48 }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -1099,7 +1446,7 @@ function Project() {
                           <Badge hdsProps={{
                             size: 'medium',
                             style: project.contentType === 'VCM' ? 'info' : project.contentType === 'Web CC' ? 'purple' : project.contentType === '2D 360' ? 'success' : project.contentType === 'PI' ? 'yellow' : 'default',
-                            icon: true,
+                            icon: project.contentType === 'VCM' ? <Ic_file_filled size="16px" color="currentColor" /> : project.contentType === 'Web CC' ? <Ic_world_filled size="16px" color="currentColor" /> : project.contentType === '2D 360' ? <Ic_refresh_bold size="16px" color="currentColor" /> : project.contentType === 'PI' ? <Ic_picture_filled size="16px" color="currentColor" /> : true,
                             type: 'strong'
                           }}>
                             {project.contentType}
@@ -1133,7 +1480,7 @@ function Project() {
                             </Box>
                           )}
                         </TableCell>
-                        <TableCell sx={{ width: activeChannelWidth, maxWidth: activeChannelWidth, overflow: 'hidden' }}>
+                        <TableCell sx={{ minWidth: 100, overflow: 'hidden' }}>
                           <Box sx={{ overflow: 'hidden' }}>
                             <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
                               {project.activeChannels.map((channel, idx) => (
@@ -1144,7 +1491,7 @@ function Project() {
                             </Stack>
                           </Box>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ width: '1%', minWidth: 100 }}>
                           <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
                             {project.manager.split(', ').map((name, idx) => (
                               <Button
@@ -1159,6 +1506,25 @@ function Project() {
                               </Button>
                             ))}
                           </Stack>
+                        </TableCell>
+                        <TableCell sx={{ width: '1%', minWidth: 48 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              '&:hover': {
+                                opacity: 0.7,
+                              },
+                            }}
+                            onClick={() => {
+                              // TODO: 상세 페이지로 이동
+                              console.log('Navigate to detail:', project.id)
+                            }}
+                          >
+                            <Ic_arrow_forward_regular size="20px" color="var(--on_surface_mid)" />
+                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -1177,6 +1543,8 @@ function Project() {
                 rowsPerPageOptions={[10, 20, 50]}
                 hdsProps={{ size: 'small', isRowsPerPage: true }}
               />
+              </>
+              )}
             </Box>
           </Box>
         </Box>
