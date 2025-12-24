@@ -9,15 +9,18 @@ import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
 import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
+import RadioGroup from '@hmg-fe/hmg-design-system/RadioGroup'
+import Radio from '@hmg-fe/hmg-design-system/Radio'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogPaper, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
   Ic_file_filled,
   Ic_person_filled,
   Ic_alarm_filled,
   Ic_setting_filled,
+  Ic_setting_bold,
   Ic_search_regular,
   Ic_plus_regular,
   Ic_menu_regular,
@@ -25,6 +28,8 @@ import {
   Ic_world_filled,
   Ic_refresh_bold,
   Ic_picture_filled,
+  Ic_star_filled,
+  Ic_star_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -575,6 +580,24 @@ function Project() {
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
+  const [isAddContentOpen, setIsAddContentOpen] = useState(false)
+  const [favorites, setFavorites] = useState<Set<string>>(new Set([
+    'hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'
+  ]))
+
+  // 즐겨찾기 토글 함수
+  const toggleFavorite = (projectId: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(projectId)) {
+        newFavorites.delete(projectId)
+      } else {
+        newFavorites.add(projectId)
+      }
+      return newFavorites
+    })
+  }
 
   // 브랜드명 번역 함수
   const getBrandLabel = (brand: string): string => {
@@ -1045,47 +1068,63 @@ function Project() {
             </Typography>
           </Box>
           {isFavoritesExpanded && (
-            <Stack spacing={0} sx={{ paddingLeft: '28px' }}>
-              {[
-                { id: 'hev-26-my', label: 'HEV_26_MY' },
-                { id: 'hev-27-my', label: 'HEV_27_MY' },
-                { id: 'ev6-26-my', label: 'EV6_26_MY' },
-                { id: 'ev6-27-my', label: 'EV6_27_MY' },
-                { id: 'gv80-26-my', label: 'GV80_26_MY' },
-                { id: 'g90-25-my', label: 'G90_25_MY' },
-              ].map((item) => (
-                <Box
-                  key={item.id}
-                  onClick={() => setSelectedProject(item.id)}
+            <Stack spacing={0} sx={{ paddingLeft: '18px', position: 'relative' }}>
+              {favorites.size === 0 ? (
+                <Typography
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
+                    fontSize: 14,
+                    color: 'var(--on_surface_mid)',
                     padding: '8px 16px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      '& .favorite-label': {
-                        color: '#111111',
-                        fontWeight: 700,
-                      },
-                    },
                   }}
                 >
-                  <Typography
-                    className="favorite-label"
+                  즐겨찾기가 없습니다
+                </Typography>
+              ) : (
+                Array.from(favorites).map((id, index, arr) => (
+                  <Box
+                    key={id}
+                    onClick={() => setSelectedProject(id)}
                     sx={{
-                      fontSize: 15,
-                      fontWeight: selectedProject === item.id ? 700 : 500,
-                      lineHeight: '22px',
-                      color: selectedProject === item.id ? '#000000' : 'var(--on_surface_highest)',
-                      transition: 'color 0.15s ease, font-weight 0.15s ease',
-                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '6px 16px',
+                      paddingLeft: '24px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        left: '8px',
+                        top: 0,
+                        bottom: 0,
+                        width: '1px',
+                        backgroundColor: 'var(--outline_lowest)',
+                      },
+                      '&:hover': {
+                        '& .favorite-label': {
+                          color: '#111111',
+                          fontWeight: 700,
+                        },
+                      },
                     }}
                   >
-                    {item.label}
-                  </Typography>
-                </Box>
-              ))}
+                    <Typography
+                      className="favorite-label"
+                      sx={{
+                        fontSize: 15,
+                        fontWeight: selectedProject === id ? 700 : 500,
+                        lineHeight: '22px',
+                        color: selectedProject === id ? '#000000' : 'var(--on_surface_highest)',
+                        transition: 'color 0.15s ease, font-weight 0.15s ease',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {projectNames[id] || id}
+                    </Typography>
+                  </Box>
+                ))
+              )}
             </Stack>
           )}
         </Box>
@@ -1180,6 +1219,7 @@ function Project() {
                 sx={{
                   flexShrink: 0,
                 }}
+                onClick={() => setIsAddProjectOpen(true)}
               >
                 {t('project.header.addProject')}
               </Button>
@@ -1191,7 +1231,7 @@ function Project() {
             {/* 좌측 패널 - 프로젝트 트리 */}
             <Box
               sx={{
-                width: '260px',
+                width: '280px',
                 borderRight: '1px solid var(--outline)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -1384,24 +1424,46 @@ function Project() {
                                     </Typography>
                                     <Box
                                       className="tree-settings-icon"
+                                      sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                                       onClick={(e) => {
                                         e.stopPropagation()
-                                        console.log('Settings clicked:', project.id)
-                                      }}
-                                      sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        width: 20,
-                                        height: 20,
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        '&:hover': {
-                                          backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                                        },
+                                        setSelectedProject(project.id)
                                       }}
                                     >
-                                      <Ic_setting_filled size="16px" color="var(--on_surface_mid)" />
+                                      <Box
+                                        onClick={() => toggleFavorite(project.id)}
+                                        sx={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          cursor: 'pointer',
+                                          '&:hover': {
+                                            opacity: 0.7,
+                                          },
+                                          ...(favorites.has(project.id) && {
+                                            '& svg': {
+                                              filter: 'drop-shadow(0.5px 0 0 rgba(0,0,0,0.05)) drop-shadow(-0.5px 0 0 rgba(0,0,0,0.05)) drop-shadow(0 0.5px 0 rgba(0,0,0,0.05)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.05))',
+                                            },
+                                          }),
+                                        }}
+                                        aria-label="즐겨찾기"
+                                      >
+                                        {favorites.has(project.id)
+                                          ? <Ic_star_filled size="16px" color="var(--yellow)" />
+                                          : <Ic_star_regular size="16px" color="var(--on_surface_mid)" />
+                                        }
+                                      </Box>
+                                      <Button
+                                        hdsProps={{
+                                          size: 'xxsmall',
+                                          type: 'outline',
+                                          icon: <Ic_setting_bold size="16px" />,
+                                          style: undefined,
+                                          isIconOnly: true,
+                                        }}
+                                        aria-label="설정"
+                                        onClick={() => console.log('Settings clicked:', project.id)}
+                                      />
                                     </Box>
                                   </Box>
                                 }
@@ -1479,11 +1541,11 @@ function Project() {
                     hdsProps={{ size: 'medium', type: 'outline' }}
                     sx={{ width: '180px' }}
                   >
-                    <MenuItem value="all">{t('common.contentType.all')}</MenuItem>
-                    <MenuItem value="vcm">{t('common.contentType.vcm')}</MenuItem>
-                    <MenuItem value="webcc">{t('common.contentType.webcc')}</MenuItem>
-                    <MenuItem value="360">{t('common.contentType.360')}</MenuItem>
-                    <MenuItem value="pi">{t('common.contentType.pi')}</MenuItem>
+                    <MenuItem hdsProps value="all">{t('common.contentType.all')}</MenuItem>
+                    <MenuItem hdsProps value="vcm">{t('common.contentType.vcm')}</MenuItem>
+                    <MenuItem hdsProps value="webcc">{t('common.contentType.webcc')}</MenuItem>
+                    <MenuItem hdsProps value="360">{t('common.contentType.360')}</MenuItem>
+                    <MenuItem hdsProps value="pi">{t('common.contentType.pi')}</MenuItem>
                   </Select>
 
                   {/* 컨텐츠 추가하기 버튼 */}
@@ -1494,6 +1556,7 @@ function Project() {
                       style: 'primary',
                       icon: <Ic_plus_regular size="16px" color="#002C5F" />,
                     }}
+                    onClick={() => setIsAddContentOpen(true)}
                   >
                     {t('project.header.addContent')}
                   </Button>
@@ -1712,48 +1775,112 @@ function Project() {
         maxWidth="xs"
         fullWidth
       >
-        <DialogTitle>{t('project.settings.title')}</DialogTitle>
-        <DialogContent>
-          <Stack spacing={2} sx={{ pt: 1 }}>
-            {/* 언어 설정 */}
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#0E0F11',
-                  marginBottom: '12px',
-                }}
-              >
-                {t('project.settings.language')}
-              </Typography>
-              <Stack direction="row" spacing={1}>
-                <Button
-                  hdsProps={{
-                    size: 'medium',
-                    type: i18n.language === 'ko' ? 'fill' : 'outline',
-                    style: i18n.language === 'ko' ? 'strong' : 'default',
-                  }}
-                  onClick={() => i18n.changeLanguage('ko')}
-                  sx={{ flex: 1 }}
-                >
-                  {t('project.settings.languageKorean')}
-                </Button>
-                <Button
-                  hdsProps={{
-                    size: 'medium',
-                    type: i18n.language === 'en' ? 'fill' : 'outline',
-                    style: i18n.language === 'en' ? 'strong' : 'default',
-                  }}
-                  onClick={() => i18n.changeLanguage('en')}
-                  sx={{ flex: 1 }}
-                >
-                  {t('project.settings.languageEnglish')}
-                </Button>
-              </Stack>
-            </Box>
-          </Stack>
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsSettingsOpen(false) }}>{t('project.settings.title')}</DialogTitle>
+        <DialogContent hdsProps sx={{ py: '16px' }}>
+          <Typography
+            sx={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#0E0F11',
+              marginBottom: '12px',
+            }}
+          >
+            {t('project.settings.language')}
+          </Typography>
+          <RadioGroup value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} sx={{ pl: 1 }}>
+            <List hdsProps={{ dialogType: 'radio' }}>
+              <ListItem hdsProps={{ dialogType: 'radio', isDivider: false }}>
+                <FormControlLabel
+                  label=""
+                  value="ko"
+                  control={<Radio hdsProps={{ label: t('project.settings.languageKorean') }} />}
+                />
+              </ListItem>
+              <ListItem hdsProps={{ dialogType: 'radio', isDivider: false }}>
+                <FormControlLabel
+                  label=""
+                  value="en"
+                  control={<Radio hdsProps={{ label: t('project.settings.languageEnglish') }} />}
+                />
+              </ListItem>
+            </List>
+          </RadioGroup>
         </DialogContent>
+        <DialogActions hdsProps>
+          <Button hdsProps onClick={() => setIsSettingsOpen(false)}>
+            {t('common.button.cancel')}
+          </Button>
+          <Button
+            hdsProps={{ type: 'fill', style: 'primary' }}
+            onClick={() => setIsSettingsOpen(false)}
+          >
+            {t('common.button.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 프로젝트 추가 다이얼로그 */}
+      <Dialog
+        open={isAddProjectOpen}
+        onClose={() => setIsAddProjectOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsAddProjectOpen(false) }}>{t('project.header.addProject')}</DialogTitle>
+        <DialogContent hdsProps>
+          <Box sx={{ padding: '20px 0' }}>
+            {/* 내용은 나중에 추가 */}
+            <Typography sx={{ color: 'var(--on_surface_mid)' }}>
+              프로젝트 추가 기능이 구현될 예정입니다.
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions hdsProps>
+          <Button hdsProps onClick={() => setIsAddProjectOpen(false)}>
+            {t('common.button.cancel')}
+          </Button>
+          <Button
+            hdsProps={{ type: 'fill', style: 'primary' }}
+            onClick={() => {
+              // TODO: 프로젝트 추가 로직
+              setIsAddProjectOpen(false)
+            }}
+          >
+            {t('common.button.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 컨텐츠 추가 다이얼로그 */}
+      <Dialog
+        open={isAddContentOpen}
+        onClose={() => setIsAddContentOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsAddContentOpen(false) }}>{t('project.header.addContent')}</DialogTitle>
+        <DialogContent hdsProps>
+          <Box sx={{ padding: '20px 0' }}>
+            {/* 내용은 나중에 추가 */}
+            <Typography sx={{ color: 'var(--on_surface_mid)' }}>
+              컨텐츠 추가 기능이 구현될 예정입니다.
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions hdsProps>
+          <Button hdsProps onClick={() => setIsAddContentOpen(false)}>
+            {t('common.button.cancel')}
+          </Button>
+          <Button
+            hdsProps={{ type: 'fill', style: 'primary' }}
+            onClick={() => {
+              // TODO: 컨텐츠 추가 로직
+              setIsAddContentOpen(false)
+            }}
+          >
+            {t('common.button.save')}
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   )

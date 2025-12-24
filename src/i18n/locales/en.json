@@ -26,6 +26,10 @@
       "settings": "Settings",
       "notification": "Notification",
       "favorites": "Favorites"
+    },
+    "button": {
+      "cancel": "Cancel",
+      "save": "Save"
     }
   },
   "login": {
@@ -91,7 +95,7 @@
     },
     "settings": {
       "title": "Settings",
-      "language": "Language",
+      "language": "Service Language",
       "languageKorean": "Korean",
       "languageEnglish": "English"
     }

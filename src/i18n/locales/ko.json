@@ -26,6 +26,10 @@
       "settings": "설정",
       "notification": "알림",
       "favorites": "즐겨찾기"
+    },
+    "button": {
+      "cancel": "취소",
+      "save": "저장하기"
     }
   },
   "login": {
@@ -91,7 +95,7 @@
     },
     "settings": {
       "title": "설정",
-      "language": "언어",
+      "language": "서비스 언어",
       "languageKorean": "국문",
       "languageEnglish": "영문"
     }
