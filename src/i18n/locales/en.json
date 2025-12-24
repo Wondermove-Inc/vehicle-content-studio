@@ -1,0 +1,99 @@
+{
+  "common": {
+    "brand": {
+      "hyundai": "Hyundai",
+      "kia": "Kia",
+      "genesis": "Genesis"
+    },
+    "channel": {
+      "oneApp": "One App",
+      "oneWeb": "One Web",
+      "ivi": "IVI",
+      "inStore": "In-Store",
+      "legacyWeb": "Legacy Website"
+    },
+    "contentType": {
+      "all": "All Content Types",
+      "vcm": "VCM",
+      "webcc": "Web CC",
+      "360": "2D 360",
+      "pi": "PI"
+    },
+    "menu": {
+      "project": "Project",
+      "contentRequest": "Content Request",
+      "admin": "Admin",
+      "settings": "Settings",
+      "notification": "Notification",
+      "favorites": "Favorites"
+    }
+  },
+  "login": {
+    "title": {
+      "welcome": "Welcome to",
+      "welcomeSuffix": "Vehicle Content Studio"
+    },
+    "subtitle": "Please log in to access vehicle content creation.",
+    "form": {
+      "emailLabel": "ID (Email)",
+      "emailPlaceholder": "Enter email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter password"
+    },
+    "button": {
+      "login": "Log In",
+      "partnerLogin": "Request Partner Access"
+    },
+    "error": {
+      "invalidCredentials": "Invalid ID or password. ({{count}}/5)"
+    },
+    "divider": "or",
+    "footer": {
+      "terms": "Terms of Service",
+      "and": "and",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "project": {
+    "header": {
+      "title": "Project",
+      "addProject": "Add Project",
+      "addContent": "Add Content"
+    },
+    "sidebar": {
+      "hmgSystem": "HMG System"
+    },
+    "tabs": {
+      "content": "Content",
+      "dataPrep": "Data Prep"
+    },
+    "table": {
+      "thumbnail": "Thumbnail",
+      "brand": "Brand",
+      "projectCode": "Project Code",
+      "projectType": "Project Type",
+      "contentType": "Content Type",
+      "derivative": "Derivative",
+      "modifiedDate": "Modified Date",
+      "sop": "SOP",
+      "targetChannel": "Target Channel",
+      "activeChannel": "Active Channel",
+      "manager": "Manager",
+      "comment": "Comment"
+    },
+    "tree": {
+      "allProjects": "All Projects",
+      "searchPlaceholder": "Search project"
+    },
+    "empty": {
+      "noSearchResult": "No search results found.",
+      "noContent": "No content in this project."
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "languageKorean": "Korean",
+      "languageEnglish": "English"
+    }
+  }
+}

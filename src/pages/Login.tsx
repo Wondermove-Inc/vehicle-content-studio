@@ -1,6 +1,6 @@
-
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -18,6 +18,7 @@ import {
 
 function Login() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -91,7 +92,7 @@ function Login() {
                   lineHeight: '32px',
                 }}
               >
-                차량 컨텐츠 제작 시스템에
+                {t('login.title.welcome')}
               </Typography>
               <Typography
                 hdsProps={{ variant: 'title', size: 'medium' }}
@@ -103,7 +104,7 @@ function Login() {
                   lineHeight: '32px',
                 }}
               >
-                오신 것을 환영합니다
+                {t('login.title.welcomeSuffix')}
               </Typography>
             </Stack>
 
@@ -117,7 +118,7 @@ function Login() {
                 fontSize: 15,
               }}
             >
-              차량 컨텐츠 제작은 로그인 후 이용할 수 있어요.
+              {t('login.subtitle')}
             </Typography>
           </Stack>
 
@@ -129,11 +130,11 @@ function Login() {
                 hdsProps={{ variant: 'title', size: 'small' }}
                 sx={{ color: '#0E0F11', fontWeight: 700 }}
               >
-                ID (Email)
+                {t('login.form.emailLabel')}
               </Typography>
               <TextField
                 hdsProps={{ size: 'medium', isInvalid: error }}
-                placeholder="이메일 입력"
+                placeholder={t('login.form.emailPlaceholder')}
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -147,11 +148,11 @@ function Login() {
                 hdsProps={{ variant: 'title', size: 'small' }}
                 sx={{ color: '#0E0F11', fontWeight: 700 }}
               >
-                비밀번호
+                {t('login.form.passwordLabel')}
               </Typography>
               <TextField
                 hdsProps={{ size: 'medium', isInvalid: error }}
-                placeholder="비밀번호 입력"
+                placeholder={t('login.form.passwordPlaceholder')}
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -181,7 +182,7 @@ function Login() {
                     marginTop: '4px',
                   }}
                 >
-                  아이디 또는 비밀번호가 올바르지 않습니다. ({loginAttempts}/5)
+                  {t('login.error.invalidCredentials', { count: loginAttempts })}
                 </Typography>
               )}
             </Stack>
@@ -193,10 +194,10 @@ function Login() {
               fullWidth
               disabled={!email || !password}
             >
-              로그인
+              {t('login.button.login')}
             </Button>
 
-            {/* Divider with "또는" */}
+            {/* Divider */}
             <Stack
               direction="row"
               spacing={0}
@@ -207,7 +208,7 @@ function Login() {
                 hdsProps={{ variant: 'body', size: 'small' }}
                 sx={{ color: '#8E949F', flexShrink: 0, whiteSpace: 'nowrap' }}
               >
-                또는
+                {t('login.divider')}
               </Typography>
               <Divider hdsProps={{ style: 'lowest' }} sx={{ flexGrow: 1 }} />
             </Stack>
@@ -218,7 +219,7 @@ function Login() {
                 hdsProps={{ size: 'large', type: 'outline' }}
                 sx={{ flexGrow: 1 }}
               >
-                협력사 로그인 권한 신청
+                {t('login.button.partnerLogin')}
               </Button>
               <Button
                 hdsProps={{ size: 'large', type: 'outline' }}
@@ -254,7 +255,7 @@ function Login() {
               padding: 0,
             }}
           >
-            서비스 약관
+            {t('login.footer.terms')}
           </Button>
           <Typography
             sx={{
@@ -263,7 +264,7 @@ function Login() {
               lineHeight: '22px',
             }}
           >
-            및
+            {t('login.footer.and')}
           </Typography>
           <Button
             hdsProps={{ type: 'text', style: 'default', size: 'small' }}
@@ -275,7 +276,7 @@ function Login() {
               padding: 0,
             }}
           >
-            개인정보 보호정책
+            {t('login.footer.privacy')}
           </Button>
         </Stack>
       </Stack>

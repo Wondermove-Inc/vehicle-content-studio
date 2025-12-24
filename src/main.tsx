@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+import './i18n'
 import '@hmg-fe/hmg-design-system/css'
 import { setConfig, HdsThemeProvider } from '@hmg-fe/hmg-design-system'
 setConfig({ useDefaultHdsProps: true })

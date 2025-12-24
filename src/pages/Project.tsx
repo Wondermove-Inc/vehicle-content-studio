@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -10,7 +11,7 @@ import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
   Ic_file_filled,
@@ -561,6 +562,7 @@ function getBreadcrumb(projectId: string | null): { id: string; name: string }[]
 }
 
 function Project() {
+  const { t, i18n } = useTranslation()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
   const [contentType, setContentType] = useState('all')
@@ -572,6 +574,29 @@ function Project() {
   const [searchQuery, setSearchQuery] = useState('')
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
+  // 브랜드명 번역 함수
+  const getBrandLabel = (brand: string): string => {
+    const brandMap: Record<string, string> = {
+      '현대자동차': t('common.brand.hyundai'),
+      '기아': t('common.brand.kia'),
+      '제네시스': t('common.brand.genesis'),
+    }
+    return brandMap[brand] || brand
+  }
+
+  // 채널명 번역 함수
+  const getChannelLabel = (channel: string): string => {
+    const channelMap: Record<string, string> = {
+      '원앱': t('common.channel.oneApp'),
+      '원웹': t('common.channel.oneWeb'),
+      'IVI': t('common.channel.ivi'),
+      'In-Store': t('common.channel.inStore'),
+      '기존 홈페이지': t('common.channel.legacyWeb'),
+    }
+    return channelMap[channel] || channel
+  }
 
   // 트리 데이터 구조
   const treeData = [
@@ -899,29 +924,29 @@ function Project() {
               pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
             }}
           >
-            HMG System
+            {t('project.sidebar.hmgSystem')}
           </Typography>
         </Box>
 
         {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
-        <Box sx={{ padding: '0 16px', paddingTop: '0', paddingBottom: '8px', transition: 'padding 0.2s ease' }}>
+        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_folder_filled size="20px" color="#111111" />}
-              label="프로젝트"
+              label={t('common.menu.project')}
               isActive={true}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
               icon={<Ic_file_filled size="20px" color="var(--surface_highest)" />}
-              label="컨텐츠 요청"
+              label={t('common.menu.contentRequest')}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
             <SidebarItem
               icon={<Ic_person_filled size="20px" color="var(--surface_highest)" />}
-              label="어드민"
+              label={t('common.menu.admin')}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('어드민')}
             />
@@ -929,22 +954,22 @@ function Project() {
         </Box>
 
         {/* 구분선 */}
-        <Box sx={{ padding: '0 16px', transition: 'padding 0.2s ease' }}>
+        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
           <Divider hdsProps={{ style: 'lowest' }} />
         </Box>
 
         {/* 메뉴 그룹 2 */}
-        <Box sx={{ padding: '8px 16px', transition: 'padding 0.2s ease' }}>
+        <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_setting_filled size="20px" color="var(--surface_highest)" />}
-              label="설정"
+              label={t('common.menu.settings')}
               collapsed={isSidebarCollapsed}
-              onClick={() => setActiveMenu('설정')}
+              onClick={() => setIsSettingsOpen(true)}
             />
             <SidebarItem
               icon={<Ic_alarm_filled size="20px" color="var(--surface_highest)" />}
-              label="알림"
+              label={t('common.menu.notification')}
               badge={14}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('알림')}
@@ -953,7 +978,7 @@ function Project() {
         </Box>
 
         {/* 구분선 */}
-        <Box sx={{ padding: '0 16px', transition: 'padding 0.2s ease' }}>
+        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
           <Divider hdsProps={{ style: 'lowest' }} />
         </Box>
 
@@ -1005,7 +1030,7 @@ function Project() {
                 whiteSpace: 'nowrap',
               }}
             >
-              즐겨찾기
+              {t('common.menu.favorites')}
             </Typography>
           </Box>
           {isFavoritesExpanded && (
@@ -1145,7 +1170,7 @@ function Project() {
                   flexShrink: 0,
                 }}
               >
-                프로젝트 추가하기
+                {t('project.header.addProject')}
               </Button>
             </Box>
           </Box>
@@ -1167,7 +1192,7 @@ function Project() {
               <Box sx={{ padding: '16px 20px 0 20px' }}>
                 <TextField
                   hdsProps={{ size: 'medium', isClear: true }}
-                  placeholder="프로젝트 검색"
+                  placeholder={t('project.tree.searchPlaceholder')}
                   fullWidth
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1217,7 +1242,7 @@ function Project() {
                   {/* 검색 결과 없음 */}
                   {searchQuery.trim() && filteredTreeData.length === 0 ? (
                     <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '80px' }}>
-                      <EmptyError hdsProps={{ size: 'small', title: undefined, description: '검색 결과가 없습니다.', buttons: undefined }} />
+                      <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noSearchResult'), buttons: undefined }} />
                     </Box>
                   ) : (
                     <>
@@ -1246,7 +1271,7 @@ function Project() {
                               color: '#111111',
                             }}
                           >
-                            전체 프로젝트 (20)
+                            {t('project.tree.allProjects')} (20)
                           </Typography>
                         </Box>
                       )}
@@ -1276,6 +1301,23 @@ function Project() {
                         height: '34px',
                         minHeight: '34px',
                         alignItems: 'center',
+                        borderRadius: '4px',
+                        '&:hover': {
+                          backgroundColor: '#FAFAFA',
+                        },
+                      },
+                      '& .MuiTreeItem-content.Mui-selected': {
+                        '&:hover': {
+                          backgroundColor: '#F5F5F5',
+                        },
+                      },
+                      // 2뎁스 hover 비활성화
+                      '& .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
+                        backgroundColor: 'transparent',
+                      },
+                      // 3뎁스 hover 다시 활성화
+                      '& .MuiTreeItem-group .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
+                        backgroundColor: '#FAFAFA',
                       },
                       '& .MuiTreeItem-group': {
                         marginLeft: '12px',
@@ -1369,8 +1411,8 @@ function Project() {
                     },
                   }}
                 >
-                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label={t('project.tabs.content')} value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label={t('project.tabs.dataPrep')} value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
                 </Tabs>
 
                 {/* 우측: Select + 버튼 */}
@@ -1382,11 +1424,11 @@ function Project() {
                     hdsProps={{ size: 'medium', type: 'outline' }}
                     sx={{ width: '180px' }}
                   >
-                    <MenuItem value="all">전체 컨텐츠 유형</MenuItem>
-                    <MenuItem value="vcm">VCM</MenuItem>
-                    <MenuItem value="webcc">Web CC</MenuItem>
-                    <MenuItem value="360">2D 360</MenuItem>
-                    <MenuItem value="pi">PI</MenuItem>
+                    <MenuItem value="all">{t('common.contentType.all')}</MenuItem>
+                    <MenuItem value="vcm">{t('common.contentType.vcm')}</MenuItem>
+                    <MenuItem value="webcc">{t('common.contentType.webcc')}</MenuItem>
+                    <MenuItem value="360">{t('common.contentType.360')}</MenuItem>
+                    <MenuItem value="pi">{t('common.contentType.pi')}</MenuItem>
                   </Select>
 
                   {/* 컨텐츠 추가하기 버튼 */}
@@ -1398,7 +1440,7 @@ function Project() {
                       icon: <Ic_plus_regular size="16px" color="#002C5F" />,
                     }}
                   >
-                    컨텐츠 추가하기
+                    {t('project.header.addContent')}
                   </Button>
                 </Box>
               </Box>
@@ -1407,7 +1449,7 @@ function Project() {
               <Box sx={{ height: '16px', flexShrink: 0 }} />
               {filteredProjects.length === 0 ? (
                 <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <EmptyError hdsProps={{ size: 'small', title: undefined, description: '해당 프로젝트에 컨텐츠가 없습니다.', buttons: undefined }} />
+                  <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noContent'), buttons: undefined }} />
                 </Box>
               ) : (
               <>
@@ -1438,23 +1480,23 @@ function Project() {
                       '& .label_medium': { fontSize: '14px !important' },
                     }}>
                     <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
-                      <TableCell sx={{ width: '1%', minWidth: 106 }}>썸네일</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>브랜드</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 160 }}>프로젝트 코드</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>프로젝트 유형</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>컨텐츠 유형</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 106 }}>{t('project.table.thumbnail')}</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.brand')}</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 160 }}>{t('project.table.projectCode')}</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.projectType')}</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.contentType')}</TableCell>
                       <TableCell sx={{ width: '1%', minWidth: 120 }}>
                         <TableSortLabel
                           active={sopSortOrder !== null}
                           direction={sopSortOrder === 'asc' ? 'asc' : 'desc'}
                           onClick={handleSopSort}
                         >
-                          SOP
+                          {t('project.table.sop')}
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 80, textAlign: 'center' }}>코멘트</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 80, textAlign: 'center' }}>{t('project.table.comment')}</TableCell>
                       <TableCell sx={{ minWidth: 100, position: 'relative' }}>
-                        활성 채널
+                        {t('project.table.activeChannel')}
                         <Box
                           onMouseDown={handleResizeStart}
                           sx={{
@@ -1471,7 +1513,7 @@ function Project() {
                           }}
                         />
                       </TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>담당자</TableCell>
+                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.manager')}</TableCell>
                       <TableCell sx={{ width: '1%', minWidth: 48 }}></TableCell>
                     </TableRow>
                   </TableHead>
@@ -1493,7 +1535,7 @@ function Project() {
                             }}
                           />
                         </TableCell>
-                        <TableCell>{project.brand}</TableCell>
+                        <TableCell>{getBrandLabel(project.brand)}</TableCell>
                         <TableCell>{project.projectCode}</TableCell>
                         <TableCell>
                           <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'strong' }}>
@@ -1543,7 +1585,7 @@ function Project() {
                             <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
                               {project.activeChannels.map((channel, idx) => (
                                 <Badge key={idx} hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
-                                  {channel}
+                                  {getChannelLabel(channel)}
                                 </Badge>
                               ))}
                             </Stack>
@@ -1607,6 +1649,57 @@ function Project() {
           </Box>
         </Box>
       </Box>
+
+      {/* 설정 다이얼로그 */}
+      <Dialog
+        open={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t('project.settings.title')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            {/* 언어 설정 */}
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: '#0E0F11',
+                  marginBottom: '12px',
+                }}
+              >
+                {t('project.settings.language')}
+              </Typography>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  hdsProps={{
+                    size: 'medium',
+                    type: i18n.language === 'ko' ? 'fill' : 'outline',
+                    style: i18n.language === 'ko' ? 'strong' : 'default',
+                  }}
+                  onClick={() => i18n.changeLanguage('ko')}
+                  sx={{ flex: 1 }}
+                >
+                  {t('project.settings.languageKorean')}
+                </Button>
+                <Button
+                  hdsProps={{
+                    size: 'medium',
+                    type: i18n.language === 'en' ? 'fill' : 'outline',
+                    style: i18n.language === 'en' ? 'strong' : 'default',
+                  }}
+                  onClick={() => i18n.changeLanguage('en')}
+                  sx={{ flex: 1 }}
+                >
+                  {t('project.settings.languageEnglish')}
+                </Button>
+              </Stack>
+            </Box>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Box>
   )
 }

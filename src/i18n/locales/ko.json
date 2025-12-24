@@ -1,0 +1,99 @@
+{
+  "common": {
+    "brand": {
+      "hyundai": "현대자동차",
+      "kia": "기아",
+      "genesis": "제네시스"
+    },
+    "channel": {
+      "oneApp": "원앱",
+      "oneWeb": "원웹",
+      "ivi": "IVI",
+      "inStore": "In-Store",
+      "legacyWeb": "기존 홈페이지"
+    },
+    "contentType": {
+      "all": "전체 컨텐츠 유형",
+      "vcm": "VCM",
+      "webcc": "Web CC",
+      "360": "2D 360",
+      "pi": "PI"
+    },
+    "menu": {
+      "project": "프로젝트",
+      "contentRequest": "컨텐츠 요청",
+      "admin": "어드민",
+      "settings": "설정",
+      "notification": "알림",
+      "favorites": "즐겨찾기"
+    }
+  },
+  "login": {
+    "title": {
+      "welcome": "차량 컨텐츠 제작 시스템에",
+      "welcomeSuffix": "오신 것을 환영합니다"
+    },
+    "subtitle": "차량 컨텐츠 제작은 로그인 후 이용할 수 있어요.",
+    "form": {
+      "emailLabel": "ID (Email)",
+      "emailPlaceholder": "이메일 입력",
+      "passwordLabel": "비밀번호",
+      "passwordPlaceholder": "비밀번호 입력"
+    },
+    "button": {
+      "login": "로그인",
+      "partnerLogin": "협력사 로그인 권한 신청"
+    },
+    "error": {
+      "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다. ({{count}}/5)"
+    },
+    "divider": "또는",
+    "footer": {
+      "terms": "서비스 약관",
+      "and": "및",
+      "privacy": "개인정보 보호정책"
+    }
+  },
+  "project": {
+    "header": {
+      "title": "프로젝트",
+      "addProject": "프로젝트 추가하기",
+      "addContent": "컨텐츠 추가하기"
+    },
+    "sidebar": {
+      "hmgSystem": "HMG System"
+    },
+    "tabs": {
+      "content": "컨텐츠",
+      "dataPrep": "데이터 프랩"
+    },
+    "table": {
+      "thumbnail": "썸네일",
+      "brand": "브랜드",
+      "projectCode": "프로젝트 코드",
+      "projectType": "프로젝트 유형",
+      "contentType": "컨텐츠 유형",
+      "derivative": "파생모델",
+      "modifiedDate": "수정일",
+      "sop": "SOP",
+      "targetChannel": "타겟 채널",
+      "activeChannel": "활성 채널",
+      "manager": "담당자",
+      "comment": "코멘트"
+    },
+    "tree": {
+      "allProjects": "전체 프로젝트",
+      "searchPlaceholder": "프로젝트 검색"
+    },
+    "empty": {
+      "noSearchResult": "검색 결과가 없습니다.",
+      "noContent": "해당 프로젝트에 컨텐츠가 없습니다."
+    },
+    "settings": {
+      "title": "설정",
+      "language": "언어",
+      "languageKorean": "국문",
+      "languageEnglish": "영문"
+    }
+  }
+}
