@@ -6,6 +6,11 @@ import Button from '@hmg-fe/hmg-design-system/Button'
 import TextField from '@hmg-fe/hmg-design-system/TextField'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
+import Tabs from '@hmg-fe/hmg-design-system/Tabs'
+import Tab from '@hmg-fe/hmg-design-system/Tab'
+import Select from '@hmg-fe/hmg-design-system/Select'
+import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
+import { SimpleTreeView, TreeItem } from '@hmg-fe/hmg-design-system'
 import {
   Ic_home_filled,
   Ic_file_regular,
@@ -14,10 +19,6 @@ import {
   Ic_alarm_regular,
   Ic_search_regular,
   Ic_plus_regular,
-  Ic_arrow_right_regular,
-  Ic_arrow_down_regular,
-  Ic_star_filled,
-  Ic_folder_regular,
   Ic_menu_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
@@ -83,54 +84,6 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps
   )
 }
 
-// 즐겨찾기 트리 아이템 컴포넌트
-interface TreeItemProps {
-  label: string
-  isExpanded?: boolean
-  hasChildren?: boolean
-  level?: number
-  onClick?: () => void
-}
-
-function TreeItem({ label, isExpanded, hasChildren, level = 0, onClick }: TreeItemProps) {
-  return (
-    <Box
-      onClick={onClick}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        padding: '8px 12px',
-        paddingLeft: `${12 + level * 16}px`,
-        borderRadius: '6px',
-        cursor: 'pointer',
-        '&:hover': {
-          backgroundColor: '#F5F5F5',
-        },
-      }}
-    >
-      {hasChildren && (
-        <Box sx={{ display: 'flex', alignItems: 'center', width: 16, height: 16 }}>
-          {isExpanded ? (
-            <Ic_arrow_down_regular size="14px" color="#6B6B6B" />
-          ) : (
-            <Ic_arrow_right_regular size="14px" color="#6B6B6B" />
-          )}
-        </Box>
-      )}
-      <Typography
-        sx={{
-          fontSize: 15,
-          fontWeight: 400,
-          lineHeight: '22px',
-          color: '#3B3B3B',
-        }}
-      >
-        {label}
-      </Typography>
-    </Box>
-  )
-}
 
 // 사이드바 그룹 라벨 컴포넌트
 interface SidebarGroupLabelProps {
@@ -319,11 +272,9 @@ const sampleProjects: ProjectData[] = [
 
 function Project() {
   const [activeMenu, setActiveMenu] = useState('프로젝트')
-  const [expandedFavorites, setExpandedFavorites] = useState(true)
-  const [selectedTab, setSelectedTab] = useState('컨텐츠')
-  const [selectedFilter, setSelectedFilter] = useState('전체 프로젝트')
-
-  const tabs = ['컨텐츠', '데이터 프랩', 'Web CC', '2D 360', 'PI', '설정']
+  const [activeTab, setActiveTab] = useState('컨텐츠')
+  const [contentType, setContentType] = useState('all')
+  const [selectedProject, setSelectedProject] = useState<string | null>('all')
 
   return (
     <Box
@@ -337,7 +288,7 @@ function Project() {
       {/* 사이드바 */}
       <Box
         sx={{
-          width: '280px',
+          width: '260px',
           height: '100%',
           backgroundColor: 'var(--surface_container_lowest)',
           display: 'flex',
@@ -420,42 +371,19 @@ function Project() {
 
         {/* 즐겨찾기 섹션 */}
         <Box sx={{ flex: 1, padding: '8px 16px', overflowY: 'auto' }}>
-          <Stack spacing={0}>
-            <Box
-              onClick={() => setExpandedFavorites(!expandedFavorites)}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 16px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                '&:hover': { backgroundColor: '#F5F5F5' },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', width: 16, height: 16 }}>
-                {expandedFavorites ? (
-                  <Ic_arrow_down_regular size="14px" color="#6B6B6B" />
-                ) : (
-                  <Ic_arrow_right_regular size="14px" color="#6B6B6B" />
-                )}
-              </Box>
-              <Ic_star_filled size="16px" color="#6B6B6B" />
-              <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>
-                즐겨찾기
-              </Typography>
-            </Box>
-            {expandedFavorites && (
-              <Stack spacing={0} sx={{ marginLeft: '8px' }}>
-                <TreeItem label="26MY FMC" level={1} />
-                <TreeItem label="27MY FMC" level={1} />
-                <TreeItem label="28MY FMC" level={1} />
-                <TreeItem label="29MY FMC" level={1} />
-                <TreeItem label="29MY FMC Web CC" level={1} />
-                <TreeItem label="29MY FMC VCM" level={1} />
-              </Stack>
-            )}
-          </Stack>
+          <SimpleTreeView
+            hdsProps={{ size: 'medium', type: 'line' }}
+            defaultExpandedItems={['favorites']}
+          >
+            <TreeItem itemId="favorites" label="즐겨찾기" hdsProps={{ type: 'default' }}>
+              <TreeItem itemId="fav-1" label="26MY FMC" hdsProps={{ type: 'default' }} />
+              <TreeItem itemId="fav-2" label="27MY FMC" hdsProps={{ type: 'default' }} />
+              <TreeItem itemId="fav-3" label="28MY FMC" hdsProps={{ type: 'default' }} />
+              <TreeItem itemId="fav-4" label="29MY FMC" hdsProps={{ type: 'default' }} />
+              <TreeItem itemId="fav-5" label="29MY FMC Web CC" hdsProps={{ type: 'default' }} />
+              <TreeItem itemId="fav-6" label="29MY FMC VCM" hdsProps={{ type: 'default' }} />
+            </TreeItem>
+          </SimpleTreeView>
         </Box>
       </Box>
 
@@ -464,11 +392,10 @@ function Project() {
         sx={{
           flex: 1,
           minWidth: 0,
-          maxWidth: 'calc(100% - 280px)',
+          maxWidth: 'calc(100% - 260px)',
           display: 'flex',
           flexDirection: 'column',
-          padding: '20px',
-          paddingLeft: 0,
+          padding: '16px 16px 16px 0',
           gap: '10px',
           overflow: 'visible',
           backgroundColor: 'var(--surface_container_lowest)',
@@ -484,7 +411,7 @@ function Project() {
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.08), 0px 2px 6px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
             position: 'relative',
             zIndex: 1,
           }}
@@ -492,121 +419,267 @@ function Project() {
           {/* 헤더 영역 */}
           <Box
             sx={{
+              alignSelf: 'stretch',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '24px 24px 16px 24px',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              gap: '4px',
+              padding: '24px 24px 16px',
               borderBottom: '1px solid var(--outline)',
+              flexShrink: 0,
             }}
           >
-            <Typography
+            {/* 첫 번째 행: 제목 + 버튼 */}
+            <Box
               sx={{
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: '32px',
-                color: '#0A0A0A',
-              }}
-            >
-              프로젝트
-            </Typography>
-            <Button
-              hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
-              sx={{
+                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                overflow: 'hidden',
               }}
             >
-              프로젝트 추가하기
-            </Button>
+              <Typography
+                sx={{
+                  flex: 1,
+                  minWidth: 0,
+                  fontSize: 24,
+                  fontWeight: 700,
+                  lineHeight: '36px',
+                  color: '#0A0A0A',
+                }}
+              >
+                프로젝트
+              </Typography>
+              <Button
+                hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
+                sx={{
+                  flexShrink: 0,
+                }}
+              >
+                프로젝트 추가하기
+              </Button>
+            </Box>
           </Box>
 
           {/* 메인 영역 */}
           <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-            {/* 좌측 패널 - 프로젝트 상세 */}
+            {/* 좌측 패널 - 프로젝트 트리 */}
             <Box
               sx={{
-                width: '280px',
+                width: '260px',
                 borderRight: '1px solid var(--outline)',
                 display: 'flex',
                 flexDirection: 'column',
                 flexShrink: 0,
+                backgroundColor: '#fff',
               }}
             >
-              {/* 프로젝트 정보 */}
-              <Box sx={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
-                {/* 브레드크럼 */}
-                <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', marginBottom: '16px' }}>
-                  <Typography sx={{ fontSize: 14, color: '#949494' }}>전체</Typography>
-                  <Ic_arrow_right_regular size="14px" color="#949494" />
-                  <Typography sx={{ fontSize: 14, color: '#949494' }}>현대자동차</Typography>
-                </Stack>
+              {/* 검색 필드 + 트리 영역 */}
+              <Box
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  padding: '16px 24px',
+                  overflowY: 'auto',
+                }}
+              >
+                {/* 검색 필드 */}
+                <TextField
+                  hdsProps={{ size: 'medium' }}
+                  placeholder="프로젝트 검색"
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Ic_search_regular size="16px" color="#949494" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-                {/* 프로젝트 제목 */}
-                <Stack spacing={0.5} sx={{ marginBottom: '24px' }}>
-                  <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>
-                    CN7(0A 25)
-                  </Typography>
-                  <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>
-                    HEV_25_FMC
-                  </Typography>
-                </Stack>
-
-                {/* 탭 */}
-                <Stack direction="row" spacing={0} sx={{ flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-                  {tabs.map((tab) => (
-                    <Box
-                      key={tab}
-                      onClick={() => setSelectedTab(tab)}
+                {/* 프로젝트 트리 */}
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  {/* 전체 프로젝트 */}
+                  <Box
+                    onClick={() => setSelectedProject('all')}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      height: '38px',
+                      padding: '0 10px',
+                      backgroundColor: selectedProject === 'all' ? '#F5F5F5' : 'transparent',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: selectedProject === 'all' ? '#F5F5F5' : '#FAFAFA',
+                      },
+                    }}
+                  >
+                    <Typography
                       sx={{
-                        padding: '8px 16px',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        backgroundColor: selectedTab === tab ? '#F5F5F5' : 'transparent',
-                        '&:hover': {
-                          backgroundColor: '#F5F5F5',
-                        },
+                        fontSize: 15,
+                        fontWeight: 700,
+                        lineHeight: '22px',
+                        color: '#111111',
                       }}
                     >
-                      <Typography
-                        sx={{
-                          fontSize: 16,
-                          fontWeight: 700,
-                          color: selectedTab === tab ? '#111111' : '#6B6B6B',
-                        }}
-                      >
-                        {tab}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Stack>
-              </Box>
+                      전체 프로젝트 (20)
+                    </Typography>
+                  </Box>
 
+                  {/* 트리 뷰 */}
+                  <SimpleTreeView
+                    hdsProps={{ size: 'medium', type: 'line' }}
+                    defaultExpandedItems={['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24']}
+                    selectedItems={selectedProject === 'all' ? '' : (selectedProject || '')}
+                    onSelectedItemsChange={(_, itemId) => {
+                      if (itemId) {
+                        const id = itemId as string
+                        // 2뎁스 아이템은 선택하지 않고 부모(1뎁스)를 선택
+                        const depth2Items = ['cn7-0a25', 'cn7-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
+                        if (depth2Items.includes(id)) {
+                          // 부모 찾기
+                          if (id.startsWith('cn7')) setSelectedProject('hyundai')
+                          else if (id.startsWith('ev6') || id.startsWith('k8')) setSelectedProject('kia')
+                          else if (id.startsWith('gv80') || id.startsWith('g90')) setSelectedProject('genesis')
+                        } else {
+                          setSelectedProject(id)
+                        }
+                      }
+                    }}
+                    sx={{
+                      '& .MuiTreeItem-content': {
+                        height: '34px',
+                        minHeight: '34px',
+                        alignItems: 'center',
+                      },
+                      '& .MuiTreeItem-group': {
+                        marginLeft: '12px',
+                      },
+                      '& .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-label': {
+                        marginLeft: '12px',
+                      },
+                    }}
+                  >
+                    <TreeItem itemId="hyundai" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>현대자동차 (2)</Typography>} hdsProps={{ type: 'default' }}>
+                      <TreeItem itemId="cn7-0a25" label="CN7 (6)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="hev-27-my" label="HEV_27_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="hev-26-my" label="HEV_26_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="hev-25-fmc" label="HEV_25_FMC" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                      <TreeItem itemId="cn7-oa22" label="CN7 (3)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="ice-24-my" label="ICE_24_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="ice-23-my" label="ICE_23_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="ice-22-fl" label="ICE_22_FL" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                    </TreeItem>
+                    <TreeItem itemId="kia" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>기아 (8)</Typography>} hdsProps={{ type: 'default' }}>
+                      <TreeItem itemId="ev6-25" label="EV6 (4)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="ev6-27-my" label="EV6_27_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="ev6-26-my" label="EV6_26_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="ev6-25-fmc" label="EV6_25_FMC" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                      <TreeItem itemId="k8-24" label="K8 (4)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="k8-26-my" label="K8_26_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="k8-25-my" label="K8_25_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="k8-24-fl" label="K8_24_FL" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                    </TreeItem>
+                    <TreeItem itemId="genesis" label={<Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>제네시스 (10)</Typography>} hdsProps={{ type: 'default' }}>
+                      <TreeItem itemId="gv80-25" label="GV80 (5)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="gv80-27-my" label="GV80_27_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="gv80-26-my" label="GV80_26_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="gv80-25-fmc" label="GV80_25_FMC" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                      <TreeItem itemId="g90-24" label="G90 (5)" hdsProps={{ type: 'default' }}>
+                        <TreeItem itemId="g90-26-my" label="G90_26_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="g90-25-my" label="G90_25_MY" hdsProps={{ type: 'default' }} />
+                        <TreeItem itemId="g90-24-fl" label="G90_24_FL" hdsProps={{ type: 'default' }} />
+                      </TreeItem>
+                    </TreeItem>
+                  </SimpleTreeView>
+                </Box>
+              </Box>
             </Box>
 
             {/* 우측 패널 - 테이블 */}
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              {/* 테이블 헤더 영역 */}
-              <Box sx={{ padding: '20px 24px' }}>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Button hdsProps={{ size: 'small', type: 'outline' }}>필터</Button>
-                  <TextField
-                    hdsProps={{ size: 'small' }}
-                    placeholder="검색"
-                    sx={{ width: '200px' }}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Ic_search_regular size="16px" color="#949494" />
-                        </InputAdornment>
-                      ),
+              {/* 테이블 헤더 영역 - 탭 구조 */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '16px 24px 0',
+                  gap: '8px',
+                }}
+              >
+                {/* 좌측: 탭 */}
+                <Tabs
+                  value={activeTab}
+                  onChange={(_, newValue) => setActiveTab(newValue)}
+                  hdsProps={{ size: 'medium', type: 'line' }}
+                  sx={{
+                    borderBottom: 'none',
+                    '&::before, &::after': {
+                      display: 'none',
+                    },
+                    '& .MuiTabs-scroller': {
+                      borderBottom: 'none',
+                      '&::before, &::after': {
+                        display: 'none',
+                      },
+                    },
+                    '& .MuiTabs-flexContainer': {
+                      borderBottom: 'none',
+                      gap: '16px !important',
+                    },
+                    '& .MuiTab-root:not(.Mui-selected)': {
+                      borderBottom: 'none',
+                      boxShadow: 'none',
+                      '&::before, &::after': {
+                        display: 'none',
+                      },
+                    },
+                  }}
+                >
+                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '6px !important', pb: '8px !important', mr: '16px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '6px !important', pb: '8px !important' }} />
+                </Tabs>
+
+                {/* 우측: Select + 버튼 */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Select 드롭다운 */}
+                  <Select
+                    value={contentType}
+                    onChange={(e) => setContentType(e.target.value as string)}
+                    hdsProps={{ size: 'medium', type: 'outline' }}
+                    sx={{ width: '180px' }}
+                  >
+                    <MenuItem value="all">전체 컨텐츠 유형</MenuItem>
+                    <MenuItem value="vcm">VCM</MenuItem>
+                    <MenuItem value="webcc">Web CC</MenuItem>
+                    <MenuItem value="360">2D 360</MenuItem>
+                  </Select>
+
+                  {/* 컨텐츠 추가하기 버튼 */}
+                  <Button
+                    hdsProps={{
+                      size: 'medium',
+                      type: 'outline',
+                      style: 'primary',
+                      icon: <Ic_plus_regular size="16px" color="#002C5F" />,
                     }}
-                  />
-                </Stack>
+                  >
+                    컨텐츠 추가하기
+                  </Button>
+                </Box>
               </Box>
 
               {/* 테이블 */}
-              <Box sx={{ flex: 1, overflow: 'auto', padding: '0 24px' }}>
+              <Box sx={{ flex: 1, overflow: 'auto', padding: '16px 24px 0' }}>
                 <Box
                   component="table"
                   sx={{
