@@ -32,10 +32,11 @@ interface SidebarItemProps {
   label: string
   isActive?: boolean
   badge?: number
+  collapsed?: boolean
   onClick?: () => void
 }
 
-function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps) {
+function SidebarItem({ icon, label, isActive, badge, collapsed, onClick }: SidebarItemProps) {
   return (
     <Box
       onClick={onClick}
@@ -43,16 +44,19 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '10px 16px',
+        padding: collapsed ? '10px 10px 10px 16px' : '10px 16px',
         borderRadius: '6px',
         cursor: 'pointer',
         backgroundColor: isActive ? '#E9EAEC' : 'transparent',
+        transition: 'padding 0.2s ease',
+        overflow: 'hidden',
+        width: collapsed ? '46px' : 'auto',
         '&:hover': {
           backgroundColor: isActive ? '#E9EAEC' : '#EEEEEE',
         },
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 24 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 24, flexShrink: 0 }}>
         {icon}
       </Box>
       <Typography
@@ -62,12 +66,22 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps
           fontWeight: 700,
           lineHeight: '22px',
           color: isActive ? '#111111' : 'var(--on_surface_high)',
+          whiteSpace: 'nowrap',
+          opacity: collapsed ? 0 : 1,
+          transition: 'opacity 0.2s ease',
         }}
       >
         {label}
       </Typography>
       {badge !== undefined && badge > 0 && (
-        <Badge hdsProps={{ size: 'small', style: 'error', isDigit: true }}>{badge}</Badge>
+        <Box
+          sx={{
+            opacity: collapsed ? 0 : 1,
+            transition: 'opacity 0.2s ease',
+          }}
+        >
+          <Badge hdsProps={{ size: 'small', style: 'error', isDigit: true }}>{badge}</Badge>
+        </Box>
       )}
     </Box>
   )
@@ -557,6 +571,7 @@ function Project() {
   const [activeChannelWidth, setActiveChannelWidth] = useState(120)
   const [searchQuery, setSearchQuery] = useState('')
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
 
   // 트리 데이터 구조
   const treeData = [
@@ -700,6 +715,13 @@ function Project() {
     setPage(0)
   }, [selectedProject, contentType])
 
+  // 사이드바 접힐 때 즐겨찾기도 접기
+  useEffect(() => {
+    if (isSidebarCollapsed) {
+      setIsFavoritesExpanded(false)
+    }
+  }, [isSidebarCollapsed])
+
   // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
   const treeItemToProjectCode: Record<string, string> = {
     // 현대자동차 - CN7
@@ -829,13 +851,15 @@ function Project() {
       {/* 사이드바 */}
       <Box
         sx={{
-          width: '260px',
+          width: isSidebarCollapsed ? '72px' : '260px',
           height: '100%',
           backgroundColor: 'var(--surface_container_lowest)',
           borderRight: '1px solid var(--outline)',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 0,
+          transition: 'width 0.2s ease',
+          overflow: 'hidden',
         }}
       >
         {/* 헤더 */}
@@ -843,76 +867,107 @@ function Project() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '24px',
+            gap: '12px',
+            padding: isSidebarCollapsed ? '24px 16px 24px 32px' : '24px 24px 24px 32px',
+            transition: 'padding 0.2s ease',
           }}
         >
+          <Box
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            sx={{
+              cursor: 'pointer',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 20,
+              height: 24,
+            }}
+          >
+            <Ic_menu_regular size="20px" color="#1E1E1E" />
+          </Box>
           <Typography
             sx={{
               fontSize: 18,
               fontWeight: 700,
               lineHeight: '26px',
               color: '#0A0A0A',
+              opacity: isSidebarCollapsed ? 0 : 1,
+              transition: 'opacity 0.2s ease',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
             }}
           >
             HMG System
           </Typography>
-          <Box sx={{ cursor: 'pointer' }}>
-            <Ic_menu_regular size="20px" color="#1E1E1E" />
-          </Box>
         </Box>
 
         {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
-        <Box sx={{ padding: '0 16px', paddingTop: '0', paddingBottom: '8px' }}>
+        <Box sx={{ padding: '0 16px', paddingTop: '0', paddingBottom: '8px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_folder_filled size="20px" color="#111111" />}
               label="프로젝트"
               isActive={true}
+              collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
               icon={<Ic_file_filled size="20px" color="var(--surface_highest)" />}
               label="컨텐츠 요청"
+              collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
             <SidebarItem
               icon={<Ic_person_filled size="20px" color="var(--surface_highest)" />}
               label="어드민"
+              collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('어드민')}
             />
           </Stack>
         </Box>
 
         {/* 구분선 */}
-        <Box sx={{ padding: '0 16px' }}>
+        <Box sx={{ padding: '0 16px', transition: 'padding 0.2s ease' }}>
           <Divider hdsProps={{ style: 'lowest' }} />
         </Box>
 
         {/* 메뉴 그룹 2 */}
-        <Box sx={{ padding: '8px 16px' }}>
+        <Box sx={{ padding: '8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
               icon={<Ic_setting_filled size="20px" color="var(--surface_highest)" />}
               label="설정"
+              collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('설정')}
             />
             <SidebarItem
               icon={<Ic_alarm_filled size="20px" color="var(--surface_highest)" />}
               label="알림"
               badge={14}
+              collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('알림')}
             />
           </Stack>
         </Box>
 
         {/* 구분선 */}
-        <Box sx={{ padding: '0 16px' }}>
+        <Box sx={{ padding: '0 16px', transition: 'padding 0.2s ease' }}>
           <Divider hdsProps={{ style: 'lowest' }} />
         </Box>
 
         {/* 즐겨찾기 섹션 */}
-        <Box sx={{ flex: 1, padding: '8px 16px', overflowY: 'auto' }}>
+        <Box
+          sx={{
+            flex: 1,
+            padding: '8px 16px',
+            overflowY: 'auto',
+            opacity: isSidebarCollapsed ? 0 : 1,
+            visibility: isSidebarCollapsed ? 'hidden' : 'visible',
+            transition: 'opacity 0.2s ease, visibility 0.2s ease',
+          }}
+        >
           <Box
             onClick={() => setIsFavoritesExpanded(!isFavoritesExpanded)}
             sx={{
@@ -947,6 +1002,7 @@ function Project() {
                 fontWeight: 700,
                 lineHeight: '22px',
                 color: 'var(--on_surface_high)',
+                whiteSpace: 'nowrap',
               }}
             >
               즐겨찾기
@@ -987,6 +1043,7 @@ function Project() {
                       lineHeight: '22px',
                       color: selectedProject === item.id ? '#000000' : 'var(--on_surface_highest)',
                       transition: 'color 0.15s ease, font-weight 0.15s ease',
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {item.label}
@@ -1003,13 +1060,14 @@ function Project() {
         sx={{
           flex: 1,
           minWidth: 0,
-          maxWidth: 'calc(100% - 260px)',
+          maxWidth: isSidebarCollapsed ? 'calc(100% - 72px)' : 'calc(100% - 260px)',
           display: 'flex',
           flexDirection: 'column',
           padding: '16px 16px 16px 0',
           gap: '10px',
           overflow: 'visible',
           backgroundColor: 'var(--surface_container_lowest)',
+          transition: 'max-width 0.2s ease',
         }}
       >
         <Box
