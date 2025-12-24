@@ -10,16 +10,17 @@ import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination } from '@hmg-fe/hmg-design-system'
 import {
-  Ic_home_filled,
-  Ic_file_regular,
-  Ic_setting_regular,
-  Ic_person_regular,
-  Ic_alarm_regular,
+  Ic_folder_filled,
+  Ic_file_filled,
+  Ic_person_filled,
+  Ic_alarm_filled,
+  Ic_setting_filled,
   Ic_search_regular,
   Ic_plus_regular,
   Ic_menu_regular,
+  Ic_arrow_forward_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -48,37 +49,22 @@ function SidebarItem({ icon, label, isActive, badge, onClick }: SidebarItemProps
         },
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 24 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 24 }}>
         {icon}
       </Box>
       <Typography
         sx={{
           flex: 1,
-          fontSize: 14,
+          fontSize: 15,
           fontWeight: 700,
           lineHeight: '22px',
-          color: '#111111',
+          color: isActive ? '#111111' : 'var(--on_surface_high)',
         }}
       >
         {label}
       </Typography>
       {badge !== undefined && badge > 0 && (
-        <Box
-          sx={{
-            minWidth: 20,
-            height: 20,
-            padding: '0 6px',
-            borderRadius: '10px',
-            backgroundColor: '#CE302C',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography sx={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>
-            {badge}
-          </Typography>
-        </Box>
+        <Badge hdsProps={{ size: 'small', style: 'error', isDigit: true }}>{badge}</Badge>
       )}
     </Box>
   )
@@ -268,13 +254,344 @@ const sampleProjects: ProjectData[] = [
     manager: '박미현',
     comments: 0,
   },
+  {
+    id: 9,
+    brand: '기아',
+    projectCode: 'EV6_26MY',
+    projectType: 'MY',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: 'GT-Line',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-03-15',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹'],
+    manager: '김지수',
+    comments: 12,
+  },
+  {
+    id: 10,
+    brand: '기아',
+    projectCode: 'K8_25MY',
+    projectType: 'FMC',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-08-20',
+    targetChannel: 'WebCC',
+    activeChannels: ['IVI', '기존 홈페이지'],
+    manager: '이서연, 최민준',
+    comments: 5,
+  },
+  {
+    id: 11,
+    brand: '제네시스',
+    projectCode: 'GV80_26MY',
+    projectType: 'MY',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-01-10',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'In-Store'],
+    manager: '정하늘',
+    comments: 3,
+  },
+  {
+    id: 12,
+    brand: '현대자동차',
+    projectCode: 'IONIQ6_25',
+    projectType: 'FMC',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: 'Long Range',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-05-22',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹', 'IVI'],
+    manager: '박미현, 김지수',
+    comments: 15,
+  },
+  {
+    id: 13,
+    brand: '제네시스',
+    projectCode: 'G90_25FL',
+    projectType: 'FL',
+    contentType: '2D 360',
+    contentTypeColor: '#2C5A0C',
+    derivative: '--',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-09-30',
+    targetChannel: 'WebCC',
+    activeChannels: ['원웹', 'In-Store'],
+    manager: '여하은',
+    comments: 0,
+  },
+  {
+    id: 14,
+    brand: '기아',
+    projectCode: 'SORENTO_26',
+    projectType: 'FMC',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
+    derivative: 'Hybrid',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-02-28',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'IVI', '원웹'],
+    manager: '최민준',
+    comments: 7,
+  },
+  {
+    id: 15,
+    brand: '현대자동차',
+    projectCode: 'TUCSON_25MY',
+    projectType: 'MY',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: 'N Line',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-07-15',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹'],
+    manager: '박미현',
+    comments: 4,
+  },
+  {
+    id: 16,
+    brand: '현대자동차',
+    projectCode: 'PALISADE_26',
+    projectType: 'FMC',
+    contentType: '2D 360',
+    contentTypeColor: '#2C5A0C',
+    derivative: 'Calligraphy',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-04-10',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'In-Store', '기존 홈페이지'],
+    manager: '이서연',
+    comments: 9,
+  },
+  {
+    id: 17,
+    brand: '기아',
+    projectCode: 'CARNIVAL_25',
+    projectType: 'FL',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: 'Hi-Limousine',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-11-05',
+    targetChannel: 'WebCC',
+    activeChannels: ['IVI', '원웹'],
+    manager: '김지수, 정하늘',
+    comments: 2,
+  },
+  {
+    id: 18,
+    brand: '제네시스',
+    projectCode: 'GV70_26MY',
+    projectType: 'MY',
+    contentType: 'Web CC',
+    contentTypeColor: '#8333E6',
+    derivative: 'Sport',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-06-20',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', '원웹', 'In-Store'],
+    manager: '여하은, 박미현',
+    comments: 0,
+  },
+  {
+    id: 19,
+    brand: '현대자동차',
+    projectCode: 'SANTA_FE_25',
+    projectType: 'FMC',
+    contentType: 'VCM',
+    contentTypeColor: '#1967FF',
+    derivative: 'Hybrid',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2025-10-18',
+    targetChannel: 'WebCC',
+    activeChannels: ['원앱', 'IVI'],
+    manager: '최민준, 이서연',
+    comments: 11,
+  },
+  {
+    id: 20,
+    brand: '기아',
+    projectCode: 'SPORTAGE_26',
+    projectType: 'MY',
+    contentType: '2D 360',
+    contentTypeColor: '#2C5A0C',
+    derivative: 'X-Line',
+    modifiedDate: 'YYYY-MM-DD',
+    sop: '2026-05-12',
+    targetChannel: 'WebCC',
+    activeChannels: ['원웹', '기존 홈페이지'],
+    manager: '정하늘',
+    comments: 6,
+  },
 ]
+
+// 프로젝트 ID와 이름 매핑
+const projectNames: Record<string, string> = {
+  'all': '전체 프로젝트',
+  'hyundai': '현대자동차',
+  'kia': '기아',
+  'genesis': '제네시스',
+  'cn7-0a25': 'CN7',
+  'cn7-oa22': 'CN7',
+  'ev6-25': 'EV6',
+  'k8-24': 'K8',
+  'gv80-25': 'GV80',
+  'g90-24': 'G90',
+  'hev-27-my': 'HEV_27_MY',
+  'hev-26-my': 'HEV_26_MY',
+  'hev-25-fmc': 'HEV_25_FMC',
+  'ice-24-my': 'ICE_24_MY',
+  'ice-23-my': 'ICE_23_MY',
+  'ice-22-fl': 'ICE_22_FL',
+  'ev6-27-my': 'EV6_27_MY',
+  'ev6-26-my': 'EV6_26_MY',
+  'ev6-25-fmc': 'EV6_25_FMC',
+  'k8-26-my': 'K8_26_MY',
+  'k8-25-my': 'K8_25_MY',
+  'k8-24-fl': 'K8_24_FL',
+  'gv80-27-my': 'GV80_27_MY',
+  'gv80-26-my': 'GV80_26_MY',
+  'gv80-25-fmc': 'GV80_25_FMC',
+  'g90-26-my': 'G90_26_MY',
+  'g90-25-my': 'G90_25_MY',
+  'g90-24-fl': 'G90_24_FL',
+}
+
+// 부모 ID 매핑
+const parentMap: Record<string, string> = {
+  'hyundai': 'all',
+  'kia': 'all',
+  'genesis': 'all',
+  'cn7-0a25': 'hyundai',
+  'cn7-oa22': 'hyundai',
+  'ev6-25': 'kia',
+  'k8-24': 'kia',
+  'gv80-25': 'genesis',
+  'g90-24': 'genesis',
+  'hev-27-my': 'cn7-0a25',
+  'hev-26-my': 'cn7-0a25',
+  'hev-25-fmc': 'cn7-0a25',
+  'ice-24-my': 'cn7-oa22',
+  'ice-23-my': 'cn7-oa22',
+  'ice-22-fl': 'cn7-oa22',
+  'ev6-27-my': 'ev6-25',
+  'ev6-26-my': 'ev6-25',
+  'ev6-25-fmc': 'ev6-25',
+  'k8-26-my': 'k8-24',
+  'k8-25-my': 'k8-24',
+  'k8-24-fl': 'k8-24',
+  'gv80-27-my': 'gv80-25',
+  'gv80-26-my': 'gv80-25',
+  'gv80-25-fmc': 'gv80-25',
+  'g90-26-my': 'g90-24',
+  'g90-25-my': 'g90-24',
+  'g90-24-fl': 'g90-24',
+}
+
+// 2뎁스 항목 (선택 불가, 경로에서 생략)
+const depth2Items = ['cn7-0a25', 'cn7-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
+
+// 썸네일 이미지 목록
+const thumbnailImages = [
+  '/images/thumbnails/car_01.png',
+  '/images/thumbnails/car_02.png',
+  '/images/thumbnails/car_03.png',
+  '/images/thumbnails/car_04.png',
+  '/images/thumbnails/car_05.png',
+]
+
+// 경로 생성 함수
+function getBreadcrumb(projectId: string | null): { id: string; name: string }[] {
+  if (!projectId || projectId === 'all') {
+    return [{ id: 'all', name: '프로젝트' }]
+  }
+
+  const path: { id: string; name: string }[] = [{ id: 'all', name: '프로젝트' }]
+  const ancestors: string[] = []
+
+  let current = projectId
+  while (current && current !== 'all') {
+    ancestors.unshift(current)
+    current = parentMap[current]
+  }
+
+  for (const id of ancestors) {
+    // 2뎁스 항목은 경로에서 생략
+    if (!depth2Items.includes(id)) {
+      path.push({ id, name: projectNames[id] || id })
+    }
+  }
+
+  return path
+}
 
 function Project() {
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
   const [contentType, setContentType] = useState('all')
   const [selectedProject, setSelectedProject] = useState<string | null>('all')
+  const [sopSortOrder, setSopSortOrder] = useState<'asc' | 'desc' | null>(null)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [activeChannelWidth, setActiveChannelWidth] = useState(120)
+
+  const breadcrumb = getBreadcrumb(selectedProject)
+
+  const sortedProjects = [...sampleProjects].sort((a, b) => {
+    if (!sopSortOrder) return 0
+    const dateA = new Date(a.sop).getTime()
+    const dateB = new Date(b.sop).getTime()
+    return sopSortOrder === 'asc' ? dateA - dateB : dateB - dateA
+  })
+
+  const paginatedProjects = sortedProjects.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+  const handleSopSort = () => {
+    setSopSortOrder(prev => {
+      if (prev === null) return 'asc'
+      if (prev === 'asc') return 'desc'
+      return null
+    })
+  }
+
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startWidth = activeChannelWidth
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const newWidth = Math.max(60, startWidth + (moveEvent.clientX - startX))
+      setActiveChannelWidth(newWidth)
+    }
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
 
   return (
     <Box
@@ -291,6 +608,7 @@ function Project() {
           width: '260px',
           height: '100%',
           backgroundColor: 'var(--surface_container_lowest)',
+          borderRight: '1px solid var(--outline)',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 0,
@@ -324,18 +642,18 @@ function Project() {
         <Box sx={{ padding: '0 16px', paddingTop: '0', paddingBottom: '8px' }}>
           <Stack spacing={0}>
             <SidebarItem
-              icon={<Ic_home_filled size="16px" color="#111111" />}
+              icon={<Ic_folder_filled size="20px" color="#111111" />}
               label="프로젝트"
               isActive={true}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
-              icon={<Ic_file_regular size="16px" color="#6B6B6B" />}
+              icon={<Ic_file_filled size="20px" color="var(--surface_highest)" />}
               label="컨텐츠 요청"
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
             <SidebarItem
-              icon={<Ic_setting_regular size="16px" color="#6B6B6B" />}
+              icon={<Ic_person_filled size="20px" color="var(--surface_highest)" />}
               label="어드민"
               onClick={() => setActiveMenu('어드민')}
             />
@@ -351,12 +669,12 @@ function Project() {
         <Box sx={{ padding: '8px 16px' }}>
           <Stack spacing={0}>
             <SidebarItem
-              icon={<Ic_person_regular size="16px" color="#6B6B6B" />}
-              label="내 프로필"
-              onClick={() => setActiveMenu('내 프로필')}
+              icon={<Ic_setting_filled size="20px" color="var(--surface_highest)" />}
+              label="설정"
+              onClick={() => setActiveMenu('설정')}
             />
             <SidebarItem
-              icon={<Ic_alarm_regular size="16px" color="#6B6B6B" />}
+              icon={<Ic_alarm_filled size="20px" color="var(--surface_highest)" />}
               label="알림"
               badge={14}
               onClick={() => setActiveMenu('알림')}
@@ -424,7 +742,7 @@ function Project() {
               flexDirection: 'column',
               alignItems: 'flex-start',
               gap: '4px',
-              padding: '24px 24px 16px',
+              padding: '20px 20px 16px 24px',
               borderBottom: '1px solid var(--outline)',
               flexShrink: 0,
             }}
@@ -438,18 +756,38 @@ function Project() {
                 overflow: 'hidden',
               }}
             >
-              <Typography
+              <Box
                 sx={{
                   flex: 1,
                   minWidth: 0,
-                  fontSize: 24,
-                  fontWeight: 700,
-                  lineHeight: '36px',
-                  color: '#0A0A0A',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                 }}
               >
-                프로젝트
-              </Typography>
+                {breadcrumb.map((item, index) => (
+                  <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {index > 0 && (
+                      <Ic_arrow_forward_regular size="20px" color="var(--on_surface_mid)" />
+                    )}
+                    <Typography
+                      onClick={() => setSelectedProject(item.id)}
+                      sx={{
+                        fontSize: 24,
+                        fontWeight: 600,
+                        lineHeight: '36px',
+                        color: index === breadcrumb.length - 1 ? '#0A0A0A' : '#6B6B6B',
+                        cursor: index === breadcrumb.length - 1 ? 'default' : 'pointer',
+                        '&:hover': {
+                          textDecoration: index === breadcrumb.length - 1 ? 'none' : 'underline',
+                        },
+                      }}
+                    >
+                      {item.name}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
               <Button
                 hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
                 sx={{
@@ -481,10 +819,20 @@ function Project() {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '16px',
-                  padding: '16px 24px',
-                  overflowY: 'auto',
+                  padding: '16px 0 20px 20px',
+                  overflow: 'hidden',
                 }}
               >
+                <Box
+                  sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    overflowY: 'auto',
+                    paddingRight: '20px',
+                  }}
+                >
                 {/* 검색 필드 */}
                 <TextField
                   hdsProps={{ size: 'medium' }}
@@ -601,18 +949,18 @@ function Project() {
                     </TreeItem>
                   </SimpleTreeView>
                 </Box>
+                </Box>
               </Box>
             </Box>
 
             {/* 우측 패널 - 테이블 */}
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 20px 0' }}>
               {/* 테이블 헤더 영역 - 탭 구조 */}
               <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '16px 24px 0',
                   gap: '8px',
                 }}
               >
@@ -636,6 +984,9 @@ function Project() {
                       borderBottom: 'none',
                       gap: '16px !important',
                     },
+                    '& .MuiTab-root': {
+                      fontSize: '16px !important',
+                    },
                     '& .MuiTab-root:not(.Mui-selected)': {
                       borderBottom: 'none',
                       boxShadow: 'none',
@@ -645,8 +996,8 @@ function Project() {
                     },
                   }}
                 >
-                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '6px !important', pb: '8px !important', mr: '16px !important' }} />
-                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '6px !important', pb: '8px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label="컨텐츠" value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important' }} />
+                  <Tab hdsProps={{ size: 'medium' }} label="데이터 프랩" value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important' }} />
                 </Tabs>
 
                 {/* 우측: Select + 버튼 */}
@@ -679,149 +1030,153 @@ function Project() {
               </Box>
 
               {/* 테이블 */}
-              <Box sx={{ flex: 1, overflow: 'auto', padding: '16px 24px 0' }}>
-                <Box
-                  component="table"
-                  sx={{
-                    width: '100%',
-                    borderCollapse: 'collapse',
-                    '& th, & td': {
-                      padding: '12px 16px',
-                      textAlign: 'left',
-                      borderBottom: '1px solid #E9EAEC',
-                      fontSize: 14,
-                    },
-                    '& th': {
-                      fontWeight: 700,
-                      color: '#111111',
-                      backgroundColor: '#F9FAFB',
-                      position: 'sticky',
-                      top: 0,
-                    },
-                    '& td': {
-                      fontWeight: 400,
-                      color: '#111111',
-                    },
-                  }}
-                >
-                  <thead>
-                    <tr>
-                      <th>썸네일</th>
-                      <th>브랜드</th>
-                      <th>프로젝트 코드</th>
-                      <th>프로젝트 유형</th>
-                      <th>컨텐츠 유형</th>
-                      <th>파생 상품</th>
-                      <th>최근 수정일시</th>
-                      <th>SOP</th>
-                      <th>대상 채널</th>
-                      <th>활성 채널</th>
-                      <th>담당자</th>
-                      <th>코멘트</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sampleProjects.map((project) => (
-                      <tr key={project.id}>
-                        <td>
+              <TableContainer sx={{ flex: 1, paddingTop: '16px', overflow: 'auto', maxHeight: '100%' }}>
+                <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'auto', '& .MuiTableCell-root': { whiteSpace: 'nowrap' }, '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', height: '64px !important', minHeight: '64px !important', maxHeight: '64px !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { height: '64px !important', display: 'flex', alignItems: 'center' } }}>
+                  <TableHead>
+                    <TableRow sx={{ height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', lineHeight: '36px !important' }, '& .MuiTableCell-root .cell_text': { height: '36px !important', display: 'flex', alignItems: 'center' } }}>
+                      <TableCell sx={{ width: 106, minWidth: 106, maxWidth: 106 }}>썸네일</TableCell>
+                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>브랜드</TableCell>
+                      <TableCell sx={{ width: 160, minWidth: 160, maxWidth: 160 }}>프로젝트 코드</TableCell>
+                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>프로젝트 유형</TableCell>
+                      <TableCell sx={{ width: 100, minWidth: 100, maxWidth: 100 }}>컨텐츠 유형</TableCell>
+                      <TableCell sx={{ width: 120, minWidth: 120, maxWidth: 120 }}>
+                        <TableSortLabel
+                          active={sopSortOrder !== null}
+                          direction={sopSortOrder === 'asc' ? 'asc' : 'desc'}
+                          onClick={handleSopSort}
+                        >
+                          SOP
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>코멘트</TableCell>
+                      <TableCell sx={{ width: activeChannelWidth, minWidth: 60, position: 'relative' }}>
+                        활성 채널
+                        <Box
+                          onMouseDown={handleResizeStart}
+                          sx={{
+                            position: 'absolute',
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: '4px',
+                            cursor: 'col-resize',
+                            backgroundColor: 'transparent',
+                            '&:hover': {
+                              backgroundColor: 'var(--outline)',
+                            },
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>담당자</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {paginatedProjects.map((project) => (
+                      <TableRow key={project.id}>
+                        <TableCell>
                           <Box
+                            component="img"
+                            src={thumbnailImages[project.id % thumbnailImages.length]}
+                            alt="thumbnail"
                             sx={{
-                              width: 48,
-                              height: 48,
+                              width: 72,
+                              height: 42,
                               backgroundColor: '#F5F5F5',
                               borderRadius: '4px',
+                              border: '1px solid rgba(0, 0, 0, 0.15)',
+                              objectFit: 'cover',
                             }}
                           />
-                        </td>
-                        <td>{project.brand}</td>
-                        <td>{project.projectCode}</td>
-                        <td>
-                          <Box
-                            sx={{
-                              display: 'inline-block',
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              backgroundColor: '#F5F5F5',
-                              fontSize: 12,
-                            }}
-                          >
+                        </TableCell>
+                        <TableCell>{project.brand}</TableCell>
+                        <TableCell>{project.projectCode}</TableCell>
+                        <TableCell>
+                          <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'strong' }}>
                             {project.projectType}
-                          </Box>
-                        </td>
-                        <td>
-                          <Box
-                            sx={{
-                              display: 'inline-block',
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              backgroundColor: `${project.contentTypeColor}15`,
-                              color: project.contentTypeColor,
-                              fontSize: 12,
-                            }}
-                          >
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge hdsProps={{
+                            size: 'medium',
+                            style: project.contentType === 'VCM' ? 'info' : project.contentType === 'Web CC' ? 'purple' : project.contentType === '2D 360' ? 'success' : project.contentType === 'PI' ? 'yellow' : 'default',
+                            icon: true,
+                            type: 'strong'
+                          }}>
                             {project.contentType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{project.sop}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>
+                          {project.comments > 0 ? (
+                            <Badge hdsProps={{ size: 'small', style: 'default', isDigit: true }}>
+                              {project.comments}
+                            </Badge>
+                          ) : (
+                            <Box
+                              sx={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minWidth: 20,
+                                height: 20,
+                                padding: '1px 6px',
+                                borderRadius: '999px',
+                                border: '1px solid var(--outline)',
+                                backgroundColor: 'var(--on_surface_container_lowest)',
+                                color: 'var(--on_surface_container)',
+                                fontSize: 12,
+                                fontWeight: 500,
+                                boxSizing: 'border-box',
+                              }}
+                            >
+                              {project.comments}
+                            </Box>
+                          )}
+                        </TableCell>
+                        <TableCell sx={{ width: activeChannelWidth, maxWidth: activeChannelWidth, overflow: 'hidden' }}>
+                          <Box sx={{ overflow: 'hidden' }}>
+                            <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
+                              {project.activeChannels.map((channel, idx) => (
+                                <Badge key={idx} hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
+                                  {channel}
+                                </Badge>
+                              ))}
+                            </Stack>
                           </Box>
-                        </td>
-                        <td>{project.derivative}</td>
-                        <td>{project.modifiedDate}</td>
-                        <td>{project.sop}</td>
-                        <td>{project.targetChannel}</td>
-                        <td>
-                          <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap' }}>
-                            {project.activeChannels.map((channel, idx) => (
-                              <Box
+                        </TableCell>
+                        <TableCell>
+                          <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
+                            {project.manager.split(', ').map((name, idx) => (
+                              <Button
                                 key={idx}
-                                sx={{
-                                  padding: '2px 6px',
-                                  borderRadius: '4px',
-                                  backgroundColor: '#F5F5F5',
-                                  fontSize: 12,
+                                hdsProps={{ size: 'medium', type: 'text', icon: false, style: 'strong' }}
+                                onClick={() => {
+                                  // TODO: 어드민 페이지로 연결
+                                  console.log('Navigate to admin:', name)
                                 }}
                               >
-                                {channel}
-                              </Box>
+                                {name}{idx < project.manager.split(', ').length - 1 ? ',' : ''}
+                              </Button>
                             ))}
                           </Stack>
-                        </td>
-                        <td>{project.manager}</td>
-                        <td>
-                          <Box
-                            sx={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              minWidth: 24,
-                              height: 20,
-                              padding: '0 6px',
-                              borderRadius: '10px',
-                              backgroundColor: project.comments > 0 ? '#111111' : '#E9EAEC',
-                              color: project.comments > 0 ? '#fff' : '#69696E',
-                              fontSize: 12,
-                            }}
-                          >
-                            {project.comments}
-                          </Box>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </Box>
-              </Box>
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
               {/* 페이지네이션 */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  padding: '16px 24px',
-                  borderTop: '1px solid #E9EAEC',
-                  gap: '16px',
-                }}
-              >
-                <Typography sx={{ fontSize: 14, color: '#111111' }}>Rows per page</Typography>
-                <Typography sx={{ fontSize: 14, color: '#111111' }}>1-10/100</Typography>
-              </Box>
+              <TablePagination
+                component="div"
+                count={sortedProjects.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[10, 20, 50]}
+                hdsProps={{ size: 'small', isRowsPerPage: true }}
+              />
             </Box>
           </Box>
         </Box>
