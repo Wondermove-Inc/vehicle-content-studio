@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
@@ -568,6 +569,7 @@ function getBreadcrumb(projectId: string | null): { id: string; name: string }[]
 
 function Project() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
   const [contentType, setContentType] = useState('all')
@@ -966,21 +968,23 @@ function Project() {
         <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
-              icon={<Ic_folder_filled size="20px" color="#111111" />}
+              icon={<Ic_folder_filled size="20px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_highest)'} />}
               label={t('common.menu.project')}
-              isActive={true}
+              isActive={activeMenu === '프로젝트'}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
-              icon={<Ic_file_filled size="20px" color="var(--surface_highest)" />}
+              icon={<Ic_file_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_highest)'} />}
               label={t('common.menu.contentRequest')}
+              isActive={activeMenu === '컨텐츠 요청'}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
             <SidebarItem
-              icon={<Ic_person_filled size="20px" color="var(--surface_highest)" />}
+              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_highest)'} />}
               label={t('common.menu.admin')}
+              isActive={activeMenu === '어드민'}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('어드민')}
             />
@@ -1145,6 +1149,49 @@ function Project() {
           transition: 'max-width 0.2s ease',
         }}
       >
+        {activeMenu === '컨텐츠 요청' ? (
+          <Box
+            sx={{
+              flex: 1,
+              width: '100%',
+              minWidth: 0,
+              backgroundColor: '#ffffff',
+              borderRadius: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
+              position: 'relative',
+              zIndex: 1,
+            }}
+          >
+            {/* 컨텐츠 요청 헤더 */}
+            <Box sx={{ padding: '20px 20px 16px 24px', borderBottom: '1px solid var(--outline)' }}>
+              <Typography
+                sx={{
+                  fontSize: 24,
+                  fontWeight: 600,
+                  lineHeight: '36px',
+                  color: 'var(--on_surface)',
+                }}
+              >
+                {t('common.menu.contentRequest')}
+              </Typography>
+            </Box>
+            {/* 컨텐츠 요청 본문 - Jira iframe */}
+            <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+              <iframe
+                src="https://your-jira-instance.atlassian.net"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                }}
+                title="Jira Service"
+              />
+            </Box>
+          </Box>
+        ) : (
         <Box
           sx={{
             flex: 1,
@@ -1766,6 +1813,7 @@ function Project() {
             </Box>
           </Box>
         </Box>
+        )}
       </Box>
 
       {/* 설정 다이얼로그 */}
