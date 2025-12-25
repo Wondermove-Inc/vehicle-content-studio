@@ -10,6 +10,7 @@ setConfig({ useDefaultHdsProps: true })
 import Login from './pages/Login'
 import Project from './pages/Project'
 import ContentRequest from './pages/ContentRequest'
+import ContentDetail from './pages/ContentDetail'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: '/project',
     element: <Project />,
+  },
+  {
+    path: '/project/content/:contentId',
+    element: <ContentDetail />,
   },
   {
     path: '/content-request',

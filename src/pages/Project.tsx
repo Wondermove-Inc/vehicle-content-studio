@@ -17,6 +17,7 @@ import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogPaper, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
+  Ic_writing_filled,
   Ic_file_filled,
   Ic_person_filled,
   Ic_alarm_filled,
@@ -921,7 +922,6 @@ function Project() {
           width: isSidebarCollapsed ? '72px' : '260px',
           height: '100%',
           backgroundColor: 'var(--surface_container_lowest)',
-          borderRight: '1px solid var(--outline)',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: 0,
@@ -974,21 +974,21 @@ function Project() {
         <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
-              icon={<Ic_folder_filled size="20px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_highest)'} />}
+              icon={<Ic_folder_filled size="20px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
               label={t('common.menu.project')}
               isActive={activeMenu === '프로젝트'}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('프로젝트')}
             />
             <SidebarItem
-              icon={<Ic_file_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_highest)'} />}
+              icon={<Ic_writing_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
               label={t('common.menu.contentRequest')}
               isActive={activeMenu === '컨텐츠 요청'}
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
             <SidebarItem
-              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_highest)'} />}
+              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
               label={t('common.menu.admin')}
               isActive={activeMenu === '어드민'}
               collapsed={isSidebarCollapsed}
@@ -1006,13 +1006,13 @@ function Project() {
         <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
           <Stack spacing={0}>
             <SidebarItem
-              icon={<Ic_setting_filled size="20px" color="var(--surface_highest)" />}
+              icon={<Ic_setting_filled size="20px" color="var(--surface_high)" />}
               label={t('common.menu.settings')}
               collapsed={isSidebarCollapsed}
               onClick={() => setIsSettingsOpen(true)}
             />
             <SidebarItem
-              icon={<Ic_alarm_filled size="20px" color="var(--surface_highest)" />}
+              icon={<Ic_alarm_filled size="20px" color="var(--surface_high)" />}
               label={t('common.menu.notification')}
               badge={14}
               collapsed={isSidebarCollapsed}
@@ -1062,7 +1062,7 @@ function Project() {
                 transform: isFavoritesExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
               }}
             >
-              <Ic_arrow_forward_regular size="20px" color="var(--surface_highest)" />
+              <Ic_arrow_forward_regular size="20px" color="var(--surface_high)" />
             </Box>
             <Typography
               sx={{
@@ -1705,7 +1705,17 @@ function Project() {
                   </TableHead>
                   <TableBody>
                     {paginatedProjects.map((project) => (
-                      <TableRow key={project.id}>
+                      <TableRow
+                        key={project.id}
+                        onClick={() => navigate(`/project/content/${project.id}`)}
+                        sx={{
+                          cursor: 'pointer',
+                          transition: 'background-color 0.15s ease',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 44, 95, 0.04)',
+                          },
+                        }}
+                      >
                         <TableCell>
                           <Box
                             component="img"
@@ -1783,7 +1793,8 @@ function Project() {
                               <Button
                                 key={idx}
                                 hdsProps={{ size: 'medium', type: 'text', icon: false, style: 'strong' }}
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation()
                                   // TODO: 어드민 페이지로 연결
                                   console.log('Navigate to admin:', name)
                                 }}
@@ -1799,14 +1810,6 @@ function Project() {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              cursor: 'pointer',
-                              '&:hover': {
-                                opacity: 0.7,
-                              },
-                            }}
-                            onClick={() => {
-                              // TODO: 상세 페이지로 이동
-                              console.log('Navigate to detail:', project.id)
                             }}
                           >
                             <Ic_arrow_forward_regular size="20px" color="var(--on_surface_mid)" />
