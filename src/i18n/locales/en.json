@@ -99,5 +99,74 @@
       "languageKorean": "Korean",
       "languageEnglish": "English"
     }
+  },
+  "contentDetail": {
+    "tabs": {
+      "preview": "Preview",
+      "contentSettings": "Content Settings",
+      "visualConceptCreation": "Visual Concept Creation",
+      "visualProduction": "Visual Production"
+    },
+    "button": {
+      "bulkDownload": "Bulk Download"
+    },
+    "filter": {
+      "country": {
+        "all": "All Countries",
+        "kr": "Korea",
+        "us": "United States",
+        "eu": "Europe"
+      },
+      "fsc": {
+        "all": "All FSC",
+        "fsc1": "FSC-1",
+        "fsc2": "FSC-2"
+      },
+      "exterior": {
+        "all": "All Exterior",
+        "white": "White",
+        "black": "Black",
+        "silver": "Silver"
+      },
+      "interior": {
+        "all": "All Interior",
+        "black": "Black",
+        "beige": "Beige"
+      },
+      "format": {
+        "all": "All Formats",
+        "png": "PNG",
+        "jpg": "JPG",
+        "webp": "WebP"
+      },
+      "sort": {
+        "cameraAsc": "Camera ID (Low to High)",
+        "cameraDesc": "Camera ID (High to Low)",
+        "recent": "Recently Modified",
+        "commentDesc": "Most Comments"
+      }
+    },
+    "modifiedTime": {
+      "justNow": "Just modified",
+      "oneHourAgo": "Modified 1 hour ago",
+      "threeHoursAgo": "Modified 3 hours ago",
+      "oneDayAgo": "Modified 1 day ago",
+      "twoDaysAgo": "Modified 2 days ago",
+      "threeDaysAgo": "Modified 3 days ago",
+      "fiveDaysAgo": "Modified 5 days ago",
+      "oneWeekAgo": "Modified 1 week ago"
+    }
+  },
+  "preview": {
+    "controls": {
+      "zoomIn": "Zoom In",
+      "zoomOut": "Zoom Out",
+      "resetZoom": "Reset Zoom",
+      "previous": "Previous Image",
+      "next": "Next Image"
+    },
+    "imageInfo": {
+      "currentPosition": "{{current}} / {{total}}"
+    }
   }
 }

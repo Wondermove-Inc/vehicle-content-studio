@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Project from './pages/Project'
 import ContentRequest from './pages/ContentRequest'
 import ContentDetail from './pages/ContentDetail'
+import Preview from './pages/Preview'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: '/project/content/:contentId',
     element: <ContentDetail />,
+  },
+  {
+    path: '/preview/:imageIndex',
+    element: <Preview />,
   },
   {
     path: '/content-request',

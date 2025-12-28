@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -9,6 +9,9 @@ import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
 import Card from '@hmg-fe/hmg-design-system/Card'
+import CardActionArea from '@hmg-fe/hmg-design-system/CardActionArea'
+import CardContent from '@hmg-fe/hmg-design-system/CardContent'
+import Badge from '@hmg-fe/hmg-design-system/Badge'
 import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, List, ListItem, FormControlLabel } from '@hmg-fe/hmg-design-system'
 import { Ic_arrow_forward_regular, Ic_download_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
@@ -139,6 +142,9 @@ const projectCodeToTreeId: Record<string, string> = {
   'G90_26MY': 'g90-26-my',
   'G90_25MY': 'g90-25-my',
   'G90_24FL': 'g90-24-fl',
+  'GV70_26MY': 'gv70-26-my',
+  'SANTA_FE_25': 'santa-fe-25',
+  'SPORTAGE_26': 'sportage-26',
 }
 
 // 트리 아이템 ID -> 이름 매핑
@@ -161,6 +167,9 @@ const projectNames: Record<string, string> = {
   'g90-26-my': 'G90_26_MY',
   'g90-25-my': 'G90_25_MY',
   'g90-24-fl': 'G90_24_FL',
+  'gv70-26-my': 'GV70_26MY',
+  'santa-fe-25': 'SANTA_FE_25',
+  'sportage-26': 'SPORTAGE_26',
 }
 
 // 부모 매핑
@@ -186,76 +195,77 @@ const parentMap: Record<string, string> = {
   'g90-26-my': 'genesis',
   'g90-25-my': 'genesis',
   'g90-24-fl': 'genesis',
-}
-
-// Breadcrumb 생성 함수
-function getBreadcrumb(projectId: string | null, contentType: string): { id: string; name: string }[] {
-  const path: { id: string; name: string }[] = [{ id: 'all', name: '프로젝트' }]
-
-  if (!projectId || projectId === 'all') {
-    return path
-  }
-
-  const ancestors: string[] = []
-  let current = projectId
-  while (current && current !== 'all') {
-    ancestors.unshift(current)
-    current = parentMap[current]
-  }
-
-  for (const id of ancestors) {
-    if (id === 'hyundai') {
-      path.push({ id, name: '현대자동차' })
-    } else if (id === 'kia') {
-      path.push({ id, name: '기아' })
-    } else if (id === 'genesis') {
-      path.push({ id, name: '제네시스' })
-    } else {
-      path.push({ id, name: projectNames[id] || id })
-    }
-  }
-
-  // 컨텐츠 유형 추가
-  path.push({ id: 'content', name: contentType })
-
-  return path
+  'gv70-26-my': 'genesis',
+  'santa-fe-25': 'hyundai',
+  'sportage-26': 'kia',
 }
 
 function ContentDetail() {
   const { contentId } = useParams<{ contentId: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t, i18n } = useTranslation()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('미리보기')
+  const [activeTab, setActiveTab] = useState('preview')
 
   // 필터 상태
   const [country, setCountry] = useState('all')
   const [fsc, setFsc] = useState('all')
   const [exterior, setExterior] = useState('all')
   const [interior, setInterior] = useState('all')
-  const [cameraId, setCameraId] = useState('all')
+  const [sortOrder, setSortOrder] = useState('camera_asc')
   const [format, setFormat] = useState('all')
 
   // contentId로 프로젝트 데이터 찾기
   const contentData = sampleProjects.find(p => p.id === Number(contentId))
 
-  // 프로젝트 ID 찾기
-  const projectId = contentData ? projectCodeToTreeId[contentData.projectCode] : null
+  // URL에서 프로젝트 ID 가져오기
+  const projectFromUrl = searchParams.get('project')
+
+  // 프로젝트 ID 결정 로직
+  // 1. URL 파라미터가 있고 'all'이 아닌 경우 사용
+  // 2. 그렇지 않으면 contentData에서 projectCode로 찾기
+  const projectId = (projectFromUrl && projectFromUrl !== 'all')
+    ? projectFromUrl
+    : (contentData ? projectCodeToTreeId[contentData.projectCode] : null)
+
+  // Breadcrumb 생성 함수
+  const getBreadcrumb = (projectId: string | null, contentType: string): { id: string; name: string }[] => {
+    const path: { id: string; name: string }[] = [{ id: 'all', name: t('project.header.title') }]
+
+    if (!projectId || projectId === 'all') {
+      return path
+    }
+
+    const ancestors: string[] = []
+    let current = projectId
+    while (current && current !== 'all') {
+      ancestors.unshift(current)
+      current = parentMap[current]
+    }
+
+    for (const id of ancestors) {
+      if (id === 'hyundai') {
+        path.push({ id, name: t('common.brand.hyundai') })
+      } else if (id === 'kia') {
+        path.push({ id, name: t('common.brand.kia') })
+      } else if (id === 'genesis') {
+        path.push({ id, name: t('common.brand.genesis') })
+      } else {
+        path.push({ id, name: projectNames[id] || id })
+      }
+    }
+
+    // 컨텐츠 유형 추가 (contentType이 이미 VCM, Web CC 등으로 되어 있으므로 그대로 사용)
+    path.push({ id: 'content', name: contentType })
+
+    return path
+  }
 
   // Breadcrumb 생성
-  const breadcrumb = contentData ? getBreadcrumb(projectId, contentData.contentType) : [{ id: 'all', name: '프로젝트' }]
-
-  // 브랜드명 번역 함수
-  const getBrandLabel = (brand: string): string => {
-    const brandMap: Record<string, string> = {
-      '현대자동차': t('common.brand.hyundai'),
-      '기아': t('common.brand.kia'),
-      '제네시스': t('common.brand.genesis'),
-    }
-    return brandMap[brand] || brand
-  }
+  const breadcrumb = contentData ? getBreadcrumb(projectId, contentData.contentType) : [{ id: 'all', name: t('project.header.title') }]
 
   const handleBreadcrumbClick = (itemId: string) => {
     if (itemId === 'content') return // 현재 페이지이므로 클릭 불가
@@ -417,10 +427,10 @@ function ContentDetail() {
                 },
               }}
             >
-              <Tab hdsProps={{ size: 'medium' }} label="미리보기" value="미리보기" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="컨텐츠 설정" value="컨텐츠 설정" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="비주얼 컨셉 제작" value="비주얼 컨셉 제작" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="비주얼 프로덕션" value="비주얼 프로덕션" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.preview')} value="preview" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.contentSettings')} value="contentSettings" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.visualConceptCreation')} value="visualConceptCreation" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.visualProduction')} value="visualProduction" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
             </Tabs>
             <Button
               hdsProps={{
@@ -433,14 +443,14 @@ function ContentDetail() {
                 flexShrink: 0,
               }}
             >
-              일괄 다운로드
+              {t('contentDetail.button.bulkDownload')}
             </Button>
           </Box>
 
           {/* 컨텐츠 필터 섹션 */}
           <Box
             sx={{
-              padding: '16px 20px',
+              padding: '16px 20px 0 20px',
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
@@ -454,10 +464,10 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">국가 전체</MenuItem>
-              <MenuItem hdsProps value="kr">한국</MenuItem>
-              <MenuItem hdsProps value="us">미국</MenuItem>
-              <MenuItem hdsProps value="eu">유럽</MenuItem>
+              <MenuItem hdsProps value="all">{t('contentDetail.filter.country.all')}</MenuItem>
+              <MenuItem hdsProps value="kr">{t('contentDetail.filter.country.kr')}</MenuItem>
+              <MenuItem hdsProps value="us">{t('contentDetail.filter.country.us')}</MenuItem>
+              <MenuItem hdsProps value="eu">{t('contentDetail.filter.country.eu')}</MenuItem>
             </Select>
 
             {/* FSC */}
@@ -467,9 +477,9 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">FSC 전체</MenuItem>
-              <MenuItem hdsProps value="fsc1">FSC-1</MenuItem>
-              <MenuItem hdsProps value="fsc2">FSC-2</MenuItem>
+              <MenuItem hdsProps value="all">{t('contentDetail.filter.fsc.all')}</MenuItem>
+              <MenuItem hdsProps value="fsc1">{t('contentDetail.filter.fsc.fsc1')}</MenuItem>
+              <MenuItem hdsProps value="fsc2">{t('contentDetail.filter.fsc.fsc2')}</MenuItem>
             </Select>
 
             {/* 외장 */}
@@ -479,10 +489,10 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">외장 전체</MenuItem>
-              <MenuItem hdsProps value="white">흰색</MenuItem>
-              <MenuItem hdsProps value="black">검정</MenuItem>
-              <MenuItem hdsProps value="silver">은색</MenuItem>
+              <MenuItem hdsProps value="all">{t('contentDetail.filter.exterior.all')}</MenuItem>
+              <MenuItem hdsProps value="white">{t('contentDetail.filter.exterior.white')}</MenuItem>
+              <MenuItem hdsProps value="black">{t('contentDetail.filter.exterior.black')}</MenuItem>
+              <MenuItem hdsProps value="silver">{t('contentDetail.filter.exterior.silver')}</MenuItem>
             </Select>
 
             {/* 내장 */}
@@ -492,21 +502,9 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">내장 전체</MenuItem>
-              <MenuItem hdsProps value="black">블랙</MenuItem>
-              <MenuItem hdsProps value="beige">베이지</MenuItem>
-            </Select>
-
-            {/* 카메라 ID */}
-            <Select
-              value={cameraId}
-              onChange={(e) => setCameraId(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '160px' }}
-            >
-              <MenuItem hdsProps value="all">카메라 ID 전체</MenuItem>
-              <MenuItem hdsProps value="cam1">Camera-01</MenuItem>
-              <MenuItem hdsProps value="cam2">Camera-02</MenuItem>
+              <MenuItem hdsProps value="all">{t('contentDetail.filter.interior.all')}</MenuItem>
+              <MenuItem hdsProps value="black">{t('contentDetail.filter.interior.black')}</MenuItem>
+              <MenuItem hdsProps value="beige">{t('contentDetail.filter.interior.beige')}</MenuItem>
             </Select>
 
             {/* 포맷 */}
@@ -516,10 +514,23 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">포맷 전체</MenuItem>
-              <MenuItem hdsProps value="png">PNG</MenuItem>
-              <MenuItem hdsProps value="jpg">JPG</MenuItem>
-              <MenuItem hdsProps value="webp">WebP</MenuItem>
+              <MenuItem hdsProps value="all">{t('contentDetail.filter.format.all')}</MenuItem>
+              <MenuItem hdsProps value="png">{t('contentDetail.filter.format.png')}</MenuItem>
+              <MenuItem hdsProps value="jpg">{t('contentDetail.filter.format.jpg')}</MenuItem>
+              <MenuItem hdsProps value="webp">{t('contentDetail.filter.format.webp')}</MenuItem>
+            </Select>
+
+            {/* 정렬 순서 */}
+            <Select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '180px' }}
+            >
+              <MenuItem hdsProps value="camera_asc">{t('contentDetail.filter.sort.cameraAsc')}</MenuItem>
+              <MenuItem hdsProps value="camera_desc">{t('contentDetail.filter.sort.cameraDesc')}</MenuItem>
+              <MenuItem hdsProps value="recent">{t('contentDetail.filter.sort.recent')}</MenuItem>
+              <MenuItem hdsProps value="comment_desc">{t('contentDetail.filter.sort.commentDesc')}</MenuItem>
             </Select>
           </Box>
 
@@ -527,7 +538,7 @@ function ContentDetail() {
           <Box
             sx={{
               flex: 1,
-              padding: '0 20px 20px 20px',
+              padding: '20px',
               overflow: 'auto',
               '&::-webkit-scrollbar': {
                 width: '6px',
@@ -550,54 +561,118 @@ function ContentDetail() {
               }}
             >
               {/* 샘플 차 이미지 카드들 */}
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
-                <Card
-                  key={index}
-                  sx={{
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.12)',
-                    },
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={thumbnailImages[(index - 1) % thumbnailImages.length]}
-                    alt={`Car ${index}`}
+              {(() => {
+                // 카드 인덱스 배열 생성
+                const cardIndices = Array.from({ length: 16 }, (_, i) => i + 1)
+
+                // 정렬 적용
+                const sortedIndices = [...cardIndices].sort((a, b) => {
+                  switch (sortOrder) {
+                    case 'camera_asc':
+                      return a - b
+                    case 'camera_desc':
+                      return b - a
+                    case 'recent':
+                      // 수정일 패턴 인덱스가 낮을수록 최근
+                      return ((a - 1) % 8) - ((b - 1) % 8)
+                    case 'comment_desc':
+                      // 코멘트 개수가 많은 순
+                      const commentA = ((a - 1) % 15) + 1
+                      const commentB = ((b - 1) % 15) + 1
+                      return commentB - commentA
+                    default:
+                      return a - b
+                  }
+                })
+
+                // 수정일 생성 로직
+                const getModifiedTime = (idx: number) => {
+                  const patterns = [
+                    t('contentDetail.modifiedTime.justNow'),
+                    t('contentDetail.modifiedTime.oneHourAgo'),
+                    t('contentDetail.modifiedTime.threeHoursAgo'),
+                    t('contentDetail.modifiedTime.oneDayAgo'),
+                    t('contentDetail.modifiedTime.twoDaysAgo'),
+                    t('contentDetail.modifiedTime.threeDaysAgo'),
+                    t('contentDetail.modifiedTime.fiveDaysAgo'),
+                    t('contentDetail.modifiedTime.oneWeekAgo'),
+                  ]
+                  return patterns[idx % patterns.length]
+                }
+
+                return sortedIndices.map((index) => {
+                  // 코멘트 개수 생성 로직 (1-15 사이의 랜덤한 값)
+                  const commentCount = ((index - 1) % 15) + 1
+
+                  return (
+                  <Card
+                    key={index}
+                    hdsProps={{ type: 'action' }}
                     sx={{
-                      width: '100%',
-                      height: '180px',
-                      objectFit: 'cover',
-                      backgroundColor: '#F5F5F5',
+                      position: 'relative',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.12)',
+                      },
                     }}
-                  />
-                  <Box sx={{ padding: '16px' }}>
-                    <Typography
+                  >
+                    {/* 코멘트 개수 Badge */}
+                    <Badge
+                      hdsProps={{ size: 'medium', style: 'default', isDigit: true }}
                       sx={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        color: 'var(--on_surface)',
-                        marginBottom: '8px',
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        zIndex: 1,
                       }}
                     >
-                      {contentData?.contentType} - View {index}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        color: 'var(--on_surface_mid)',
+                      {commentCount}
+                    </Badge>
+                    <CardActionArea
+                      hdsProps
+                      onClick={() => {
+                        if (!contentData) return
+                        navigate(`/preview/${index}`, {
+                          state: {
+                            contentData,
+                            projectId,
+                            contentType: contentData.contentType,
+                            totalImages: 16,
+                          },
+                        })
                       }}
                     >
-                      Camera-{String(index).padStart(2, '0')} • 외장: 흰색 • 내장: 블랙
-                    </Typography>
-                  </Box>
+                      <CardContent
+                        hdsProps={{
+                          title: `C${String(index).padStart(3, '0')}`,
+                          description: getModifiedTime(index - 1),
+                        image: (
+                          <Box
+                            component="img"
+                            src={thumbnailImages[(contentData?.id ?? 0) % thumbnailImages.length]}
+                            alt={`Car ${index}`}
+                            sx={{
+                              width: 'calc(100% + 32px)',
+                              height: '140px',
+                              objectFit: 'cover',
+                              margin: '0 -16px 0 -16px',
+                            }}
+                          />
+                        ),
+                      }}
+                      sx={{
+                        padding: '0 16px 16px 16px !important',
+                        '& .card_title': {
+                          paddingTop: '12px',
+                        },
+                      }}
+                    />
+                  </CardActionArea>
                 </Card>
-              ))}
+                  )
+                })
+              })()}
             </Box>
           </Box>
         </Box>

@@ -99,5 +99,74 @@
       "languageKorean": "국문",
       "languageEnglish": "영문"
     }
+  },
+  "contentDetail": {
+    "tabs": {
+      "preview": "미리보기",
+      "contentSettings": "컨텐츠 설정",
+      "visualConceptCreation": "비주얼 컨셉 제작",
+      "visualProduction": "비주얼 프로덕션"
+    },
+    "button": {
+      "bulkDownload": "일괄 다운로드"
+    },
+    "filter": {
+      "country": {
+        "all": "국가 전체",
+        "kr": "한국",
+        "us": "미국",
+        "eu": "유럽"
+      },
+      "fsc": {
+        "all": "FSC 전체",
+        "fsc1": "FSC-1",
+        "fsc2": "FSC-2"
+      },
+      "exterior": {
+        "all": "외장 전체",
+        "white": "흰색",
+        "black": "검정",
+        "silver": "은색"
+      },
+      "interior": {
+        "all": "내장 전체",
+        "black": "블랙",
+        "beige": "베이지"
+      },
+      "format": {
+        "all": "포맷 전체",
+        "png": "PNG",
+        "jpg": "JPG",
+        "webp": "WebP"
+      },
+      "sort": {
+        "cameraAsc": "낮은 카메라 ID 순",
+        "cameraDesc": "높은 카메라 ID 순",
+        "recent": "최근 수정된 순",
+        "commentDesc": "코멘트 많은 순"
+      }
+    },
+    "modifiedTime": {
+      "justNow": "방금 전 수정",
+      "oneHourAgo": "1시간 전 수정",
+      "threeHoursAgo": "3시간 전 수정",
+      "oneDayAgo": "1일 전 수정",
+      "twoDaysAgo": "2일 전 수정",
+      "threeDaysAgo": "3일 전 수정",
+      "fiveDaysAgo": "5일 전 수정",
+      "oneWeekAgo": "1주일 전 수정"
+    }
+  },
+  "preview": {
+    "controls": {
+      "zoomIn": "확대",
+      "zoomOut": "축소",
+      "resetZoom": "원본 크기",
+      "previous": "이전 이미지",
+      "next": "다음 이미지"
+    },
+    "imageInfo": {
+      "currentPosition": "{{current}} / {{total}}"
+    }
   }
 }

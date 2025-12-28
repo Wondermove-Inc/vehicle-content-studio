@@ -591,12 +591,26 @@ function Project() {
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
-  const [favorites, setFavorites] = useState<Set<string>>(new Set([
-    'hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'
-  ]))
+  // localStorage에서 즐겨찾기 초기화
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('project-favorites')
+    if (saved) {
+      try {
+        return new Set(JSON.parse(saved))
+      } catch {
+        return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
+      }
+    }
+    return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
+  })
   const [expandedItems, setExpandedItems] = useState<string[]>([
     'hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24'
   ])
+
+  // 즐겨찾기가 변경되면 localStorage에 저장
+  useEffect(() => {
+    localStorage.setItem('project-favorites', JSON.stringify(Array.from(favorites)))
+  }, [favorites])
 
   // 즐겨찾기 토글 함수
   const toggleFavorite = (projectId: string) => {
@@ -1723,7 +1737,7 @@ function Project() {
                     {paginatedProjects.map((project) => (
                       <TableRow
                         key={project.id}
-                        onClick={() => navigate(`/project/content/${project.id}`)}
+                        onClick={() => navigate(`/project/content/${project.id}?project=${selectedProject}`)}
                         sx={{
                           cursor: 'pointer',
                           transition: 'background-color 0.15s ease',

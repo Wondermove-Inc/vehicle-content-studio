@@ -91,6 +91,46 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
 
+  // localStorage에서 즐겨찾기 읽기
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem('project-favorites')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        return ['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my']
+      }
+    }
+    return ['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my']
+  })
+
+  // localStorage 변경 감지
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('project-favorites')
+      if (saved) {
+        try {
+          setFavorites(JSON.parse(saved))
+        } catch {
+          // 파싱 오류 시 무시
+        }
+      }
+    }
+
+    // storage 이벤트 리스너 등록
+    window.addEventListener('storage', handleStorageChange)
+
+    // 같은 페이지 내에서의 변경도 감지하기 위한 interval
+    const interval = setInterval(() => {
+      handleStorageChange()
+    }, 500)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      clearInterval(interval)
+    }
+  }, [])
+
   // 외부에서 collapsed 상태가 변경되면 동기화
   useEffect(() => {
     setIsSidebarCollapsed(isCollapsed)
@@ -115,6 +155,8 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
     onMenuChange(menu)
     if (menu === '프로젝트') {
       navigate('/project')
+    } else if (menu === '컨텐츠 요청') {
+      navigate('/content-request')
     }
   }
 
@@ -127,8 +169,6 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
     'gv80-26-my': 'GV80_26_MY',
     'g90-25-my': 'G90_25_MY',
   }
-
-  const favorites = ['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my']
 
   return (
     <Box
@@ -307,6 +347,10 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
               favorites.map((id) => (
                 <Box
                   key={id}
+                  onClick={() => {
+                    onMenuChange('프로젝트')
+                    navigate(`/project?selected=${id}`)
+                  }}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
