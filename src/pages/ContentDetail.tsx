@@ -453,7 +453,7 @@ function ContentDetail() {
               padding: '16px 20px 0 20px',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
+              gap: '8px',
               flexWrap: 'wrap',
             }}
           >
@@ -538,7 +538,9 @@ function ContentDetail() {
           <Box
             sx={{
               flex: 1,
-              padding: '20px',
+              pt: '16px',
+              px: '20px',
+              pb: '20px',
               overflow: 'auto',
               '&::-webkit-scrollbar': {
                 width: '6px',
@@ -557,7 +559,7 @@ function ContentDetail() {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                gap: '20px',
+                gap: '16px',
               }}
             >
               {/* 샘플 차 이미지 카드들 */}
