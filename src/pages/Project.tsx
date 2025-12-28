@@ -585,6 +585,8 @@ function Project() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
+  const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
+  const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
   const [favorites, setFavorites] = useState<Set<string>>(new Set([
     'hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'
   ]))
@@ -1530,7 +1532,11 @@ function Project() {
                                           isIconOnly: true,
                                         }}
                                         aria-label="설정"
-                                        onClick={() => console.log('Settings clicked:', project.id)}
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          setSelectedProjectForSettings(project.id)
+                                          setIsProjectSettingsOpen(true)
+                                        }}
                                       />
                                     </Box>
                                   </Box>
@@ -1948,6 +1954,53 @@ function Project() {
             onClick={() => {
               // TODO: 컨텐츠 추가 로직
               setIsAddContentOpen(false)
+            }}
+          >
+            {t('common.button.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 프로젝트 설정 다이얼로그 */}
+      <Dialog
+        open={isProjectSettingsOpen}
+        onClose={() => {
+          setIsProjectSettingsOpen(false)
+          setSelectedProjectForSettings(null)
+        }}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle hdsProps={{
+          closeIcon: true,
+          onClose: () => {
+            setIsProjectSettingsOpen(false)
+            setSelectedProjectForSettings(null)
+          }
+        }}>
+          프로젝트 설정 {selectedProjectForSettings && `- ${projectNames[selectedProjectForSettings] || selectedProjectForSettings}`}
+        </DialogTitle>
+        <DialogContent hdsProps>
+          <Box sx={{ padding: '20px 0' }}>
+            {/* 내용은 나중에 추가 */}
+            <Typography sx={{ color: 'var(--on_surface_mid)' }}>
+              프로젝트 설정 내용이 구현될 예정입니다.
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions hdsProps>
+          <Button hdsProps onClick={() => {
+            setIsProjectSettingsOpen(false)
+            setSelectedProjectForSettings(null)
+          }}>
+            {t('common.button.cancel')}
+          </Button>
+          <Button
+            hdsProps={{ type: 'fill', style: 'primary' }}
+            onClick={() => {
+              // TODO: 프로젝트 설정 저장 로직
+              setIsProjectSettingsOpen(false)
+              setSelectedProjectForSettings(null)
             }}
           >
             {t('common.button.save')}
