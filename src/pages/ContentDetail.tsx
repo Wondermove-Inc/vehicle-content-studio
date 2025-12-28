@@ -10,7 +10,7 @@ import Tabs from '@hmg-fe/hmg-design-system/Tabs'
 import Tab from '@hmg-fe/hmg-design-system/Tab'
 import Card from '@hmg-fe/hmg-design-system/Card'
 import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, List, ListItem, FormControlLabel } from '@hmg-fe/hmg-design-system'
-import { Ic_arrow_forward_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { Ic_arrow_forward_regular, Ic_download_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
 
 // 프로젝트 데이터 타입 (Project.tsx와 동일)
@@ -259,7 +259,14 @@ function ContentDetail() {
 
   const handleBreadcrumbClick = (itemId: string) => {
     if (itemId === 'content') return // 현재 페이지이므로 클릭 불가
-    navigate('/project')
+
+    // 클릭한 항목에 따라 적절한 경로로 이동
+    if (itemId === 'all') {
+      navigate('/project')
+    } else {
+      // 선택된 프로젝트 ID를 URL 쿼리 파라미터로 전달
+      navigate(`/project?selected=${itemId}`)
+    }
   }
 
   return (
@@ -366,98 +373,14 @@ function ContentDetail() {
             </Box>
           </Box>
 
-          {/* 컨텐츠 필터 섹션 */}
-          <Box
-            sx={{
-              padding: '16px 24px',
-              borderBottom: '1px solid var(--outline)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {/* 국가 */}
-            <Select
-              value={country}
-              onChange={(e) => setCountry(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">국가: 전체</MenuItem>
-              <MenuItem hdsProps value="kr">한국</MenuItem>
-              <MenuItem hdsProps value="us">미국</MenuItem>
-              <MenuItem hdsProps value="eu">유럽</MenuItem>
-            </Select>
-
-            {/* FSC */}
-            <Select
-              value={fsc}
-              onChange={(e) => setFsc(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">FSC: 전체</MenuItem>
-              <MenuItem hdsProps value="fsc1">FSC-1</MenuItem>
-              <MenuItem hdsProps value="fsc2">FSC-2</MenuItem>
-            </Select>
-
-            {/* 외장 */}
-            <Select
-              value={exterior}
-              onChange={(e) => setExterior(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">외장: 전체</MenuItem>
-              <MenuItem hdsProps value="white">흰색</MenuItem>
-              <MenuItem hdsProps value="black">검정</MenuItem>
-              <MenuItem hdsProps value="silver">은색</MenuItem>
-            </Select>
-
-            {/* 내장 */}
-            <Select
-              value={interior}
-              onChange={(e) => setInterior(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">내장: 전체</MenuItem>
-              <MenuItem hdsProps value="black">블랙</MenuItem>
-              <MenuItem hdsProps value="beige">베이지</MenuItem>
-            </Select>
-
-            {/* 카메라 ID */}
-            <Select
-              value={cameraId}
-              onChange={(e) => setCameraId(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '160px' }}
-            >
-              <MenuItem hdsProps value="all">카메라 ID: 전체</MenuItem>
-              <MenuItem hdsProps value="cam1">Camera-01</MenuItem>
-              <MenuItem hdsProps value="cam2">Camera-02</MenuItem>
-            </Select>
-
-            {/* 포맷 */}
-            <Select
-              value={format}
-              onChange={(e) => setFormat(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">포맷: 전체</MenuItem>
-              <MenuItem hdsProps value="png">PNG</MenuItem>
-              <MenuItem hdsProps value="jpg">JPG</MenuItem>
-              <MenuItem hdsProps value="webp">WebP</MenuItem>
-            </Select>
-          </Box>
-
           {/* 탭 영역 */}
           <Box
             sx={{
-              padding: '0 24px',
-              borderBottom: '1px solid var(--outline)',
+              padding: '16px 20px 0 20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
             }}
           >
             <Tabs
@@ -495,17 +418,116 @@ function ContentDetail() {
               }}
             >
               <Tab hdsProps={{ size: 'medium' }} label="미리보기" value="미리보기" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="비주얼 컨셉 제작" value="비주얼 컨셉 제작" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="비주얼 프로덕션" value="비주얼 프로덕션" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label="컨텐츠 설정" value="컨텐츠 설정" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label="컨텐츠 설정" value="컨텐츠 설정" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label="비주얼 컨셉 제작" value="비주얼 컨셉 제작" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
+              <Tab hdsProps={{ size: 'medium' }} label="비주얼 프로덕션" value="비주얼 프로덕션" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
             </Tabs>
+            <Button
+              hdsProps={{
+                size: 'medium',
+                type: 'filter',
+                icon: <Ic_download_bold size="16px" />,
+                style: undefined,
+              }}
+              sx={{
+                flexShrink: 0,
+              }}
+            >
+              일괄 다운로드
+            </Button>
+          </Box>
+
+          {/* 컨텐츠 필터 섹션 */}
+          <Box
+            sx={{
+              padding: '16px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* 국가 */}
+            <Select
+              value={country}
+              onChange={(e) => setCountry(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '140px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (국가)</MenuItem>
+              <MenuItem hdsProps value="kr">한국 (국가)</MenuItem>
+              <MenuItem hdsProps value="us">미국 (국가)</MenuItem>
+              <MenuItem hdsProps value="eu">유럽 (국가)</MenuItem>
+            </Select>
+
+            {/* FSC */}
+            <Select
+              value={fsc}
+              onChange={(e) => setFsc(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '140px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (FSC)</MenuItem>
+              <MenuItem hdsProps value="fsc1">FSC-1 (FSC)</MenuItem>
+              <MenuItem hdsProps value="fsc2">FSC-2 (FSC)</MenuItem>
+            </Select>
+
+            {/* 외장 */}
+            <Select
+              value={exterior}
+              onChange={(e) => setExterior(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '140px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (외장)</MenuItem>
+              <MenuItem hdsProps value="white">흰색 (외장)</MenuItem>
+              <MenuItem hdsProps value="black">검정 (외장)</MenuItem>
+              <MenuItem hdsProps value="silver">은색 (외장)</MenuItem>
+            </Select>
+
+            {/* 내장 */}
+            <Select
+              value={interior}
+              onChange={(e) => setInterior(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '140px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (내장)</MenuItem>
+              <MenuItem hdsProps value="black">블랙 (내장)</MenuItem>
+              <MenuItem hdsProps value="beige">베이지 (내장)</MenuItem>
+            </Select>
+
+            {/* 카메라 ID */}
+            <Select
+              value={cameraId}
+              onChange={(e) => setCameraId(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '160px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (카메라 ID)</MenuItem>
+              <MenuItem hdsProps value="cam1">Camera-01 (카메라 ID)</MenuItem>
+              <MenuItem hdsProps value="cam2">Camera-02 (카메라 ID)</MenuItem>
+            </Select>
+
+            {/* 포맷 */}
+            <Select
+              value={format}
+              onChange={(e) => setFormat(e.target.value as string)}
+              hdsProps={{ size: 'medium', type: 'outline' }}
+              sx={{ minWidth: '140px' }}
+            >
+              <MenuItem hdsProps value="all">전체 (포맷)</MenuItem>
+              <MenuItem hdsProps value="png">PNG (포맷)</MenuItem>
+              <MenuItem hdsProps value="jpg">JPG (포맷)</MenuItem>
+              <MenuItem hdsProps value="webp">WebP (포맷)</MenuItem>
+            </Select>
           </Box>
 
           {/* 탭 내용 영역 - 차 이미지 카드 그리드 */}
           <Box
             sx={{
               flex: 1,
-              padding: '24px',
+              padding: '0 20px 20px 20px',
               overflow: 'auto',
               '&::-webkit-scrollbar': {
                 width: '6px',
@@ -523,7 +545,7 @@ function ContentDetail() {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
                 gap: '20px',
               }}
             >

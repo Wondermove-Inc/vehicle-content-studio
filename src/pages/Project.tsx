@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
@@ -571,10 +571,14 @@ function getBreadcrumb(projectId: string | null): { id: string; name: string }[]
 function Project() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
   const [contentType, setContentType] = useState('all')
-  const [selectedProject, setSelectedProject] = useState<string | null>('all')
+
+  // URL 쿼리 파라미터에서 선택된 프로젝트 읽기
+  const initialSelectedProject = searchParams.get('selected') || 'all'
+  const [selectedProject, setSelectedProject] = useState<string | null>(initialSelectedProject)
   const [sopSortOrder, setSopSortOrder] = useState<'asc' | 'desc' | null>(null)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -769,6 +773,12 @@ function Project() {
       setIsFavoritesExpanded(false)
     }
   }, [isSidebarCollapsed])
+
+  // URL 쿼리 파라미터 변경 시 selectedProject 업데이트
+  useEffect(() => {
+    const selected = searchParams.get('selected') || 'all'
+    setSelectedProject(selected)
+  }, [searchParams])
 
   // 검색어 변경 시 트리 노드 자동 확장
   useEffect(() => {
