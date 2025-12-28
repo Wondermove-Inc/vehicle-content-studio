@@ -454,10 +454,10 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">전체 (국가)</MenuItem>
-              <MenuItem hdsProps value="kr">한국 (국가)</MenuItem>
-              <MenuItem hdsProps value="us">미국 (국가)</MenuItem>
-              <MenuItem hdsProps value="eu">유럽 (국가)</MenuItem>
+              <MenuItem hdsProps value="all">국가 전체</MenuItem>
+              <MenuItem hdsProps value="kr">한국</MenuItem>
+              <MenuItem hdsProps value="us">미국</MenuItem>
+              <MenuItem hdsProps value="eu">유럽</MenuItem>
             </Select>
 
             {/* FSC */}
@@ -467,9 +467,9 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">전체 (FSC)</MenuItem>
-              <MenuItem hdsProps value="fsc1">FSC-1 (FSC)</MenuItem>
-              <MenuItem hdsProps value="fsc2">FSC-2 (FSC)</MenuItem>
+              <MenuItem hdsProps value="all">FSC 전체</MenuItem>
+              <MenuItem hdsProps value="fsc1">FSC-1</MenuItem>
+              <MenuItem hdsProps value="fsc2">FSC-2</MenuItem>
             </Select>
 
             {/* 외장 */}
@@ -479,10 +479,10 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">전체 (외장)</MenuItem>
-              <MenuItem hdsProps value="white">흰색 (외장)</MenuItem>
-              <MenuItem hdsProps value="black">검정 (외장)</MenuItem>
-              <MenuItem hdsProps value="silver">은색 (외장)</MenuItem>
+              <MenuItem hdsProps value="all">외장 전체</MenuItem>
+              <MenuItem hdsProps value="white">흰색</MenuItem>
+              <MenuItem hdsProps value="black">검정</MenuItem>
+              <MenuItem hdsProps value="silver">은색</MenuItem>
             </Select>
 
             {/* 내장 */}
@@ -492,9 +492,9 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">전체 (내장)</MenuItem>
-              <MenuItem hdsProps value="black">블랙 (내장)</MenuItem>
-              <MenuItem hdsProps value="beige">베이지 (내장)</MenuItem>
+              <MenuItem hdsProps value="all">내장 전체</MenuItem>
+              <MenuItem hdsProps value="black">블랙</MenuItem>
+              <MenuItem hdsProps value="beige">베이지</MenuItem>
             </Select>
 
             {/* 카메라 ID */}
@@ -504,9 +504,9 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '160px' }}
             >
-              <MenuItem hdsProps value="all">전체 (카메라 ID)</MenuItem>
-              <MenuItem hdsProps value="cam1">Camera-01 (카메라 ID)</MenuItem>
-              <MenuItem hdsProps value="cam2">Camera-02 (카메라 ID)</MenuItem>
+              <MenuItem hdsProps value="all">카메라 ID 전체</MenuItem>
+              <MenuItem hdsProps value="cam1">Camera-01</MenuItem>
+              <MenuItem hdsProps value="cam2">Camera-02</MenuItem>
             </Select>
 
             {/* 포맷 */}
@@ -516,10 +516,10 @@ function ContentDetail() {
               hdsProps={{ size: 'medium', type: 'outline' }}
               sx={{ minWidth: '140px' }}
             >
-              <MenuItem hdsProps value="all">전체 (포맷)</MenuItem>
-              <MenuItem hdsProps value="png">PNG (포맷)</MenuItem>
-              <MenuItem hdsProps value="jpg">JPG (포맷)</MenuItem>
-              <MenuItem hdsProps value="webp">WebP (포맷)</MenuItem>
+              <MenuItem hdsProps value="all">포맷 전체</MenuItem>
+              <MenuItem hdsProps value="png">PNG</MenuItem>
+              <MenuItem hdsProps value="jpg">JPG</MenuItem>
+              <MenuItem hdsProps value="webp">WebP</MenuItem>
             </Select>
           </Box>
 
