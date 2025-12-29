@@ -17,8 +17,7 @@ import {
   Ic_plus_regular,
   Ic_minus_regular,
   Ic_download_bold,
-  Ic_information_filled,
-  Ic_information_bold,
+  IcInformationRegular,
   Ic_close_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
@@ -243,15 +242,20 @@ function Preview() {
           <Button
             hdsProps={{
               size: 'medium',
-              type: 'filter',
-              icon: isInfoSelected ? <Ic_information_filled size="20px" /> : <Ic_information_bold size="20px" />,
-              style: undefined,
+              type: 'outline',
+              icon: <IcInformationRegular size="20px"></IcInformationRegular>,
+              style: isInfoSelected ? 'primary' : undefined,
               isIconOnly: true,
             }}
             onClick={() => setIsInfoSelected(!isInfoSelected)}
             aria-label="설정"
             sx={{
-              backgroundColor: isInfoSelected ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+              backgroundColor: isInfoSelected ? 'var(--surface_container_low)' : 'transparent',
+              ...(!isInfoSelected && {
+                '& svg': {
+                  opacity: 0.5,
+                },
+              }),
               '&:hover': {
                 backgroundColor: isInfoSelected ? 'rgba(0, 0, 0, 0.08)' : undefined,
               },
@@ -289,9 +293,8 @@ function Preview() {
             alignItems: 'center',
             overflow: 'hidden',
             position: 'relative',
-            backgroundColor: 'var(--surface_container_low)',
+            backgroundColor: 'var(--surface_container_mid)',
             borderRadius: '10px',
-            border: '1px solid rgba(0, 0, 0, 0.05)',
             mt: '0px',
             mx: '16px',
             mb: '16px',
@@ -406,7 +409,7 @@ function Preview() {
           >
             <Button
               hdsProps={{
-                size: 'small',
+                size: 'medium',
                 style: undefined,
                 type: 'outline',
                 icon: <Ic_minus_regular size="16px" color="#1E1E1E" />,
@@ -418,7 +421,7 @@ function Preview() {
             />
             <Button
               hdsProps={{
-                size: 'small',
+                size: 'medium',
                 style: undefined,
                 type: 'outline',
               }}
@@ -435,7 +438,7 @@ function Preview() {
             </Button>
             <Button
               hdsProps={{
-                size: 'small',
+                size: 'medium',
                 style: undefined,
                 type: 'outline',
                 icon: <Ic_plus_regular size="16px" color="#1E1E1E" />,
@@ -493,7 +496,7 @@ function Preview() {
         {isInfoSelected && (
           <Box
             sx={{
-              width: '240px',
+              width: '260px',
               backgroundColor: '#FFFFFF',
               px: '16px',
               py: '16px',
@@ -524,7 +527,7 @@ function Preview() {
               </Typography>
               <Button
                 hdsProps={{
-                  size: 'medium',
+                  size: 'xsmall',
                   type: 'filter',
                   icon: <Ic_close_regular size="16px" />,
                   style: undefined,
@@ -536,39 +539,84 @@ function Preview() {
             </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#666', marginBottom: '4px' }}>
-                프로젝트
-              </Typography>
-              <Typography sx={{ fontSize: 16, color: '#0A0A0A' }}>
-                {contentData.projectCode}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#666', marginBottom: '4px' }}>
-                컨텐츠 유형
-              </Typography>
-              <Typography sx={{ fontSize: 16, color: '#0A0A0A' }}>
-                {contentData.contentType}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#666', marginBottom: '4px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
                 카메라 ID
               </Typography>
-              <Typography sx={{ fontSize: 16, color: '#0A0A0A' }}>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
                 C{String(currentIndex).padStart(3, '0')}
               </Typography>
             </Box>
 
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 600, color: '#666', marginBottom: '4px' }}>
-                브랜드
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                국가
               </Typography>
-              <Typography sx={{ fontSize: 16, color: '#0A0A0A' }}>
-                {contentData.brand}
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                한국
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                FSC
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                6XS233XDE3213
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                외장
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                A2B
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                내장
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                5RG
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                포맷
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                4K
+              </Typography>
+            </Box>
+
+            {/* Separator */}
+            <Box
+              sx={{
+                height: '1px',
+                backgroundColor: 'var(--outline_lowest)',
+                my: '4px',
+              }}
+            />
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                수정일시
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                2025-12-31 00:00
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Typography hdsProps={{ type: 'body', size: 'small' }} sx={{ color: 'var(--on_surface_high)' }}>
+                생성일시
+              </Typography>
+              <Typography sx={{ fontSize: 15, fontWeight: 500, color: 'var(--on_surface)' }}>
+                2025-12-31 00:00
               </Typography>
             </Box>
           </Box>
