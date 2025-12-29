@@ -5,6 +5,7 @@ import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import Button from '@hmg-fe/hmg-design-system/Button'
+import Badge from '@hmg-fe/hmg-design-system/Badge'
 import {
   IcArrowLeftRegular,
   Ic_arrow_back_regular,
@@ -74,21 +75,17 @@ function Preview() {
 
   // 네비게이션 핸들러
   const handlePrev = () => {
-    if (currentIndex > 1) {
-      const newIndex = currentIndex - 1
-      setCurrentIndex(newIndex)
-      setZoomLevel(1.0) // 이미지 변경 시 줌 리셋
-      navigate(`/preview/${newIndex}`, { replace: true, state })
-    }
+    const newIndex = currentIndex > 1 ? currentIndex - 1 : 16
+    setCurrentIndex(newIndex)
+    setZoomLevel(1.0) // 이미지 변경 시 줌 리셋
+    navigate(`/preview/${newIndex}`, { replace: true, state })
   }
 
   const handleNext = () => {
-    if (currentIndex < 16) {
-      const newIndex = currentIndex + 1
-      setCurrentIndex(newIndex)
-      setZoomLevel(1.0) // 이미지 변경 시 줌 리셋
-      navigate(`/preview/${newIndex}`, { replace: true, state })
-    }
+    const newIndex = currentIndex < 16 ? currentIndex + 1 : 1
+    setCurrentIndex(newIndex)
+    setZoomLevel(1.0) // 이미지 변경 시 줌 리셋
+    navigate(`/preview/${newIndex}`, { replace: true, state })
   }
 
   // 줌 핸들러
@@ -133,8 +130,8 @@ function Preview() {
     setCurrentIndex(index)
   }, [index])
 
-  const canGoPrev = currentIndex > 1
-  const canGoNext = currentIndex < 16
+  const canGoPrev = true // 순환 구조로 항상 가능
+  const canGoNext = true // 순환 구조로 항상 가능
 
   return (
     <Box
@@ -167,16 +164,21 @@ function Preview() {
             onClick={() => navigate(-1)}
             aria-label="뒤로가기"
           />
-          <Typography
-            sx={{
-              fontSize: 18,
-              fontWeight: 600,
-              lineHeight: '24px',
-              color: '#0A0A0A',
-            }}
-          >
-            {contentData.projectCode} {contentData.contentType} C{String(currentIndex).padStart(3, '0')}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Typography
+              sx={{
+                fontSize: 18,
+                fontWeight: 600,
+                lineHeight: '24px',
+                color: '#0A0A0A',
+              }}
+            >
+              {contentData.projectCode} {contentData.contentType}
+            </Typography>
+            <Badge hdsProps={{ size: 'medium', style: 'info', icon: false, type: 'strong' }}>
+              C{String(currentIndex).padStart(3, '0')}
+            </Badge>
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Button
@@ -254,7 +256,7 @@ function Preview() {
           <Button
             hdsProps={{
               size: 'large',
-              type: 'outline',
+              type: 'filter',
               icon: <Ic_arrow_back_regular size="24px" color="#FFFFFF" />,
               style: undefined,
               isIconOnly: true,
@@ -267,11 +269,21 @@ function Preview() {
               left: 20,
               top: '50%',
               transform: 'translateY(-50%)',
-              border: 'none',
+              border: 'none !important',
+              outline: 'none !important',
               backgroundColor: 'rgba(0, 0, 0, 0.40)',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.50)',
-                border: 'none',
+                border: 'none !important',
+                outline: 'none !important',
+              },
+              '&:focus': {
+                outline: 'none !important',
+                border: 'none !important',
+              },
+              '&:active': {
+                outline: 'none !important',
+                border: 'none !important',
               },
             }}
           />
@@ -280,7 +292,7 @@ function Preview() {
           <Button
             hdsProps={{
               size: 'large',
-              type: 'outline',
+              type: 'filter',
               icon: <Ic_arrow_forward_regular size="24px" color="#FFFFFF" />,
               style: undefined,
               isIconOnly: true,
@@ -293,11 +305,21 @@ function Preview() {
               right: 20,
               top: '50%',
               transform: 'translateY(-50%)',
-              border: 'none',
+              border: 'none !important',
+              outline: 'none !important',
               backgroundColor: 'rgba(0, 0, 0, 0.40)',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.50)',
-                border: 'none',
+                border: 'none !important',
+                outline: 'none !important',
+              },
+              '&:focus': {
+                outline: 'none !important',
+                border: 'none !important',
+              },
+              '&:active': {
+                outline: 'none !important',
+                border: 'none !important',
               },
             }}
           />
