@@ -251,7 +251,14 @@ function Preview() {
           />
 
           {/* 이전 이미지 버튼 */}
-          <IconButton
+          <Button
+            hdsProps={{
+              size: 'large',
+              type: 'outline',
+              icon: <Ic_arrow_back_regular size="24px" color="#FFFFFF" />,
+              style: undefined,
+              isIconOnly: true,
+            }}
             onClick={handlePrev}
             disabled={!canGoPrev}
             aria-label={t('preview.controls.previous')}
@@ -260,23 +267,24 @@ function Preview() {
               left: 20,
               top: '50%',
               transform: 'translateY(-50%)',
-              width: 48,
-              height: 48,
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+              border: 'none',
+              backgroundColor: 'rgba(0, 0, 0, 0.40)',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 1)',
-              },
-              '&:disabled': {
-                opacity: 0.3,
+                backgroundColor: 'rgba(0, 0, 0, 0.50)',
+                border: 'none',
               },
             }}
-          >
-            <Ic_arrow_back_regular size="24px" color="#1E1E1E" />
-          </IconButton>
+          />
 
           {/* 다음 이미지 버튼 */}
-          <IconButton
+          <Button
+            hdsProps={{
+              size: 'large',
+              type: 'outline',
+              icon: <Ic_arrow_forward_regular size="24px" color="#FFFFFF" />,
+              style: undefined,
+              isIconOnly: true,
+            }}
             onClick={handleNext}
             disabled={!canGoNext}
             aria-label={t('preview.controls.next')}
@@ -285,44 +293,14 @@ function Preview() {
               right: 20,
               top: '50%',
               transform: 'translateY(-50%)',
-              width: 48,
-              height: 48,
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+              border: 'none',
+              backgroundColor: 'rgba(0, 0, 0, 0.40)',
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 1)',
-              },
-              '&:disabled': {
-                opacity: 0.3,
+                backgroundColor: 'rgba(0, 0, 0, 0.50)',
+                border: 'none',
               },
             }}
-          >
-            <Ic_arrow_forward_regular size="24px" color="#1E1E1E" />
-          </IconButton>
-
-          {/* 이미지 카운터 */}
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 20,
-              left: 20,
-              backgroundColor: 'rgba(0, 0, 0, 0.6)',
-              color: '#FFFFFF',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              backdropFilter: 'blur(4px)',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: 14,
-                fontWeight: 600,
-                lineHeight: '20px',
-              }}
-            >
-              C{String(currentIndex).padStart(3, '0')} / C016
-            </Typography>
-          </Box>
+          />
 
           {/* 줌 컨트롤 */}
           <Box
