@@ -3,9 +3,13 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
-import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import Button from '@hmg-fe/hmg-design-system/Button'
+import ButtonGroup from '@hmg-fe/hmg-design-system/ButtonGroup'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
+import Popover from '@hmg-fe/hmg-design-system/Popover'
+import Paper from '@hmg-fe/hmg-design-system/Paper'
+import MenuList from '@hmg-fe/hmg-design-system/MenuList'
+import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import {
   IcArrowLeftRegular,
   Ic_arrow_back_regular,
@@ -67,6 +71,10 @@ function Preview() {
   const [currentIndex, setCurrentIndex] = useState(index)
   const [zoomLevel, setZoomLevel] = useState(1.0)
   const [isInfoSelected, setIsInfoSelected] = useState(true)
+  const [zoomMenuAnchor, setZoomMenuAnchor] = useState<null | HTMLElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
 
   // 이미지 경로 가져오기
   const getImagePath = () => {
@@ -88,18 +96,69 @@ function Preview() {
     navigate(`/preview/${newIndex}`, { replace: true, state })
   }
 
+  // 줌 프리셋 값들
+  const zoomPresets = [0.5, 0.75, 1.0, 1.25, 2.0, 3.0]
+
   // 줌 핸들러
   const handleZoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.5, 3.0))
+    const currentIndex = zoomPresets.findIndex(preset => preset >= zoomLevel)
+    if (currentIndex < zoomPresets.length - 1) {
+      setZoomLevel(zoomPresets[currentIndex + 1])
+    }
   }
 
   const handleZoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.5, 1.0))
+    const currentIndex = zoomPresets.findIndex(preset => preset >= zoomLevel)
+    if (currentIndex > 0) {
+      setZoomLevel(zoomPresets[currentIndex - 1])
+    } else if (currentIndex === -1) {
+      // 현재 줌이 최대 프리셋보다 크면 최대 프리셋으로
+      setZoomLevel(zoomPresets[zoomPresets.length - 1])
+    }
   }
 
-  const handleZoomReset = () => {
-    setZoomLevel(1.0)
+  const handleZoomMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setZoomMenuAnchor(event.currentTarget)
   }
+
+  const handleZoomMenuClose = () => {
+    setZoomMenuAnchor(null)
+  }
+
+  const handleZoomSelect = (zoom: number | 'fit') => {
+    if (zoom === 'fit') {
+      setZoomLevel(1.0) // 화면에 맞춤 (기본값으로 설정)
+    } else {
+      setZoomLevel(zoom)
+    }
+    handleZoomMenuClose()
+  }
+
+  // 드래그 핸들러
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel >= 1.25) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y })
+    }
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  // 줌 레벨 변경 시 이미지 위치 리셋
+  useEffect(() => {
+    setImagePosition({ x: 0, y: 0 })
+  }, [zoomLevel, currentIndex])
 
   // 키보드 이벤트 핸들러
   useEffect(() => {
@@ -115,7 +174,7 @@ function Preview() {
       } else if (e.key === '-' || e.key === '_') {
         handleZoomOut()
       } else if (e.key === '0') {
-        handleZoomReset()
+        setZoomLevel(1.0)
       }
     }
 
@@ -175,7 +234,7 @@ function Preview() {
             >
               {contentData.projectCode} {contentData.contentType}
             </Typography>
-            <Badge hdsProps={{ size: 'medium', style: 'info', icon: false, type: 'strong' }}>
+            <Badge hdsProps={{ size: 'medium', style: 'yellow', icon: false }}>
               C{String(currentIndex).padStart(3, '0')}
             </Badge>
           </Box>
@@ -242,13 +301,21 @@ function Preview() {
             component="img"
             src={getImagePath()}
             alt={`C${String(currentIndex).padStart(3, '0')}`}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             sx={{
-              maxWidth: '100%',
-              maxHeight: '100%',
+              width: `${zoomLevel * 100}%`,
+              height: `${zoomLevel * 100}%`,
+              maxWidth: 'none',
+              maxHeight: 'none',
               objectFit: 'contain',
-              transform: `scale(${zoomLevel})`,
-              transition: 'transform 0.3s ease',
-              cursor: zoomLevel > 1 ? 'grab' : 'default',
+              transition: isDragging ? 'none' : 'width 0.3s ease, height 0.3s ease',
+              cursor: zoomLevel >= 1.25 ? (isDragging ? 'grabbing' : 'grab') : 'default',
+              transform: `translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+              userSelect: 'none',
+              WebkitUserDrag: 'none',
             }}
           />
 
@@ -325,67 +392,101 @@ function Preview() {
           />
 
           {/* 줌 컨트롤 */}
-          <Box
+          <ButtonGroup
+            hdsProps={{ isAttached: true }}
             sx={{
               position: 'absolute',
               bottom: 20,
-              right: 20,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
+              left: '50%',
+              transform: 'translateX(-50%)',
               backgroundColor: 'rgba(255, 255, 255, 0.9)',
               boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
               borderRadius: '24px',
-              padding: '8px',
             }}
           >
-            <IconButton
-              onClick={handleZoomOut}
-              disabled={zoomLevel <= 1.0}
-              aria-label={t('preview.controls.zoomOut')}
-              sx={{
-                width: 40,
-                height: 40,
-                '&:disabled': {
-                  opacity: 0.3,
-                },
+            <Button
+              hdsProps={{
+                size: 'small',
+                style: undefined,
+                type: 'outline',
+                icon: <Ic_minus_regular size="16px" color="#1E1E1E" />,
+                isIconOnly: true,
               }}
-            >
-              <Ic_minus_regular size="20px" color="#1E1E1E" />
-            </IconButton>
-            <Typography
-              onClick={handleZoomReset}
+              onClick={handleZoomOut}
+              disabled={zoomLevel <= zoomPresets[0]}
+              aria-label={t('preview.controls.zoomOut')}
+            />
+            <Button
+              hdsProps={{
+                size: 'small',
+                style: undefined,
+                type: 'outline',
+              }}
+              onClick={handleZoomMenuOpen}
               sx={{
                 minWidth: 60,
-                textAlign: 'center',
                 fontSize: 14,
                 fontWeight: 600,
-                lineHeight: '20px',
-                color: '#1E1E1E',
                 cursor: 'pointer',
                 userSelect: 'none',
-                '&:hover': {
-                  textDecoration: 'underline',
-                },
               }}
             >
               {Math.round(zoomLevel * 100)}%
-            </Typography>
-            <IconButton
-              onClick={handleZoomIn}
-              disabled={zoomLevel >= 3.0}
-              aria-label={t('preview.controls.zoomIn')}
-              sx={{
-                width: 40,
-                height: 40,
-                '&:disabled': {
-                  opacity: 0.3,
-                },
+            </Button>
+            <Button
+              hdsProps={{
+                size: 'small',
+                style: undefined,
+                type: 'outline',
+                icon: <Ic_plus_regular size="16px" color="#1E1E1E" />,
+                isIconOnly: true,
               }}
-            >
-              <Ic_plus_regular size="20px" color="#1E1E1E" />
-            </IconButton>
-          </Box>
+              onClick={handleZoomIn}
+              disabled={zoomLevel >= zoomPresets[zoomPresets.length - 1]}
+              aria-label={t('preview.controls.zoomIn')}
+            />
+          </ButtonGroup>
+
+          {/* 줌 옵션 메뉴 */}
+          <Popover
+            open={Boolean(zoomMenuAnchor)}
+            anchorEl={zoomMenuAnchor}
+            onClose={handleZoomMenuClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+          >
+            <Paper hdsProps={{ size: 'small' }}>
+              <MenuList hdsProps>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 0.5} onClick={() => handleZoomSelect(0.5)}>
+                  50%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 0.75} onClick={() => handleZoomSelect(0.75)}>
+                  75%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 1.0} onClick={() => handleZoomSelect(1.0)}>
+                  100%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 1.25} onClick={() => handleZoomSelect(1.25)}>
+                  125%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 2.0} onClick={() => handleZoomSelect(2.0)}>
+                  200%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} selected={zoomLevel === 3.0} onClick={() => handleZoomSelect(3.0)}>
+                  300%
+                </MenuItem>
+                <MenuItem hdsProps={{ size: 'small' }} onClick={() => handleZoomSelect('fit')}>
+                  화면에 맞춤
+                </MenuItem>
+              </MenuList>
+            </Paper>
+          </Popover>
         </Box>
 
         {/* 우측 정보 패널 */}
