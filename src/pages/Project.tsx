@@ -475,7 +475,7 @@ const projectNames: Record<string, string> = {
   'kia': '기아',
   'genesis': '제네시스',
   'cn7-0a25': 'CN7',
-  'cn7-oa22': 'CN7',
+  'cn6-oa22': 'CN6',
   'ev6-25': 'EV6',
   'k8-24': 'K8',
   'gv80-25': 'GV80',
@@ -506,7 +506,7 @@ const parentMap: Record<string, string> = {
   'kia': 'all',
   'genesis': 'all',
   'cn7-0a25': 'hyundai',
-  'cn7-oa22': 'hyundai',
+  'cn6-oa22': 'hyundai',
   'ev6-25': 'kia',
   'k8-24': 'kia',
   'gv80-25': 'genesis',
@@ -514,9 +514,9 @@ const parentMap: Record<string, string> = {
   'hev-27-my': 'cn7-0a25',
   'hev-26-my': 'cn7-0a25',
   'hev-25-fmc': 'cn7-0a25',
-  'ice-24-my': 'cn7-oa22',
-  'ice-23-my': 'cn7-oa22',
-  'ice-22-fl': 'cn7-oa22',
+  'ice-24-my': 'cn6-oa22',
+  'ice-23-my': 'cn6-oa22',
+  'ice-22-fl': 'cn6-oa22',
   'ev6-27-my': 'ev6-25',
   'ev6-26-my': 'ev6-25',
   'ev6-25-fmc': 'ev6-25',
@@ -532,7 +532,7 @@ const parentMap: Record<string, string> = {
 }
 
 // 2뎁스 항목 (선택 불가, 경로에서 생략)
-const depth2Items = ['cn7-0a25', 'cn7-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
+const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
 
 // 썸네일 이미지 목록
 const thumbnailImages = [
@@ -603,9 +603,7 @@ function Project() {
     }
     return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
   })
-  const [expandedItems, setExpandedItems] = useState<string[]>([
-    'hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24'
-  ])
+  const [expandedItems, setExpandedItems] = useState<string[]>([])
 
   // 즐겨찾기가 변경되면 localStorage에 저장
   useEffect(() => {
@@ -676,8 +674,8 @@ function Project() {
           ],
         },
         {
-          id: 'cn7-oa22',
-          label: 'CN7',
+          id: 'cn6-oa22',
+          label: 'CN6',
           count: 3,
           children: [
             { id: 'ice-24-my', label: 'ICE_24_MY' },
@@ -811,8 +809,8 @@ function Project() {
       collectIds(filtered)
       setExpandedItems(expandedIds)
     } else {
-      // 검색어가 없을 때는 기본 확장 상태로 복원
-      setExpandedItems(['hyundai', 'cn7-0a25', 'cn7-oa22', 'kia', 'ev6-25', 'k8-24', 'genesis', 'gv80-25', 'g90-24'])
+      // 검색어가 없을 때는 기본 확장 상태로 복원 (모두 닫힘)
+      setExpandedItems([])
     }
   }, [searchQuery])
 
@@ -845,7 +843,7 @@ function Project() {
   const getBrandFromSelectedProject = (projectId: string | null): string | null => {
     if (!projectId || projectId === 'all') return null
     // 3뎁스 아이템이면 브랜드도 함께 필터링
-    if (projectId === 'hyundai' || projectId.startsWith('cn7') || projectId.startsWith('hev') || projectId.startsWith('ice')) {
+    if (projectId === 'hyundai' || projectId.startsWith('cn7') || projectId.startsWith('cn6') || projectId.startsWith('hev') || projectId.startsWith('ice')) {
       return '현대자동차'
     }
     if (projectId === 'kia' || projectId.startsWith('ev6') || projectId.startsWith('k8')) {
@@ -1418,10 +1416,10 @@ function Project() {
                       if (itemId) {
                         const id = itemId as string
                         // 2뎁스 아이템은 선택하지 않고 부모(1뎁스)를 선택
-                        const depth2Items = ['cn7-0a25', 'cn7-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
+                        const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
                         if (depth2Items.includes(id)) {
                           // 부모 찾기
-                          if (id.startsWith('cn7')) setSelectedProject('hyundai')
+                          if (id.startsWith('cn7') || id.startsWith('cn6')) setSelectedProject('hyundai')
                           else if (id.startsWith('ev6') || id.startsWith('k8')) setSelectedProject('kia')
                           else if (id.startsWith('gv80') || id.startsWith('g90')) setSelectedProject('genesis')
                         } else {
