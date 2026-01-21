@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '@/contexts/AuthContext'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -32,6 +33,7 @@ import {
   Ic_picture_filled,
   Ic_star_filled,
   Ic_star_regular,
+  Ic_log_out_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -571,6 +573,7 @@ function getBreadcrumb(projectId: string | null): { id: string; name: string }[]
 function Project() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const { logout } = useAuth()
   const [searchParams] = useSearchParams()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
@@ -1877,6 +1880,7 @@ function Project() {
       >
         <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsSettingsOpen(false) }}>{t('project.settings.title')}</DialogTitle>
         <DialogContent hdsProps sx={{ py: '16px' }}>
+          {/* 언어 설정 */}
           <Typography
             sx={{
               fontSize: 14,
@@ -1905,6 +1909,32 @@ function Project() {
               </ListItem>
             </List>
           </RadioGroup>
+
+          {/* 구분선 */}
+          <Divider sx={{ my: 3 }} />
+
+          {/* 로그아웃 섹션 */}
+          <Typography
+            sx={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#0E0F11',
+              marginBottom: '12px',
+            }}
+          >
+            계정
+          </Typography>
+          <Button
+            hdsProps={{ type: 'outline', style: 'critical' }}
+            fullWidth
+            startIcon={<Ic_log_out_regular size="16px" />}
+            onClick={() => {
+              logout()
+              navigate('/')
+            }}
+          >
+            로그아웃
+          </Button>
         </DialogContent>
         <DialogActions hdsProps>
           <Button hdsProps onClick={() => setIsSettingsOpen(false)}>
