@@ -79,9 +79,12 @@ function Login() {
           flex: 1,
           backgroundColor: '#FFFFFF',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
-          padding: '40px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          paddingTop: '170px',
+          paddingBottom: '16px',
         }}
       >
         <Stack
@@ -218,7 +221,6 @@ function Login() {
                 fontFamily: 'Asta Sans, sans-serif',
                 fontSize: '14px',
                 fontWeight: 700,
-                marginTop: '24px !important',
               }}
             >
               {isLoading ? '로그인 중...' : '로그인'}
@@ -226,7 +228,7 @@ function Login() {
           </Stack>
 
           {/* SSO Information Section */}
-          <Stack spacing={0.75} sx={{ marginTop: '20px !important' }}>
+          <Stack spacing={0.75} sx={{ marginTop: '44px !important' }}>
             <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
               <Ic_information_regular
                 size="16px"
