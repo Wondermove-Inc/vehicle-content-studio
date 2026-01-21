@@ -8,6 +8,7 @@ import TextField from '@hmg-fe/hmg-design-system/TextField'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
+import CircularProgress from '@hmg-fe/hmg-design-system/CircularProgress'
 import {
   Ic_view_regular,
   Ic_view_hidden_regular,
@@ -24,7 +25,6 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [loginAttempts, setLoginAttempts] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 
   // 이미 로그인된 사용자는 프로젝트 페이지로 리다이렉트
@@ -50,13 +50,12 @@ function Login() {
     } catch (err) {
       // 로그인 실패 처리
       setError(true)
-      setLoginAttempts((prev) => prev + 1)
 
       // 에러 메시지 설정
       if (err instanceof Error) {
         setErrorMessage(err.message)
       } else {
-        setErrorMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
+        setErrorMessage(t('login.error.invalidCredentials'))
       }
     } finally {
       setIsLoading(false)
@@ -105,7 +104,7 @@ function Login() {
               whiteSpace: 'pre-line',
             }}
           >
-            차량 컨텐츠 제작 시스템에{'\n'}오신 것을 환영합니다
+            {t('login.title.welcome')}{'\n'}{t('login.title.welcomeSuffix')}
           </Typography>
 
           {/* Login Form */}
@@ -125,11 +124,11 @@ function Login() {
                   color: '#0E0F11',
                 }}
               >
-                ID (Email)
+                {t('login.form.emailLabel')}
               </Typography>
               <TextField
                 hdsProps={{ size: 'medium', isInvalid: error }}
-                placeholder="이메일 입력"
+                placeholder={t('login.form.emailPlaceholder')}
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -155,11 +154,11 @@ function Login() {
                   color: '#0E0F11',
                 }}
               >
-                비밀번호
+                {t('login.form.passwordLabel')}
               </Typography>
               <TextField
                 hdsProps={{ size: 'medium', isInvalid: error }}
-                placeholder="비밀번호 입력"
+                placeholder={t('login.form.passwordPlaceholder')}
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -196,34 +195,45 @@ function Login() {
                   ),
                 }}
               />
-              {error && (
-                <Typography
-                  component="p"
-                  sx={{
-                    fontFamily: 'Asta Sans, sans-serif',
-                    fontSize: '12px',
-                    lineHeight: '18px',
-                    color: 'var(--red)',
-                    marginTop: '4px',
-                  }}
-                >
-                  {errorMessage || t('login.error.invalidCredentials', { count: loginAttempts })}
-                </Typography>
-              )}
             </Stack>
+
+            {/* Error Message */}
+            {error && (
+              <Typography
+                component="p"
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  lineHeight: '21px',
+                  color: 'var(--red)',
+                  marginTop: '24px !important',
+                  marginBottom: '24px !important',
+                }}
+              >
+                {errorMessage || t('login.error.invalidCredentials')}
+              </Typography>
+            )}
 
             {/* Login Button */}
             <Button
-              hdsProps={{ size: 'large', style: 'primary', type: 'fill' }}
+              hdsProps={{
+                size: 'large',
+                style: 'primary',
+                type: 'fill',
+                isLoading,
+                icon: isLoading ? <CircularProgress hdsProps={{ size: 'small', style: 'primary' }} /> : undefined
+              }}
               type="submit"
               fullWidth
+              disabled={isLoading}
               sx={{
                 fontFamily: 'Asta Sans, sans-serif',
                 fontSize: '14px',
                 fontWeight: 700,
+                marginTop: error ? '0 !important' : '24px !important',
               }}
             >
-              {isLoading ? '로그인 중...' : '로그인'}
+              {!isLoading && t('login.button.login')}
             </Button>
           </Stack>
 
@@ -242,7 +252,7 @@ function Login() {
                   color: '#383B42',
                 }}
               >
-                현대자동차그룹 회원이 아니신가요?
+                {t('login.sso.notMember')}
               </Typography>
             </Stack>
             <Stack spacing={0.25}>
@@ -255,9 +265,9 @@ function Login() {
                   color: '#656B76',
                 }}
               >
-                차량 컨텐츠 제작 시스템은 현대자동차그룹 SSO 가입 후 이용 가능합니다.
+                {t('login.sso.description')}
                 <br />
-                가입이 필요하신 경우, 아래 담당자 이메일로 문의해 주세요.
+                {t('login.sso.contact')}
               </Typography>
               <Typography
                 component="a"

@@ -49,7 +49,14 @@
       "partnerLogin": "협력사 로그인 권한 신청"
     },
     "error": {
-      "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다. ({{count}}/5)"
+      "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다.",
+      "serverConnection": "인증 서버에 연결할 수 없습니다. 잠시후 다시 시도해주세요.",
+      "general": "로그인 처리 중 오류가 발생했습니다. 관리자에게 문의하세요. (Code:{{code}})"
+    },
+    "sso": {
+      "notMember": "현대자동차그룹 회원이 아니신가요?",
+      "description": "차량 컨텐츠 제작 시스템은 현대자동차그룹 SSO 가입 후 이용 가능합니다.",
+      "contact": "가입이 필요하신 경우, 아래 담당자 이메일로 문의해 주세요."
     },
     "divider": "또는",
     "footer": {

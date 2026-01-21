@@ -49,7 +49,14 @@
       "partnerLogin": "Request Partner Access"
     },
     "error": {
-      "invalidCredentials": "Invalid ID or password. ({{count}}/5)"
+      "invalidCredentials": "Invalid ID or password.",
+      "serverConnection": "Unable to connect to authentication server. Please try again later.",
+      "general": "An error occurred during login. Please contact the administrator. (Code:{{code}})"
+    },
+    "sso": {
+      "notMember": "Not a Hyundai Motor Group member?",
+      "description": "Vehicle Content Studio requires Hyundai Motor Group SSO registration.",
+      "contact": "If you need to register, please contact us at the email below."
     },
     "divider": "or",
     "footer": {
