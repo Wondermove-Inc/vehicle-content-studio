@@ -9,13 +9,12 @@ import Button from '@hmg-fe/hmg-design-system/Button'
 import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import CircularProgress from '@hmg-fe/hmg-design-system/CircularProgress'
-import Select from '@hmg-fe/hmg-design-system/Select'
-import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
 import {
   Ic_view_regular,
   Ic_view_hidden_regular,
   Ic_information_regular,
+  Ic_close_bold,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { useAuth } from '@/contexts/AuthContext'
 import { PermissionLevel } from '@/types/auth.types'
@@ -31,7 +30,8 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showPermissionDialog, setShowPermissionDialog] = useState(false)
-  const [selectedOrganization, setSelectedOrganization] = useState('')
+  const [showPendingDialog, setShowPendingDialog] = useState(false)
+  const [requestReason, setRequestReason] = useState('')
   const [unauthorizedEmail, setUnauthorizedEmail] = useState('')
 
   // 이미 로그인된 사용자는 프로젝트 페이지로 리다이렉트
@@ -79,19 +79,17 @@ function Login() {
 
   const handlePermissionRequest = () => {
     // 권한 요청 로직 (실제로는 API 호출)
-    console.log('Permission requested for:', unauthorizedEmail, 'Organization:', selectedOrganization)
+    console.log('Permission requested for:', unauthorizedEmail, 'Reason:', requestReason)
 
-    // 성공 메시지 표시 후 다이얼로그 닫기
-    alert(t('login.permissionRequest.success'))
+    // 권한 요청 다이얼로그 닫고 승인 대기 다이얼로그 열기
     setShowPermissionDialog(false)
-    setSelectedOrganization('')
-    setEmail('')
-    setPassword('')
+    setShowPendingDialog(true)
+    setRequestReason('')
   }
 
   const handleCancelPermissionRequest = () => {
     setShowPermissionDialog(false)
-    setSelectedOrganization('')
+    setRequestReason('')
   }
 
   return (
@@ -377,113 +375,319 @@ function Login() {
       <Dialog
         open={showPermissionDialog}
         onClose={() => {}} // 배경 클릭으로 닫히지 않도록 비활성화
-        maxWidth="sm"
-        fullWidth
+        PaperProps={{
+          sx: {
+            width: '480px',
+            borderRadius: '8px',
+            boxShadow: '0px 0px 2px 0px rgba(34, 34, 34, 0.1), 0px 24px 22px 0px rgba(34, 34, 34, 0.05)',
+          }
+        }}
       >
-        <DialogTitle>
-          <Typography
+        <DialogTitle
+          sx={{
+            padding: '0 !important',
+            margin: '0 !important',
+          }}
+        >
+          <Box
             sx={{
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center',
+              minHeight: '60px',
+              paddingLeft: '24px',
+              paddingRight: '10px',
+              backgroundColor: '#FFFFFF',
+              borderBottom: '1px solid #F0F0F0',
               fontFamily: 'Asta Sans, sans-serif',
-              fontSize: '20px',
+              fontSize: '16px',
               fontWeight: 700,
-              color: '#0A0A0A',
+              lineHeight: '24px',
+              color: '#111111',
             }}
           >
-            {t('login.permissionRequest.title')}
-          </Typography>
+            <Box
+              component="span"
+              sx={{
+                flex: '1 0 0',
+                minWidth: 0,
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {t('login.permissionRequest.title')}
+            </Box>
+            <IconButton
+              onClick={handleCancelPermissionRequest}
+              sx={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '4px',
+                flexShrink: 0,
+                padding: 0,
+              }}
+            >
+              <Ic_close_bold size="24px" />
+            </IconButton>
+          </Box>
         </DialogTitle>
-        <DialogContent>
-          <Stack spacing={3} sx={{ paddingTop: '8px' }}>
+        <DialogContent
+          sx={{
+            padding: '18px 24px 24px 24px !important',
+            margin: '0 !important',
+          }}
+        >
+          <Stack spacing={1.5}>
             <Typography
               sx={{
                 fontFamily: 'Asta Sans, sans-serif',
-                fontSize: '15px',
+                fontSize: '14px',
                 fontWeight: 400,
                 lineHeight: '22px',
-                color: '#525760',
-                whiteSpace: 'pre-line',
+                color: '#0E0F11',
               }}
             >
               {t('login.permissionRequest.description')}
             </Typography>
 
-            <Stack spacing={1}>
+            {/* ID (Email) 읽기 전용 */}
+            <Stack spacing={1} sx={{ marginTop: '16px !important' }}>
               <Typography
                 sx={{
                   fontFamily: 'Asta Sans, sans-serif',
                   fontSize: '14px',
                   fontWeight: 700,
+                  lineHeight: '22px',
                   color: '#0E0F11',
                 }}
               >
-                {t('login.permissionRequest.organizationLabel')}
+                {t('login.permissionRequest.emailLabel')}
               </Typography>
-              <Select
-                value={selectedOrganization}
-                onChange={(e) => setSelectedOrganization(e.target.value as string)}
-                displayEmpty
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  lineHeight: '22px',
+                  color: '#0E0F11',
+                  marginTop: '0 !important',
+                }}
+              >
+                {unauthorizedEmail}
+              </Typography>
+            </Stack>
+
+            {/* 요청 사유 입력 */}
+            <Stack spacing={1} sx={{ marginTop: '16px !important' }}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  lineHeight: '22px',
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.permissionRequest.reasonLabel')}
+              </Typography>
+              <TextField
+                value={requestReason}
+                onChange={(e) => setRequestReason(e.target.value)}
+                placeholder={t('login.permissionRequest.reasonPlaceholder')}
+                multiline
+                rows={4}
                 fullWidth
                 hdsProps={{ size: 'medium' }}
                 sx={{
-                  '& .MuiSelect-select': {
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& textarea': {
+                    resize: 'none',
+                  },
+                  '& textarea::placeholder': {
+                    color: '#949494',
                     fontFamily: 'Asta Sans, sans-serif',
                     fontSize: '14px',
                   },
                 }}
-              >
-                <MenuItem value="" disabled>
-                  <Typography
-                    sx={{
-                      fontFamily: 'Asta Sans, sans-serif',
-                      fontSize: '14px',
-                      color: '#8E949F',
-                    }}
-                  >
-                    {t('login.permissionRequest.organizationPlaceholder')}
-                  </Typography>
-                </MenuItem>
-                <MenuItem value="studio_a">
-                  {t('login.permissionRequest.organizations.studio_a')}
-                </MenuItem>
-                <MenuItem value="studio_b">
-                  {t('login.permissionRequest.organizations.studio_b')}
-                </MenuItem>
-                <MenuItem value="studio_c">
-                  {t('login.permissionRequest.organizations.studio_c')}
-                </MenuItem>
-                <MenuItem value="wondermove">
-                  {t('login.permissionRequest.organizations.wondermove')}
-                </MenuItem>
-                <MenuItem value="other">
-                  {t('login.permissionRequest.organizations.other')}
-                </MenuItem>
-              </Select>
+              />
             </Stack>
           </Stack>
         </DialogContent>
-        <DialogActions>
+        <DialogActions
+          sx={{
+            padding: '16px 24px 24px 24px !important',
+            margin: '0 !important',
+            borderTop: '1px solid #F0F0F0',
+            justifyContent: 'flex-end',
+            gap: '8px',
+            '& > :not(:first-of-type)': {
+              marginLeft: '0 !important',
+            },
+          }}
+        >
           <Button
             onClick={handleCancelPermissionRequest}
-            hdsProps={{ size: 'medium', style: 'strong' }}
+            hdsProps={{ size: 'medium', style: 'strong', type: 'outline' }}
             sx={{
               fontFamily: 'Asta Sans, sans-serif',
               fontSize: '14px',
               fontWeight: 700,
+              height: '36px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              borderRadius: '4px',
+              borderColor: '#D1D1D1',
+              width: 'fit-content',
+              minWidth: 'unset !important',
             }}
           >
             {t('login.permissionRequest.button.cancel')}
           </Button>
           <Button
             onClick={handlePermissionRequest}
-            disabled={!selectedOrganization}
-            hdsProps={{ size: 'medium', style: 'primary' }}
+            disabled={!requestReason.trim()}
+            hdsProps={{ size: 'medium', style: 'primary', type: 'fill' }}
             sx={{
               fontFamily: 'Asta Sans, sans-serif',
               fontSize: '14px',
               fontWeight: 700,
+              height: '36px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              borderRadius: '4px',
+              backgroundColor: '#111111',
+              color: requestReason.trim() ? '#FFFFFF' : '#828282',
             }}
           >
             {t('login.permissionRequest.button.submit')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 승인 대기 다이얼로그 */}
+      <Dialog
+        open={showPendingDialog}
+        onClose={() => {
+          setShowPendingDialog(false)
+          setEmail('')
+          setPassword('')
+        }}
+        PaperProps={{
+          sx: {
+            width: '480px',
+            borderRadius: '8px',
+            boxShadow: '0px 0px 2px 0px rgba(34, 34, 34, 0.1), 0px 24px 22px 0px rgba(34, 34, 34, 0.05)',
+          }
+        }}
+      >
+        <DialogTitle
+          sx={{
+            padding: '0 !important',
+            margin: '0 !important',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center',
+              minHeight: '60px',
+              paddingLeft: '24px',
+              paddingRight: '10px',
+              backgroundColor: '#FFFFFF',
+              borderBottom: '1px solid #F0F0F0',
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '16px',
+              fontWeight: 700,
+              lineHeight: '24px',
+              color: '#111111',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                flex: '1 0 0',
+                minWidth: 0,
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {t('login.permissionPending.title')}
+            </Box>
+            <IconButton
+              onClick={() => {
+                setShowPendingDialog(false)
+                setEmail('')
+                setPassword('')
+              }}
+              sx={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '4px',
+                flexShrink: 0,
+                padding: 0,
+              }}
+            >
+              <Ic_close_bold size="24px" />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            padding: '18px 24px 24px 24px !important',
+            margin: '0 !important',
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 400,
+              lineHeight: '22px',
+              color: '#0E0F11',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {t('login.permissionPending.description')}
+          </Typography>
+        </DialogContent>
+        <DialogActions
+          hdsProps={{ scrollable: false }}
+          sx={{
+            padding: '0 24px 24px 24px !important',
+            margin: '0 !important',
+            justifyContent: 'flex-end',
+            gap: '8px',
+            '& > :not(:first-of-type)': {
+              marginLeft: '0 !important',
+            },
+          }}
+        >
+          <Button
+            onClick={() => {
+              setShowPendingDialog(false)
+              setEmail('')
+              setPassword('')
+            }}
+            hdsProps={{ type: 'fill', style: 'primary', size: 'medium' }}
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 700,
+              height: '36px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              borderRadius: '4px',
+              width: 'fit-content',
+              minWidth: 'unset !important',
+            }}
+          >
+            {t('login.permissionPending.button.confirm')}
           </Button>
         </DialogActions>
       </Dialog>

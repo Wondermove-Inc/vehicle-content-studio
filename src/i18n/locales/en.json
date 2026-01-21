@@ -53,6 +53,25 @@
       "serverConnection": "Unable to connect to authentication server. Please try again later.",
       "general": "An error occurred during login. Please contact the administrator. (Code:{{code}})"
     },
+    "permissionRequest": {
+      "title": "Login Permission Request",
+      "description": "You do not have system access permission. Please fill out the form below to request access approval.",
+      "emailLabel": "ID (Email)",
+      "reasonLabel": "Request Reason",
+      "reasonPlaceholder": "Enter permission request reason",
+      "button": {
+        "submit": "Request Permission",
+        "cancel": "Cancel"
+      },
+      "success": "Permission request has been submitted. You can use the system after approval."
+    },
+    "permissionPending": {
+      "title": "Login Permission Pending",
+      "description": "Your permission request is under review.\nOnce approved, you can immediately access the Vehicle Content Studio.",
+      "button": {
+        "confirm": "Confirm"
+      }
+    },
     "sso": {
       "notMember": "Not a Hyundai Motor Group member?",
       "description": "Vehicle Content Studio requires Hyundai Motor Group SSO registration.",
