@@ -671,13 +671,6 @@ function Project() {
     setPage(0)
   }, [selectedProject, contentType])
 
-  // 사이드바 접힐 때 즐겨찾기도 접기
-  useEffect(() => {
-    if (isSidebarCollapsed) {
-      setIsFavoritesExpanded(false)
-    }
-  }, [isSidebarCollapsed])
-
   // URL 쿼리 파라미터 변경 시 selectedProject 업데이트
   useEffect(() => {
     const selected = searchParams.get('selected') || 'all'
@@ -839,7 +832,7 @@ function Project() {
         onSettingsOpen={() => setIsSettingsOpen(true)}
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
-        selectedProject={selectedProject}
+        selectedProject={selectedProject ?? undefined}
         onProjectSelect={setSelectedProject}
         favorites={favorites}
         projectNames={projectNames}
