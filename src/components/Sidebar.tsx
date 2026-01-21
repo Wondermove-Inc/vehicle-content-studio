@@ -5,21 +5,19 @@ import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
-import Button from '@hmg-fe/hmg-design-system/Button'
 import { Badge } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
   Ic_writing_filled,
+  Ic_download_regular,
   Ic_person_filled,
   Ic_alarm_filled,
   Ic_setting_filled,
   Ic_menu_regular,
   Ic_arrow_forward_regular,
-  Ic_log_out_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { useAuth } from '@/contexts/AuthContext'
-import PermissionGate from './PermissionGate'
-import { Permission } from '@/types/auth.types'
+import { PermissionLevel } from '@/types/auth.types'
 
 // 사이드바 메뉴 아이템 컴포넌트
 interface SidebarItemProps {
@@ -51,7 +49,7 @@ function SidebarItem({ icon, label, isActive, badge, collapsed, onClick }: Sideb
         },
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 24, flexShrink: 0 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, flexShrink: 0 }}>
         {icon}
       </Box>
       <Typography
@@ -88,54 +86,28 @@ interface SidebarProps {
   onSettingsOpen: () => void
   isCollapsed?: boolean
   onCollapsedChange?: (collapsed: boolean) => void
+  selectedProject?: string
+  onProjectSelect?: (projectId: string) => void
+  favorites?: Set<string>
+  projectNames?: Record<string, string>
 }
 
-function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false, onCollapsedChange }: SidebarProps) {
+function Sidebar({
+  activeMenu,
+  onMenuChange,
+  onSettingsOpen,
+  isCollapsed = false,
+  onCollapsedChange,
+  selectedProject,
+  onProjectSelect,
+  favorites = new Set<string>(),
+  projectNames = {},
+}: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { logout, user } = useAuth()
+  const { user } = useAuth()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
-
-  // localStorage에서 즐겨찾기 읽기
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    const saved = localStorage.getItem('project-favorites')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-        return ['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my']
-      }
-    }
-    return ['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my']
-  })
-
-  // localStorage 변경 감지
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const saved = localStorage.getItem('project-favorites')
-      if (saved) {
-        try {
-          setFavorites(JSON.parse(saved))
-        } catch {
-          // 파싱 오류 시 무시
-        }
-      }
-    }
-
-    // storage 이벤트 리스너 등록
-    window.addEventListener('storage', handleStorageChange)
-
-    // 같은 페이지 내에서의 변경도 감지하기 위한 interval
-    const interval = setInterval(() => {
-      handleStorageChange()
-    }, 500)
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-      clearInterval(interval)
-    }
-  }, [])
 
   // 외부에서 collapsed 상태가 변경되면 동기화
   useEffect(() => {
@@ -157,6 +129,20 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
     }
   }, [isSidebarCollapsed])
 
+  // 권한 레벨 체크 함수
+  const hasLevel = (level: PermissionLevel) => {
+    if (!user) return false
+    const levels = [
+      PermissionLevel.L1_ADMIN,
+      PermissionLevel.L2_SERVICE_MANAGER,
+      PermissionLevel.L3_BUSINESS_USER,
+      PermissionLevel.L4_3D_MODELER,
+      PermissionLevel.L5_CONTENT_CREATOR,
+      PermissionLevel.UNAUTHORIZED,
+    ]
+    return levels.indexOf(user.permissionLevel) <= levels.indexOf(level)
+  }
+
   const handleMenuClick = (menu: string) => {
     onMenuChange(menu)
     if (menu === '프로젝트') {
@@ -164,21 +150,6 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
     } else if (menu === '컨텐츠 요청') {
       navigate('/content-request')
     }
-  }
-
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
-
-  // 프로젝트 이름 매핑 (임시 데이터)
-  const projectNames: Record<string, string> = {
-    'hev-26-my': 'HEV_26_MY',
-    'hev-27-my': 'HEV_27_MY',
-    'ev6-26-my': 'EV6_26_MY',
-    'ev6-27-my': 'EV6_27_MY',
-    'gv80-26-my': 'GV80_26_MY',
-    'g90-25-my': 'G90_25_MY',
   }
 
   return (
@@ -212,90 +183,102 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: 20,
-            height: 24,
+            width: 16,
+            height: 16,
           }}
         >
-          <Ic_menu_regular size="20px" color="#1E1E1E" />
+          <Ic_menu_regular size="16px" color="#1E1E1E" />
         </Box>
-        <Typography
+        <Box
+          component="img"
+          src="/images/Hyundai_Motor_Group_CI_sidebar.svg"
+          alt="Hyundai Motor Group"
           sx={{
-            fontSize: 18,
-            fontWeight: 700,
-            lineHeight: '26px',
-            color: '#0A0A0A',
+            width: 90,
+            height: 32,
             opacity: isSidebarCollapsed ? 0 : 1,
             transition: 'opacity 0.2s ease',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
             pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
           }}
-        >
-          {t('project.sidebar.hmgSystem')}
-        </Typography>
+        />
       </Box>
 
       {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
         <Stack spacing={0}>
-          {/* 프로젝트 메뉴 - 모든 인증된 사용자 */}
           <SidebarItem
-            icon={<Ic_folder_filled size="20px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
+            icon={<Ic_folder_filled size="16px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
             label={t('common.menu.project')}
             isActive={activeMenu === '프로젝트'}
             collapsed={isSidebarCollapsed}
             onClick={() => handleMenuClick('프로젝트')}
           />
-
-          {/* 컨텐츠 요청 메뉴 - PROJECT_CREATE 또는 CONTENT_CREATE 권한 */}
-          <PermissionGate
-            anyPermission={[Permission.PROJECT_CREATE, Permission.CONTENT_CREATE]}
-          >
+          <SidebarItem
+            icon={<Ic_writing_filled size="16px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
+            label={t('common.menu.contentRequest')}
+            isActive={activeMenu === '컨텐츠 요청'}
+            collapsed={isSidebarCollapsed}
+            onClick={() => handleMenuClick('컨텐츠 요청')}
+          />
+          {/* L1 권한: 다운로드 메뉴 */}
+          {hasLevel(PermissionLevel.L1_ADMIN) && (
             <SidebarItem
-              icon={<Ic_writing_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
-              label={t('common.menu.contentRequest')}
-              isActive={activeMenu === '컨텐츠 요청'}
+              icon={<Ic_download_regular size="16px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
+              label="다운로드"
+              isActive={activeMenu === '다운로드'}
               collapsed={isSidebarCollapsed}
-              onClick={() => handleMenuClick('컨텐츠 요청')}
+              onClick={() => onMenuChange('다운로드')}
             />
-          </PermissionGate>
-
-          {/* 어드민 메뉴 - ADMIN_MENU_ACCESS 권한 (L1만) */}
-          <PermissionGate permissions={[Permission.ADMIN_MENU_ACCESS]}>
+          )}
+          {/* L1 권한: 설정 메뉴 포함 */}
+          {hasLevel(PermissionLevel.L1_ADMIN) && (
             <SidebarItem
-              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
+              icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
+              label={t('common.menu.settings')}
+              collapsed={isSidebarCollapsed}
+              onClick={onSettingsOpen}
+            />
+          )}
+          {/* L1 제외: 어드민 메뉴 */}
+          {!hasLevel(PermissionLevel.L1_ADMIN) && (
+            <SidebarItem
+              icon={<Ic_person_filled size="16px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
               label={t('common.menu.admin')}
               isActive={activeMenu === '어드민'}
               collapsed={isSidebarCollapsed}
-              onClick={() => handleMenuClick('어드민')}
+              onClick={() => onMenuChange('어드민')}
             />
-          </PermissionGate>
+          )}
         </Stack>
       </Box>
 
-      {/* 구분선 */}
-      <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
-        <Divider hdsProps={{ style: 'lowest' }} />
-      </Box>
+      {/* 구분선 - L1 제외만 표시 */}
+      {!hasLevel(PermissionLevel.L1_ADMIN) && (
+        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
+          <Divider hdsProps={{ style: 'lowest' }} />
+        </Box>
+      )}
 
-      {/* 메뉴 그룹 2 */}
-      <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
-        <Stack spacing={0}>
-          <SidebarItem
-            icon={<Ic_setting_filled size="20px" color="var(--surface_high)" />}
-            label={t('common.menu.settings')}
-            collapsed={isSidebarCollapsed}
-            onClick={onSettingsOpen}
-          />
-          <SidebarItem
-            icon={<Ic_alarm_filled size="20px" color="var(--surface_high)" />}
-            label={t('common.menu.notification')}
-            badge={14}
-            collapsed={isSidebarCollapsed}
-            onClick={() => onMenuChange('알림')}
-          />
-        </Stack>
-      </Box>
+      {/* 메뉴 그룹 2 - L1 제외만 표시 */}
+      {!hasLevel(PermissionLevel.L1_ADMIN) && (
+        <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
+          <Stack spacing={0}>
+            <SidebarItem
+              icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
+              label={t('common.menu.settings')}
+              collapsed={isSidebarCollapsed}
+              onClick={onSettingsOpen}
+            />
+            <SidebarItem
+              icon={<Ic_alarm_filled size="16px" color="var(--surface_high)" />}
+              label={t('common.menu.notification')}
+              badge={14}
+              collapsed={isSidebarCollapsed}
+              onClick={() => onMenuChange('알림')}
+            />
+          </Stack>
+        </Box>
+      )}
 
       {/* 구분선 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
@@ -311,8 +294,6 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
           opacity: isSidebarCollapsed ? 0 : 1,
           visibility: isSidebarCollapsed ? 'hidden' : 'visible',
           transition: 'opacity 0.2s ease, visibility 0.2s ease',
-          display: 'flex',
-          flexDirection: 'column',
         }}
       >
         <Box
@@ -334,13 +315,13 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 20,
-              height: 24,
+              width: 16,
+              height: 16,
               transition: 'transform 0.2s ease',
               transform: isFavoritesExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
             }}
           >
-            <Ic_arrow_forward_regular size="20px" color="var(--surface_high)" />
+            <Ic_arrow_forward_regular size="16px" color="var(--surface_high)" />
           </Box>
           <Typography
             sx={{
@@ -356,8 +337,8 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
           </Typography>
         </Box>
         {isFavoritesExpanded && (
-          <Stack spacing={0} sx={{ paddingLeft: '18px', position: 'relative' }}>
-            {favorites.length === 0 ? (
+          <Stack spacing={0}>
+            {favorites.size === 0 ? (
               <Typography
                 sx={{
                   fontSize: 14,
@@ -368,30 +349,18 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
                 즐겨찾기가 없습니다
               </Typography>
             ) : (
-              favorites.map((id) => (
+              Array.from(favorites).map((id) => (
                 <Box
                   key={id}
-                  onClick={() => {
-                    onMenuChange('프로젝트')
-                    navigate(`/project?selected=${id}`)
-                  }}
+                  onClick={() => onProjectSelect && onProjectSelect(id)}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
+                    gap: '8px',
                     padding: '6px 16px',
-                    paddingLeft: '24px',
                     borderRadius: '6px',
                     cursor: 'pointer',
                     position: 'relative',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      left: '8px',
-                      top: 0,
-                      bottom: 0,
-                      width: '1px',
-                      backgroundColor: 'var(--outline_lowest)',
-                    },
                     '&:hover': {
                       '& .favorite-label': {
                         color: '#111111',
@@ -400,13 +369,32 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
                     },
                   }}
                 >
+                  {/* 아이콘 컨테이너 */}
+                  <Box
+                    sx={{
+                      width: '18px',
+                      height: '18px',
+                      backgroundColor: '#111111',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      '& svg': {
+                        width: '12px !important',
+                        height: '12px !important',
+                      },
+                    }}
+                  >
+                    <Ic_folder_filled size="12px" color="#FFFFFF" />
+                  </Box>
                   <Typography
                     className="favorite-label"
                     sx={{
                       fontSize: 15,
-                      fontWeight: 500,
+                      fontWeight: selectedProject === id ? 700 : 500,
                       lineHeight: '22px',
-                      color: 'var(--on_surface_highest)',
+                      color: selectedProject === id ? '#000000' : 'var(--on_surface_highest)',
                       transition: 'color 0.15s ease, font-weight 0.15s ease',
                       whiteSpace: 'nowrap',
                     }}
@@ -418,70 +406,6 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
             )}
           </Stack>
         )}
-      </Box>
-
-      {/* 사용자 정보 및 로그아웃 */}
-      <Box
-        sx={{
-          padding: isSidebarCollapsed ? '16px 10px 16px 16px' : '16px',
-          borderTop: '1px solid var(--outline_lowest)',
-          opacity: isSidebarCollapsed ? 0 : 1,
-          visibility: isSidebarCollapsed ? 'hidden' : 'visible',
-          transition: 'opacity 0.2s ease, visibility 0.2s ease, padding 0.2s ease',
-        }}
-      >
-        <Stack spacing={1.5}>
-          {/* 사용자 정보 */}
-          {user && (
-            <Box>
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  lineHeight: '20px',
-                  color: '#0A0A0A',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {user.name}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: 12,
-                  lineHeight: '18px',
-                  color: 'var(--on_surface_mid)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {user.email}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: 11,
-                  lineHeight: '16px',
-                  color: 'var(--on_surface_low)',
-                  marginTop: '2px',
-                }}
-              >
-                {user.organization}
-              </Typography>
-            </Box>
-          )}
-
-          {/* 로그아웃 버튼 */}
-          <Button
-            hdsProps={{ size: 'small', type: 'outline' }}
-            onClick={handleLogout}
-            fullWidth
-            startIcon={<Ic_log_out_regular size="16px" />}
-          >
-            로그아웃
-          </Button>
-        </Stack>
       </Box>
     </Box>
   )
