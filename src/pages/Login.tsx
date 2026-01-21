@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
@@ -24,15 +24,19 @@ import {
   Ic_close_bold,
   Ic_check_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { useAuth } from '@/contexts/AuthContext'
 
 function Login() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { login, isAuthenticated } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const [loginAttempts, setLoginAttempts] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
   const [isPartnerDialogOpen, setIsPartnerDialogOpen] = useState(false)
 
   // Partner request form states
@@ -64,19 +68,48 @@ function Login() {
 
   const passwordValidation = validatePassword(partnerForm.password)
 
-  const handleLogin = (e: React.FormEvent) => {
+  // 이미 로그인된 사용자는 프로젝트 페이지로 리다이렉트
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/project')
+    }
+  }, [isAuthenticated, navigate])
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // 이메일 형식 검증 (@가 포함되어야 함)
     if (!email.includes('@')) {
       setError(true)
+      setErrorMessage(t('login.error.invalidCredentials', { count: loginAttempts + 1 }))
       setLoginAttempts((prev) => prev + 1)
       return
     }
 
-    // 에러 초기화 후 로그인 처리
-    setError(false)
-    navigate('/project')
+    try {
+      setIsLoading(true)
+      setError(false)
+      setErrorMessage('')
+
+      // 로그인 시도
+      await login(email, password)
+
+      // 로그인 성공 시 프로젝트 페이지로 이동
+      navigate('/project')
+    } catch (err) {
+      // 로그인 실패 처리
+      setError(true)
+      setLoginAttempts((prev) => prev + 1)
+
+      // 에러 메시지 설정
+      if (err instanceof Error) {
+        setErrorMessage(err.message)
+      } else {
+        setErrorMessage(t('login.error.invalidCredentials', { count: loginAttempts + 1 }))
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -221,7 +254,7 @@ function Login() {
                     marginTop: '4px',
                   }}
                 >
-                  {t('login.error.invalidCredentials', { count: loginAttempts })}
+                  {errorMessage || t('login.error.invalidCredentials', { count: loginAttempts })}
                 </Typography>
               )}
             </Stack>
@@ -231,9 +264,9 @@ function Login() {
               hdsProps={{ size: 'large', style: 'primary', type: 'fill' }}
               type="submit"
               fullWidth
-              disabled={!email || !password}
+              disabled={!email || !password || isLoading}
             >
-              {t('login.button.login')}
+              {isLoading ? '로그인 중...' : t('login.button.login')}
             </Button>
 
             {/* Divider */}

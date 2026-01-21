@@ -5,6 +5,7 @@ import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
+import Button from '@hmg-fe/hmg-design-system/Button'
 import { Badge } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
@@ -14,7 +15,11 @@ import {
   Ic_setting_filled,
   Ic_menu_regular,
   Ic_arrow_forward_regular,
+  Ic_log_out_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { useAuth } from '@/contexts/AuthContext'
+import PermissionGate from './PermissionGate'
+import { Permission } from '@/types/auth.types'
 
 // 사이드바 메뉴 아이템 컴포넌트
 interface SidebarItemProps {
@@ -88,6 +93,7 @@ interface SidebarProps {
 function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false, onCollapsedChange }: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { logout, user } = useAuth()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
 
@@ -160,6 +166,11 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
     }
   }
 
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
   // 프로젝트 이름 매핑 (임시 데이터)
   const projectNames: Record<string, string> = {
     'hev-26-my': 'HEV_26_MY',
@@ -227,6 +238,7 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
       {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
         <Stack spacing={0}>
+          {/* 프로젝트 메뉴 - 모든 인증된 사용자 */}
           <SidebarItem
             icon={<Ic_folder_filled size="20px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
             label={t('common.menu.project')}
@@ -234,20 +246,30 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
             collapsed={isSidebarCollapsed}
             onClick={() => handleMenuClick('프로젝트')}
           />
-          <SidebarItem
-            icon={<Ic_writing_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
-            label={t('common.menu.contentRequest')}
-            isActive={activeMenu === '컨텐츠 요청'}
-            collapsed={isSidebarCollapsed}
-            onClick={() => handleMenuClick('컨텐츠 요청')}
-          />
-          <SidebarItem
-            icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
-            label={t('common.menu.admin')}
-            isActive={activeMenu === '어드민'}
-            collapsed={isSidebarCollapsed}
-            onClick={() => handleMenuClick('어드민')}
-          />
+
+          {/* 컨텐츠 요청 메뉴 - PROJECT_CREATE 또는 CONTENT_CREATE 권한 */}
+          <PermissionGate
+            anyPermission={[Permission.PROJECT_CREATE, Permission.CONTENT_CREATE]}
+          >
+            <SidebarItem
+              icon={<Ic_writing_filled size="20px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
+              label={t('common.menu.contentRequest')}
+              isActive={activeMenu === '컨텐츠 요청'}
+              collapsed={isSidebarCollapsed}
+              onClick={() => handleMenuClick('컨텐츠 요청')}
+            />
+          </PermissionGate>
+
+          {/* 어드민 메뉴 - ADMIN_MENU_ACCESS 권한 (L1만) */}
+          <PermissionGate permissions={[Permission.ADMIN_MENU_ACCESS]}>
+            <SidebarItem
+              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
+              label={t('common.menu.admin')}
+              isActive={activeMenu === '어드민'}
+              collapsed={isSidebarCollapsed}
+              onClick={() => handleMenuClick('어드민')}
+            />
+          </PermissionGate>
         </Stack>
       </Box>
 
@@ -289,6 +311,8 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
           opacity: isSidebarCollapsed ? 0 : 1,
           visibility: isSidebarCollapsed ? 'hidden' : 'visible',
           transition: 'opacity 0.2s ease, visibility 0.2s ease',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Box
@@ -394,6 +418,70 @@ function Sidebar({ activeMenu, onMenuChange, onSettingsOpen, isCollapsed = false
             )}
           </Stack>
         )}
+      </Box>
+
+      {/* 사용자 정보 및 로그아웃 */}
+      <Box
+        sx={{
+          padding: isSidebarCollapsed ? '16px 10px 16px 16px' : '16px',
+          borderTop: '1px solid var(--outline_lowest)',
+          opacity: isSidebarCollapsed ? 0 : 1,
+          visibility: isSidebarCollapsed ? 'hidden' : 'visible',
+          transition: 'opacity 0.2s ease, visibility 0.2s ease, padding 0.2s ease',
+        }}
+      >
+        <Stack spacing={1.5}>
+          {/* 사용자 정보 */}
+          {user && (
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  lineHeight: '20px',
+                  color: '#0A0A0A',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {user.name}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: 12,
+                  lineHeight: '18px',
+                  color: 'var(--on_surface_mid)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {user.email}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: 11,
+                  lineHeight: '16px',
+                  color: 'var(--on_surface_low)',
+                  marginTop: '2px',
+                }}
+              >
+                {user.organization}
+              </Typography>
+            </Box>
+          )}
+
+          {/* 로그아웃 버튼 */}
+          <Button
+            hdsProps={{ size: 'small', type: 'outline' }}
+            onClick={handleLogout}
+            fullWidth
+            startIcon={<Ic_log_out_regular size="16px" />}
+          >
+            로그아웃
+          </Button>
+        </Stack>
       </Box>
     </Box>
   )

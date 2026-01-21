@@ -12,6 +12,9 @@ import Project from './pages/Project'
 import ContentRequest from './pages/ContentRequest'
 import ContentDetail from './pages/ContentDetail'
 import Preview from './pages/Preview'
+import { AuthProvider } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import { Permission } from './types/auth.types'
 
 const router = createBrowserRouter([
   {
@@ -20,26 +23,48 @@ const router = createBrowserRouter([
   },
   {
     path: '/project',
-    element: <Project />,
+    element: (
+      <ProtectedRoute
+        requiredAnyPermission={[Permission.PROJECT_VIEW_ALL, Permission.PROJECT_VIEW_ASSIGNED]}
+      >
+        <Project />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/project/content/:contentId',
-    element: <ContentDetail />,
+    element: (
+      <ProtectedRoute requiredPermissions={[Permission.CONTENT_VIEW]}>
+        <ContentDetail />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/preview/:imageIndex',
-    element: <Preview />,
+    element: (
+      <ProtectedRoute requiredPermissions={[Permission.CONTENT_VIEW]}>
+        <Preview />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/content-request',
-    element: <ContentRequest />,
+    element: (
+      <ProtectedRoute
+        requiredAnyPermission={[Permission.PROJECT_CREATE, Permission.CONTENT_CREATE]}
+      >
+        <ContentRequest />
+      </ProtectedRoute>
+    ),
   },
 ])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HdsThemeProvider theme="hmg">
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </HdsThemeProvider>
   </StrictMode>,
 )
