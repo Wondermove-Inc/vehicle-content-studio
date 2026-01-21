@@ -860,49 +860,6 @@ function Project() {
           transition: 'max-width 0.2s ease',
         }}
       >
-        {activeMenu === '컨텐츠 요청' ? (
-          <Box
-            sx={{
-              flex: 1,
-              width: '100%',
-              minWidth: 0,
-              backgroundColor: '#ffffff',
-              borderRadius: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
-              position: 'relative',
-              zIndex: 1,
-            }}
-          >
-            {/* 컨텐츠 요청 헤더 */}
-            <Box sx={{ padding: '20px 20px 16px 24px', borderBottom: '1px solid var(--outline)' }}>
-              <Typography
-                sx={{
-                  fontSize: 24,
-                  fontWeight: 600,
-                  lineHeight: '36px',
-                  color: 'var(--on_surface)',
-                }}
-              >
-                {t('common.menu.contentRequest')}
-              </Typography>
-            </Box>
-            {/* 컨텐츠 요청 본문 - Jira iframe */}
-            <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-              <iframe
-                src="https://your-jira-instance.atlassian.net"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                }}
-                title="Jira Service"
-              />
-            </Box>
-          </Box>
-        ) : (
         <Box
           sx={{
             flex: 1,
@@ -1546,7 +1503,6 @@ function Project() {
             </Box>
           </Box>
         </Box>
-        )}
       </Box>
 
       {/* 설정 다이얼로그 */}

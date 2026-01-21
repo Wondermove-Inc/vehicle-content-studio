@@ -10,8 +10,6 @@ import {
   Ic_folder_filled,
   Ic_writing_filled,
   Ic_download_regular,
-  Ic_person_filled,
-  Ic_alarm_filled,
   Ic_setting_filled,
   Ic_menu_regular,
   Ic_arrow_forward_regular,
@@ -130,18 +128,13 @@ function Sidebar({
   }, [isSidebarCollapsed])
 
   // 권한 레벨 체크 함수
-  const hasLevel = (level: PermissionLevel) => {
-    if (!user) return false
-    const levels = [
-      PermissionLevel.L1_ADMIN,
-      PermissionLevel.L2_SERVICE_MANAGER,
-      PermissionLevel.L3_BUSINESS_USER,
-      PermissionLevel.L4_3D_MODELER,
-      PermissionLevel.L5_CONTENT_CREATOR,
-      PermissionLevel.UNAUTHORIZED,
-    ]
-    return levels.indexOf(user.permissionLevel) <= levels.indexOf(level)
-  }
+  const isL1 = user?.permissionLevel === PermissionLevel.L1_ADMIN
+  const isL2L3 =
+    user?.permissionLevel === PermissionLevel.L2_SERVICE_MANAGER ||
+    user?.permissionLevel === PermissionLevel.L3_BUSINESS_USER
+  const isL4L5 =
+    user?.permissionLevel === PermissionLevel.L4_3D_MODELER ||
+    user?.permissionLevel === PermissionLevel.L5_CONTENT_CREATOR
 
   const handleMenuClick = (menu: string) => {
     onMenuChange(menu)
@@ -203,9 +196,10 @@ function Sidebar({
         />
       </Box>
 
-      {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
+      {/* 메뉴 그룹 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
         <Stack spacing={0}>
+          {/* 프로젝트 - 모든 권한 */}
           <SidebarItem
             icon={<Ic_folder_filled size="16px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
             label={t('common.menu.project')}
@@ -213,15 +207,18 @@ function Sidebar({
             collapsed={isSidebarCollapsed}
             onClick={() => handleMenuClick('프로젝트')}
           />
-          <SidebarItem
-            icon={<Ic_writing_filled size="16px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
-            label={t('common.menu.contentRequest')}
-            isActive={activeMenu === '컨텐츠 요청'}
-            collapsed={isSidebarCollapsed}
-            onClick={() => handleMenuClick('컨텐츠 요청')}
-          />
-          {/* L1 권한: 다운로드 메뉴 */}
-          {hasLevel(PermissionLevel.L1_ADMIN) && (
+          {/* 컨텐츠 요청 - L1, L2, L3만 */}
+          {(isL1 || isL2L3) && (
+            <SidebarItem
+              icon={<Ic_writing_filled size="16px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
+              label={t('common.menu.contentRequest')}
+              isActive={activeMenu === '컨텐츠 요청'}
+              collapsed={isSidebarCollapsed}
+              onClick={() => handleMenuClick('컨텐츠 요청')}
+            />
+          )}
+          {/* 다운로드 - L1, L4, L5만 */}
+          {(isL1 || isL4L5) && (
             <SidebarItem
               icon={<Ic_download_regular size="16px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
               label="다운로드"
@@ -230,55 +227,15 @@ function Sidebar({
               onClick={() => onMenuChange('다운로드')}
             />
           )}
-          {/* L1 권한: 설정 메뉴 포함 */}
-          {hasLevel(PermissionLevel.L1_ADMIN) && (
-            <SidebarItem
-              icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
-              label={t('common.menu.settings')}
-              collapsed={isSidebarCollapsed}
-              onClick={onSettingsOpen}
-            />
-          )}
-          {/* L1 제외: 어드민 메뉴 */}
-          {!hasLevel(PermissionLevel.L1_ADMIN) && (
-            <SidebarItem
-              icon={<Ic_person_filled size="16px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
-              label={t('common.menu.admin')}
-              isActive={activeMenu === '어드민'}
-              collapsed={isSidebarCollapsed}
-              onClick={() => onMenuChange('어드민')}
-            />
-          )}
+          {/* 설정 - 모든 권한 */}
+          <SidebarItem
+            icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
+            label={t('common.menu.settings')}
+            collapsed={isSidebarCollapsed}
+            onClick={onSettingsOpen}
+          />
         </Stack>
       </Box>
-
-      {/* 구분선 - L1 제외만 표시 */}
-      {!hasLevel(PermissionLevel.L1_ADMIN) && (
-        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
-          <Divider hdsProps={{ style: 'lowest' }} />
-        </Box>
-      )}
-
-      {/* 메뉴 그룹 2 - L1 제외만 표시 */}
-      {!hasLevel(PermissionLevel.L1_ADMIN) && (
-        <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
-          <Stack spacing={0}>
-            <SidebarItem
-              icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
-              label={t('common.menu.settings')}
-              collapsed={isSidebarCollapsed}
-              onClick={onSettingsOpen}
-            />
-            <SidebarItem
-              icon={<Ic_alarm_filled size="16px" color="var(--surface_high)" />}
-              label={t('common.menu.notification')}
-              badge={14}
-              collapsed={isSidebarCollapsed}
-              onClick={() => onMenuChange('알림')}
-            />
-          </Stack>
-        </Box>
-      )}
 
       {/* 구분선 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
