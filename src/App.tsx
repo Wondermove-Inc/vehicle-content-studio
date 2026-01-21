@@ -12,7 +12,7 @@ function App() {
         <Button hdsProps={{ size: 'large', style: 'primary' }}>
           Primary Button
         </Button>
-        <Button hdsProps={{ size: 'medium', style: 'secondary' }}>
+        <Button hdsProps={{ size: 'medium', style: 'strong' }}>
           Secondary Button
         </Button>
         <Badge hdsProps={{ size: 'small', style: 'info', type: 'strong' }}>

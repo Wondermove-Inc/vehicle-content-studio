@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
+import { PermissionLevel } from '@/types/auth.types'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -15,7 +16,7 @@ import RadioGroup from '@hmg-fe/hmg-design-system/RadioGroup'
 import Radio from '@hmg-fe/hmg-design-system/Radio'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogPaper, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
 import {
   Ic_folder_filled,
   Ic_writing_filled,
@@ -34,6 +35,7 @@ import {
   Ic_star_filled,
   Ic_star_regular,
   Ic_log_out_regular,
+  Ic_download_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -98,48 +100,48 @@ function SidebarItem({ icon, label, isActive, badge, collapsed, onClick }: Sideb
 }
 
 
-// 사이드바 그룹 라벨 컴포넌트
-interface SidebarGroupLabelProps {
-  label: string
-  count?: number
-}
+// 사이드바 그룹 라벨 컴포넌트 (현재 미사용 - 향후 사용 가능성을 위해 보존)
+// interface SidebarGroupLabelProps {
+//   label: string
+//   count?: number
+// }
 
-function SidebarGroupLabel({ label, count }: SidebarGroupLabelProps) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '8px',
-        marginBottom: '4px',
-      }}
-    >
-      <Typography
-        sx={{
-          fontSize: 12,
-          fontWeight: 500,
-          lineHeight: '18px',
-          color: '#0A0A0A',
-        }}
-      >
-        {label}
-      </Typography>
-      {count !== undefined && (
-        <Typography
-          sx={{
-            fontSize: 14,
-            fontWeight: 400,
-            lineHeight: '22px',
-            color: '#111111',
-          }}
-        >
-          {count}
-        </Typography>
-      )}
-    </Box>
-  )
-}
+// function SidebarGroupLabel({ label, count }: SidebarGroupLabelProps) {
+//   return (
+//     <Box
+//       sx={{
+//         display: 'flex',
+//         alignItems: 'center',
+//         justifyContent: 'space-between',
+//         padding: '8px',
+//         marginBottom: '4px',
+//       }}
+//     >
+//       <Typography
+//         sx={{
+//           fontSize: 12,
+//           fontWeight: 500,
+//           lineHeight: '18px',
+//           color: '#0A0A0A',
+//         }}
+//       >
+//         {label}
+//       </Typography>
+//       {count !== undefined && (
+//         <Typography
+//           sx={{
+//             fontSize: 14,
+//             fontWeight: 400,
+//             lineHeight: '22px',
+//             color: '#111111',
+//           }}
+//         >
+//           {count}
+//         </Typography>
+//       )}
+//     </Box>
+//   )
+// }
 
 // 테이블 데이터 타입
 interface ProjectData {
@@ -573,7 +575,7 @@ function getBreadcrumb(projectId: string | null): { id: string; name: string }[]
 function Project() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, hasLevel } = useAuth()
   const [searchParams] = useSearchParams()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [activeTab, setActiveTab] = useState('컨텐츠')
@@ -980,21 +982,18 @@ function Project() {
           >
             <Ic_menu_regular size="20px" color="#1E1E1E" />
           </Box>
-          <Typography
+          <Box
+            component="img"
+            src="/images/Hyundai_Motor_Group_CI_sidebar.svg"
+            alt="Hyundai Motor Group"
             sx={{
-              fontSize: 18,
-              fontWeight: 700,
-              lineHeight: '26px',
-              color: '#0A0A0A',
+              width: 90,
+              height: 32,
               opacity: isSidebarCollapsed ? 0 : 1,
               transition: 'opacity 0.2s ease',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
               pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
             }}
-          >
-            {t('project.sidebar.hmgSystem')}
-          </Typography>
+          />
         </Box>
 
         {/* 메뉴 그룹 1 - 프로젝트 및 컨텐츠 */}
@@ -1014,39 +1013,65 @@ function Project() {
               collapsed={isSidebarCollapsed}
               onClick={() => setActiveMenu('컨텐츠 요청')}
             />
-            <SidebarItem
-              icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
-              label={t('common.menu.admin')}
-              isActive={activeMenu === '어드민'}
-              collapsed={isSidebarCollapsed}
-              onClick={() => setActiveMenu('어드민')}
-            />
+            {/* L1 권한: 다운로드 메뉴 */}
+            {hasLevel(PermissionLevel.L1_ADMIN) && (
+              <SidebarItem
+                icon={<Ic_download_regular size="20px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
+                label="다운로드"
+                isActive={activeMenu === '다운로드'}
+                collapsed={isSidebarCollapsed}
+                onClick={() => setActiveMenu('다운로드')}
+              />
+            )}
+            {/* L1 권한: 설정 메뉴 포함 */}
+            {hasLevel(PermissionLevel.L1_ADMIN) && (
+              <SidebarItem
+                icon={<Ic_setting_filled size="20px" color="var(--surface_high)" />}
+                label={t('common.menu.settings')}
+                collapsed={isSidebarCollapsed}
+                onClick={() => setIsSettingsOpen(true)}
+              />
+            )}
+            {/* L1 제외: 어드민 메뉴 */}
+            {!hasLevel(PermissionLevel.L1_ADMIN) && (
+              <SidebarItem
+                icon={<Ic_person_filled size="20px" color={activeMenu === '어드민' ? '#111111' : 'var(--surface_high)'} />}
+                label={t('common.menu.admin')}
+                isActive={activeMenu === '어드민'}
+                collapsed={isSidebarCollapsed}
+                onClick={() => setActiveMenu('어드민')}
+              />
+            )}
           </Stack>
         </Box>
 
-        {/* 구분선 */}
-        <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
-          <Divider hdsProps={{ style: 'lowest' }} />
-        </Box>
+        {/* 구분선 - L1 제외만 표시 */}
+        {!hasLevel(PermissionLevel.L1_ADMIN) && (
+          <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
+            <Divider hdsProps={{ style: 'lowest' }} />
+          </Box>
+        )}
 
-        {/* 메뉴 그룹 2 */}
-        <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
-          <Stack spacing={0}>
-            <SidebarItem
-              icon={<Ic_setting_filled size="20px" color="var(--surface_high)" />}
-              label={t('common.menu.settings')}
-              collapsed={isSidebarCollapsed}
-              onClick={() => setIsSettingsOpen(true)}
-            />
-            <SidebarItem
-              icon={<Ic_alarm_filled size="20px" color="var(--surface_high)" />}
-              label={t('common.menu.notification')}
-              badge={14}
-              collapsed={isSidebarCollapsed}
-              onClick={() => setActiveMenu('알림')}
-            />
-          </Stack>
-        </Box>
+        {/* 메뉴 그룹 2 - L1 제외만 표시 */}
+        {!hasLevel(PermissionLevel.L1_ADMIN) && (
+          <Box sx={{ padding: isSidebarCollapsed ? '8px 10px 8px 16px' : '8px 16px', transition: 'padding 0.2s ease' }}>
+            <Stack spacing={0}>
+              <SidebarItem
+                icon={<Ic_setting_filled size="20px" color="var(--surface_high)" />}
+                label={t('common.menu.settings')}
+                collapsed={isSidebarCollapsed}
+                onClick={() => setIsSettingsOpen(true)}
+              />
+              <SidebarItem
+                icon={<Ic_alarm_filled size="20px" color="var(--surface_high)" />}
+                label={t('common.menu.notification')}
+                badge={14}
+                collapsed={isSidebarCollapsed}
+                onClick={() => setActiveMenu('알림')}
+              />
+            </Stack>
+          </Box>
+        )}
 
         {/* 구분선 */}
         <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
@@ -1117,13 +1142,14 @@ function Project() {
                   즐겨찾기가 없습니다
                 </Typography>
               ) : (
-                Array.from(favorites).map((id, index, arr) => (
+                Array.from(favorites).map((id) => (
                   <Box
                     key={id}
                     onClick={() => setSelectedProject(id)}
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
+                      gap: '8px',
                       padding: '6px 16px',
                       paddingLeft: '24px',
                       borderRadius: '6px',
@@ -1146,6 +1172,24 @@ function Project() {
                       },
                     }}
                   >
+                    {/* 아이콘 컨테이너 */}
+                    <Box
+                      sx={{
+                        width: '18px',
+                        height: '18px',
+                        backgroundColor: '#111111',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Ic_folder_filled
+                        size="12px"
+                        style={{ color: '#FFFFFF' }}
+                      />
+                    </Box>
                     <Typography
                       className="favorite-label"
                       sx={{
