@@ -31,7 +31,7 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 
 ### L1 - 관리자 (Administrator)
 
-**대상**: 현대차 ICT / HAE
+**대상**: 현대차ICT/HAE
 **권한 그룹**: GROUP_1
 
 **주요 권한**:
@@ -48,7 +48,7 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 
 ### L2 - 서비스 매니저 (Service Manager)
 
-**대상**: 오앤오 / HAE
+**대상**: 이노션/HAE
 **권한 그룹**: GROUP_1
 
 **주요 권한**:
@@ -89,7 +89,7 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 
 ### L4 - 3D 모델러 (3D Modeler)
 
-**대상**: 벤더
+**대상**: 협력사
 **권한 그룹**: GROUP_3
 
 **주요 권한**:
@@ -109,7 +109,7 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 
 ### L5 - 컨텐츠 크리에이터 (Content Creator)
 
-**대상**: 벤더
+**대상**: 협력사
 **권한 그룹**: GROUP_3
 
 **주요 권한**:
@@ -269,14 +269,13 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 
 ## 테스트 계정
 
-### GROUP_1 - 관리자
+### 1. L1 관리자
 
 ```
 이메일: admin@company.com
 비밀번호: admin123
 권한 레벨: L1_ADMIN
-권한 그룹: GROUP_1
-조직: 현대자동차 ICT
+조직: 현대차ICT/HAE
 
 접근 가능 메뉴:
 ✅ 프로젝트
@@ -291,14 +290,40 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 - 시스템 설정
 ```
 
-### GROUP_2 - 비즈니스 유저
+### 2. L2 서비스 매니저
+
+```
+이메일: manager@company.com
+비밀번호: manager123
+권한 레벨: L2_SERVICE_MANAGER
+조직: 이노션/HAE
+
+접근 가능 메뉴:
+✅ 프로젝트
+✅ 컨텐츠 요청
+❌ 어드민 (숨김)
+
+주요 기능:
+- 모든 프로젝트 조회
+- 프로젝트 생성/수정 (삭제 불가)
+- VCM 수정/삭제 (최초 업로드 불가)
+- 검수 승인/거부
+- 팀 할당
+
+제한 사항:
+- VCM 최초 업로드 불가
+- 프로젝트 삭제 불가
+- 사용자 관리 불가
+- 어드민 메뉴 접근 불가
+```
+
+### 3. L3 비즈니스 유저
 
 ```
 이메일: business@company.com
 비밀번호: business123
 권한 레벨: L3_BUSINESS_USER
-권한 그룹: GROUP_2
-조직: HMG HQ
+조직: HQ/RHQ/Market
 
 접근 가능 메뉴:
 ✅ 프로젝트
@@ -312,14 +337,13 @@ Vehicle Content Studio는 L1~L5의 5단계 권한 레벨을 기반으로 한 역
 - 제작팀 할당
 ```
 
-### GROUP_3 - 협력사 크리에이터
+### 4. L4 3D 모델러 + L5 컨텐츠 크리에이터 (협력사)
 
 ```
 이메일: partner@company.com
 비밀번호: partner123
 권한 레벨: L5_CONTENT_CREATOR
-권한 그룹: GROUP_3
-조직: 벤더 파트너
+조직: 협력사
 배정된 프로젝트: project-001, project-002
 
 접근 가능 메뉴:
@@ -639,6 +663,31 @@ src/
 
 ---
 
+### v1.0.2 (2026-01-21)
+
+**계정 정보 및 조직명 업데이트**
+
+- ✅ manager@company.com 비밀번호 변경 (manager → manager123)
+- ✅ 조직명 표준화
+  - L1: 현대차ICT/HAE
+  - L2: 이노션/HAE
+  - L3: HQ/RHQ/Market
+  - L4,L5: 협력사
+- ✅ Partner 계정 설명 개선 ("L4 3D 모델러 + L5 컨텐츠 크리에이터")
+- ✅ 테스트 계정 섹션 UI 개선 (권한 그룹 표시 제거)
+
+**변경된 파일**:
+- src/mocks/users.mock.ts: Mock 사용자 데이터 업데이트
+- PERMISSION_SYSTEM.md: 문서 업데이트
+
+**테스트 계정 요약**:
+1. admin@company.com / admin123 (L1 관리자 - 현대차ICT/HAE)
+2. manager@company.com / manager123 (L2 서비스 매니저 - 이노션/HAE)
+3. business@company.com / business123 (L3 비즈니스 유저 - HQ/RHQ/Market)
+4. partner@company.com / partner123 (L4+L5 협력사)
+
+---
+
 ### 향후 계획
 
 #### Phase 4 - 프로젝트 접근 제어 (예정)
@@ -666,4 +715,4 @@ src/
 
 **업데이트 날짜**: 2026-01-21
 **작성자**: Claude Sonnet 4.5
-**버전**: 1.0.1
+**버전**: 1.0.2
