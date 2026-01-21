@@ -8,13 +8,24 @@ import { PermissionGroup, PermissionLevel, User } from '@/types/auth.types'
 /**
  * 테스트 사용자 계정 목록
  *
- * 4개의 테스트 계정:
+ * 5개의 테스트 계정:
+ * 0. 미권한 (권한 요청 필요) - unknown@company.com
  * 1. GROUP_1 (L1 관리자) - admin@company.com
  * 2. GROUP_1 (L2 서비스 매니저) - manager@company.com
  * 3. GROUP_2 (L3 비즈니스 유저) - business@company.com
  * 4. GROUP_3 (L5 컨텐츠 크리에이터) - partner@company.com
  */
 export const MOCK_USERS: User[] = [
+  {
+    id: 'user-000',
+    email: 'unknown@company.com',
+    name: '미권한 사용자',
+    permissionLevel: PermissionLevel.UNAUTHORIZED,
+    permissionGroup: null,
+    organization: null,
+    createdAt: '2024-01-01T00:00:00Z',
+    lastLoginAt: undefined,
+  },
   {
     id: 'user-001',
     email: 'admin@company.com',
@@ -63,6 +74,7 @@ export const MOCK_USERS: User[] = [
  * 이메일: password 형태로 저장
  */
 export const MOCK_CREDENTIALS: Record<string, string> = {
+  'unknown@company.com': 'unknown123',
   'admin@company.com': 'admin123',
   'manager@company.com': 'manager123',
   'business@company.com': 'business123',

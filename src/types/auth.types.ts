@@ -5,6 +5,7 @@
 
 /**
  * 권한 레벨 정의
+ * - UNAUTHORIZED: 미권한 (권한 요청 필요)
  * - L1: 관리자
  * - L2: 서비스 매니저
  * - L3: 비즈니스 유저
@@ -12,6 +13,7 @@
  * - L5: 컨텐츠 크리에이터
  */
 export enum PermissionLevel {
+  UNAUTHORIZED = 'UNAUTHORIZED',
   L1_ADMIN = 'L1_ADMIN',
   L2_SERVICE_MANAGER = 'L2_SERVICE_MANAGER',
   L3_BUSINESS_USER = 'L3_BUSINESS_USER',
@@ -93,8 +95,8 @@ export interface User {
   email: string
   name: string
   permissionLevel: PermissionLevel
-  permissionGroup: PermissionGroup
-  organization: string
+  permissionGroup: PermissionGroup | null // 미권한 사용자는 null
+  organization: string | null // 미권한 사용자는 null
   assignedProjects?: string[] // GROUP_3 (L4, L5) 전용 - 배정된 프로젝트 ID 목록
   createdAt?: string
   lastLoginAt?: string
@@ -144,6 +146,6 @@ export interface AuthContextType {
   hasLevel: (level: PermissionLevel) => boolean
 
   // 인증 함수
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<User>
   logout: () => void
 }

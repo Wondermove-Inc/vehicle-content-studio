@@ -50,8 +50,27 @@
     },
     "error": {
       "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다.",
+      "unauthorized": "권한이 없습니다. 협력사 권한을 신청해주세요.",
       "serverConnection": "인증 서버에 연결할 수 없습니다. 잠시후 다시 시도해주세요.",
       "general": "로그인 처리 중 오류가 발생했습니다. 관리자에게 문의하세요. (Code:{{code}})"
+    },
+    "permissionRequest": {
+      "title": "협력사 권한 신청",
+      "description": "계정이 확인되었으나 권한이 없습니다.\n시스템 이용을 위해 소속 협력사를 선택하여 권한을 신청해주세요.",
+      "organizationLabel": "소속 협력사",
+      "organizationPlaceholder": "소속 협력사 선택",
+      "button": {
+        "submit": "권한 신청",
+        "cancel": "취소"
+      },
+      "success": "권한 신청이 완료되었습니다. 승인 후 이용 가능합니다.",
+      "organizations": {
+        "studio_a": "스튜디오 A",
+        "studio_b": "스튜디오 B",
+        "studio_c": "스튜디오 C",
+        "wondermove": "원더무브",
+        "other": "기타"
+      }
     },
     "sso": {
       "notMember": "현대자동차그룹 회원이 아니신가요?",

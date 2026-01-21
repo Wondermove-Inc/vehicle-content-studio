@@ -9,12 +9,16 @@ import Button from '@hmg-fe/hmg-design-system/Button'
 import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import CircularProgress from '@hmg-fe/hmg-design-system/CircularProgress'
+import Select from '@hmg-fe/hmg-design-system/Select'
+import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
 import {
   Ic_view_regular,
   Ic_view_hidden_regular,
   Ic_information_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { useAuth } from '@/contexts/AuthContext'
+import { PermissionLevel } from '@/types/auth.types'
 
 function Login() {
   const navigate = useNavigate()
@@ -26,6 +30,9 @@ function Login() {
   const [error, setError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false)
+  const [selectedOrganization, setSelectedOrganization] = useState('')
+  const [unauthorizedEmail, setUnauthorizedEmail] = useState('')
 
   // 이미 로그인된 사용자는 프로젝트 페이지로 리다이렉트
   useEffect(() => {
@@ -43,7 +50,15 @@ function Login() {
       setErrorMessage('')
 
       // 로그인 시도
-      await login(email, password)
+      const user = await login(email, password)
+
+      // 미권한 사용자 처리
+      if (user.permissionLevel === PermissionLevel.UNAUTHORIZED) {
+        setUnauthorizedEmail(email)
+        setShowPermissionDialog(true)
+        setIsLoading(false)
+        return
+      }
 
       // 로그인 성공 시 프로젝트 페이지로 이동
       navigate('/project')
@@ -60,6 +75,23 @@ function Login() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handlePermissionRequest = () => {
+    // 권한 요청 로직 (실제로는 API 호출)
+    console.log('Permission requested for:', unauthorizedEmail, 'Organization:', selectedOrganization)
+
+    // 성공 메시지 표시 후 다이얼로그 닫기
+    alert(t('login.permissionRequest.success'))
+    setShowPermissionDialog(false)
+    setSelectedOrganization('')
+    setEmail('')
+    setPassword('')
+  }
+
+  const handleCancelPermissionRequest = () => {
+    setShowPermissionDialog(false)
+    setSelectedOrganization('')
   }
 
   return (
@@ -340,6 +372,121 @@ function Login() {
           ⓒ 2026. Hyundai Motor Group. All rights reserved.
         </Typography>
       </Box>
+
+      {/* 권한 요청 다이얼로그 */}
+      <Dialog
+        open={showPermissionDialog}
+        onClose={() => {}} // 배경 클릭으로 닫히지 않도록 비활성화
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '20px',
+              fontWeight: 700,
+              color: '#0A0A0A',
+            }}
+          >
+            {t('login.permissionRequest.title')}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ paddingTop: '8px' }}>
+            <Typography
+              sx={{
+                fontFamily: 'Asta Sans, sans-serif',
+                fontSize: '15px',
+                fontWeight: 400,
+                lineHeight: '22px',
+                color: '#525760',
+                whiteSpace: 'pre-line',
+              }}
+            >
+              {t('login.permissionRequest.description')}
+            </Typography>
+
+            <Stack spacing={1}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.permissionRequest.organizationLabel')}
+              </Typography>
+              <Select
+                value={selectedOrganization}
+                onChange={(e) => setSelectedOrganization(e.target.value as string)}
+                displayEmpty
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiSelect-select': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              >
+                <MenuItem value="" disabled>
+                  <Typography
+                    sx={{
+                      fontFamily: 'Asta Sans, sans-serif',
+                      fontSize: '14px',
+                      color: '#8E949F',
+                    }}
+                  >
+                    {t('login.permissionRequest.organizationPlaceholder')}
+                  </Typography>
+                </MenuItem>
+                <MenuItem value="studio_a">
+                  {t('login.permissionRequest.organizations.studio_a')}
+                </MenuItem>
+                <MenuItem value="studio_b">
+                  {t('login.permissionRequest.organizations.studio_b')}
+                </MenuItem>
+                <MenuItem value="studio_c">
+                  {t('login.permissionRequest.organizations.studio_c')}
+                </MenuItem>
+                <MenuItem value="wondermove">
+                  {t('login.permissionRequest.organizations.wondermove')}
+                </MenuItem>
+                <MenuItem value="other">
+                  {t('login.permissionRequest.organizations.other')}
+                </MenuItem>
+              </Select>
+            </Stack>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCancelPermissionRequest}
+            hdsProps={{ size: 'medium', style: 'strong' }}
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 700,
+            }}
+          >
+            {t('login.permissionRequest.button.cancel')}
+          </Button>
+          <Button
+            onClick={handlePermissionRequest}
+            disabled={!selectedOrganization}
+            hdsProps={{ size: 'medium', style: 'primary' }}
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 700,
+            }}
+          >
+            {t('login.permissionRequest.button.submit')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

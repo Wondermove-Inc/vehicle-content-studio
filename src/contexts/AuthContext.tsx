@@ -47,17 +47,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * 로그인 처리
    */
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (email: string, password: string): Promise<User> => {
     try {
       setIsLoading(true)
       // Mock 로그인 호출
       const loggedInUser = await mockLogin(email, password)
 
-      // 상태 업데이트
-      setUser(loggedInUser)
+      // 미권한 사용자는 상태 업데이트하지 않음
+      if (loggedInUser.permissionLevel !== PermissionLevel.UNAUTHORIZED) {
+        // 상태 업데이트
+        setUser(loggedInUser)
 
-      // localStorage에 저장
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(loggedInUser))
+        // localStorage에 저장
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(loggedInUser))
+      }
+
+      return loggedInUser
     } catch (error) {
       // 에러는 상위에서 처리하도록 throw
       throw error

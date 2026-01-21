@@ -6,6 +6,12 @@
 import { Permission, PermissionConfig, PermissionGroup, PermissionLevel } from '@/types/auth.types'
 
 /**
+ * UNAUTHORIZED - 미권한
+ * 특징: 권한 없음, 권한 요청 필요
+ */
+const UNAUTHORIZED_PERMISSIONS: Permission[] = []
+
+/**
  * L1 - 관리자 권한
  * 대상: 현대차 ICT / HAE
  * 특징: 시스템 모든 기능 접근, 사용자 관리, VCM 최초 업로드
@@ -216,6 +222,12 @@ const L5_CONTENT_CREATOR_PERMISSIONS: Permission[] = [
  * 권한 레벨별 권한 매트릭스
  */
 export const PERMISSION_MATRIX: Record<PermissionLevel, PermissionConfig> = {
+  [PermissionLevel.UNAUTHORIZED]: {
+    level: PermissionLevel.UNAUTHORIZED,
+    group: PermissionGroup.GROUP_3, // 임시 그룹 할당
+    permissions: UNAUTHORIZED_PERMISSIONS,
+    description: '미권한 - 권한 요청 필요',
+  },
   [PermissionLevel.L1_ADMIN]: {
     level: PermissionLevel.L1_ADMIN,
     group: PermissionGroup.GROUP_1,

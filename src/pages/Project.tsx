@@ -1130,7 +1130,7 @@ function Project() {
             </Typography>
           </Box>
           {isFavoritesExpanded && (
-            <Stack spacing={0} sx={{ paddingLeft: '18px', position: 'relative' }}>
+            <Stack spacing={0}>
               {favorites.size === 0 ? (
                 <Typography
                   sx={{
@@ -1151,19 +1151,9 @@ function Project() {
                       alignItems: 'center',
                       gap: '8px',
                       padding: '6px 16px',
-                      paddingLeft: '24px',
                       borderRadius: '6px',
                       cursor: 'pointer',
                       position: 'relative',
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        left: '8px',
-                        top: 0,
-                        bottom: 0,
-                        width: '1px',
-                        backgroundColor: 'var(--outline_lowest)',
-                      },
                       '&:hover': {
                         '& .favorite-label': {
                           color: '#111111',
@@ -1187,7 +1177,7 @@ function Project() {
                     >
                       <Ic_folder_filled
                         size="12px"
-                        style={{ color: '#FFFFFF' }}
+                        color="#FFFFFF"
                       />
                     </Box>
                     <Typography
