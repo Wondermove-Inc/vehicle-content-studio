@@ -78,20 +78,12 @@ function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // 이메일 형식 검증 (@가 포함되어야 함)
-    if (!email.includes('@')) {
-      setError(true)
-      setErrorMessage(t('login.error.invalidCredentials', { count: loginAttempts + 1 }))
-      setLoginAttempts((prev) => prev + 1)
-      return
-    }
-
     try {
       setIsLoading(true)
       setError(false)
       setErrorMessage('')
 
-      // 로그인 시도
+      // 로그인 시도 (Mock 데이터의 3개 계정만 허용)
       await login(email, password)
 
       // 로그인 성공 시 프로젝트 페이지로 이동
@@ -105,7 +97,7 @@ function Login() {
       if (err instanceof Error) {
         setErrorMessage(err.message)
       } else {
-        setErrorMessage(t('login.error.invalidCredentials', { count: loginAttempts + 1 }))
+        setErrorMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
       }
     } finally {
       setIsLoading(false)
