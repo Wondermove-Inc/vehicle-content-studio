@@ -163,7 +163,6 @@ function ContentDetail() {
       <Sidebar
         activeMenu={activeMenu}
         onMenuChange={setActiveMenu}
-        onSettingsOpen={() => setIsSettingsOpen(true)}
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
       />

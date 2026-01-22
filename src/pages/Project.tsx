@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '@/contexts/AuthContext'
 import Sidebar from '@/components/Sidebar'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import TextField from '@hmg-fe/hmg-design-system/TextField'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
-import Divider from '@hmg-fe/hmg-design-system/Divider'
-import RadioGroup from '@hmg-fe/hmg-design-system/RadioGroup'
-import Radio from '@hmg-fe/hmg-design-system/Radio'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem, Logo } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, Logo } from '@hmg-fe/hmg-design-system'
 import {
   Ic_setting_bold,
   Ic_search_regular,
@@ -21,15 +17,13 @@ import {
   Ic_world_filled,
   Ic_star_filled,
   Ic_star_regular,
-  Ic_log_out_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames, PROJECT_CODE_TO_TREE_ITEM as projectCodeToTreeItem } from '@/mocks/projects.mock'
 
 // 썸네일 이미지 목록
 function Project() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
   const [searchParams] = useSearchParams()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [contentType, setContentType] = useState('all')
@@ -43,12 +37,10 @@ function Project() {
   const [activeChannelWidth, setActiveChannelWidth] = useState(120)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
-  const [timezone, setTimezone] = useState('Asia/Seoul')
   // localStorage에서 즐겨찾기 초기화
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('project-favorites')
@@ -364,7 +356,6 @@ function Project() {
       <Sidebar
         activeMenu={activeMenu}
         onMenuChange={setActiveMenu}
-        onSettingsOpen={() => setIsSettingsOpen(true)}
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
         selectedProject={selectedProject ?? undefined}
@@ -988,84 +979,6 @@ function Project() {
           </Box>
         </Box>
       </Box>
-
-      {/* 설정 다이얼로그 */}
-      <Dialog
-        open={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        maxWidth="xs"
-        fullWidth
-      >
-        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsSettingsOpen(false) }}>{t('project.settings.title')}</DialogTitle>
-        <DialogContent hdsProps sx={{ py: '16px' }}>
-          {/* 언어 설정 */}
-          <Typography
-            sx={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#0E0F11',
-              marginBottom: '12px',
-            }}
-          >
-            {t('project.settings.language')}
-          </Typography>
-          <RadioGroup value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)} sx={{ pl: 1 }}>
-            <List hdsProps={{ dialogType: 'radio' }}>
-              <ListItem hdsProps={{ dialogType: 'radio', isDivider: false }}>
-                <FormControlLabel
-                  label=""
-                  value="ko"
-                  control={<Radio hdsProps={{ label: t('project.settings.languageKorean') }} />}
-                />
-              </ListItem>
-              <ListItem hdsProps={{ dialogType: 'radio', isDivider: false }}>
-                <FormControlLabel
-                  label=""
-                  value="en"
-                  control={<Radio hdsProps={{ label: t('project.settings.languageEnglish') }} />}
-                />
-              </ListItem>
-            </List>
-          </RadioGroup>
-
-          {/* 구분선 */}
-          <Divider sx={{ my: 3 }} />
-
-          {/* 로그아웃 섹션 */}
-          <Typography
-            sx={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#0E0F11',
-              marginBottom: '12px',
-            }}
-          >
-            계정
-          </Typography>
-          <Button
-            hdsProps={{ type: 'outline', style: 'critical' }}
-            fullWidth
-            startIcon={<Ic_log_out_regular size="16px" />}
-            onClick={() => {
-              logout()
-              navigate('/')
-            }}
-          >
-            로그아웃
-          </Button>
-        </DialogContent>
-        <DialogActions hdsProps>
-          <Button hdsProps onClick={() => setIsSettingsOpen(false)}>
-            {t('common.button.cancel')}
-          </Button>
-          <Button
-            hdsProps={{ type: 'fill', style: 'primary' }}
-            onClick={() => setIsSettingsOpen(false)}
-          >
-            {t('common.button.save')}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       {/* 프로젝트 추가 다이얼로그 */}
       <Dialog

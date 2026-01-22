@@ -16,6 +16,7 @@ import {
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { useAuth } from '@/contexts/AuthContext'
 import { PermissionLevel } from '@/types/auth.types'
+import ServiceSettingsDialog from './ServiceSettingsDialog'
 
 // 사이드바 메뉴 아이템 컴포넌트
 interface SidebarItemProps {
@@ -81,7 +82,6 @@ function SidebarItem({ icon, label, isActive, badge, collapsed, onClick }: Sideb
 interface SidebarProps {
   activeMenu: string
   onMenuChange: (menu: string) => void
-  onSettingsOpen: () => void
   isCollapsed?: boolean
   onCollapsedChange?: (collapsed: boolean) => void
   selectedProject?: string
@@ -93,7 +93,6 @@ interface SidebarProps {
 function Sidebar({
   activeMenu,
   onMenuChange,
-  onSettingsOpen,
   isCollapsed = false,
   onCollapsedChange,
   selectedProject,
@@ -106,6 +105,7 @@ function Sidebar({
   const { user } = useAuth()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
+  const [isServiceSettingsOpen, setIsServiceSettingsOpen] = useState(false)
 
   // 외부에서 collapsed 상태가 변경되면 동기화
   useEffect(() => {
@@ -146,18 +146,19 @@ function Sidebar({
   }
 
   return (
-    <Box
-      sx={{
-        width: isSidebarCollapsed ? '72px' : '260px',
-        height: '100%',
-        backgroundColor: 'var(--surface_container_lowest)',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-        transition: 'width 0.2s ease',
-        overflow: 'hidden',
-      }}
-    >
+    <>
+      <Box
+        sx={{
+          width: isSidebarCollapsed ? '72px' : '260px',
+          height: '100%',
+          backgroundColor: 'var(--surface_container_lowest)',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: 0,
+          transition: 'width 0.2s ease',
+          overflow: 'hidden',
+        }}
+      >
       {/* 헤더 */}
       <Box
         sx={{
@@ -232,7 +233,7 @@ function Sidebar({
             icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
             label={t('common.menu.settings')}
             collapsed={isSidebarCollapsed}
-            onClick={onSettingsOpen}
+            onClick={() => setIsServiceSettingsOpen(true)}
           />
         </Stack>
       </Box>
@@ -365,6 +366,10 @@ function Sidebar({
         )}
       </Box>
     </Box>
+
+    {/* 서비스 설정 다이얼로그 */}
+    <ServiceSettingsDialog open={isServiceSettingsOpen} onClose={() => setIsServiceSettingsOpen(false)} />
+    </>
   )
 }
 

@@ -72,7 +72,7 @@ function ProjectDetail() {
   const { t } = useTranslation()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedItems, setExpandedItems] = useState<string[]>([])
@@ -238,6 +238,33 @@ function ProjectDetail() {
     }
   }, [searchQuery])
 
+  // projectId가 변경될 때 트리 자동 확장 및 선택
+  useEffect(() => {
+    // 검색 중이 아니고 projectId가 있을 때만 실행
+    if (projectId && !searchQuery.trim()) {
+      // 트리를 순회하면서 projectId를 찾고, 부모 노드들의 ID를 수집
+      const findParentIds = (nodes: TreeNode[], targetId: string, parents: string[] = []): string[] | null => {
+        for (const node of nodes) {
+          // 현재 노드가 타겟이면 부모들의 ID 반환
+          if (node.id === targetId) {
+            return parents
+          }
+          // 자식이 있으면 재귀적으로 탐색
+          if (node.children) {
+            const found = findParentIds(node.children, targetId, [...parents, node.id])
+            if (found) return found
+          }
+        }
+        return null
+      }
+
+      const parentIds = findParentIds(treeData, projectId)
+      if (parentIds) {
+        setExpandedItems(parentIds)
+      }
+    }
+  }, [projectId, searchQuery])
+
   if (!projectData) {
     return (
       <Box sx={{ padding: '40px', textAlign: 'center' }}>
@@ -259,7 +286,6 @@ function ProjectDetail() {
       <Sidebar
         activeMenu={activeMenu}
         onMenuChange={setActiveMenu}
-        onSettingsOpen={() => setIsSettingsOpen(true)}
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
         selectedProject={projectId}
@@ -476,6 +502,42 @@ function ProjectDetail() {
                             '& .MuiTreeItem-content': {
                               height: '34px',
                               minHeight: '34px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              borderRadius: '4px',
+                              '&:hover': {
+                                backgroundColor: '#FAFAFA',
+                              },
+                            },
+                            '& .MuiTreeItem-iconContainer': {
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginRight: 0,
+                            },
+                            '& .MuiTreeItem-label': {
+                              display: 'flex',
+                              alignItems: 'center',
+                              paddingLeft: 0,
+                            },
+                            '& .MuiTreeItem-content.Mui-selected': {
+                              '&:hover': {
+                                backgroundColor: '#F5F5F5',
+                              },
+                            },
+                            // 2뎁스 hover 비활성화
+                            '& .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
+                              backgroundColor: 'transparent',
+                            },
+                            // 3뎁스 hover 다시 활성화
+                            '& .MuiTreeItem-group .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
+                              backgroundColor: '#FAFAFA',
+                            },
+                            '& .MuiTreeItem-group': {
+                              marginLeft: '12px',
+                            },
+                            '& .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-label': {
+                              marginLeft: '12px',
                             },
                           }}
                         >
@@ -484,7 +546,7 @@ function ProjectDetail() {
                               key={brand.id}
                               itemId={brand.id}
                               label={
-                                <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: 1, color: '#111111' }}>
+                                <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
                                   {brand.label} ({brand.count})
                                 </Typography>
                               }
@@ -497,7 +559,7 @@ function ProjectDetail() {
                                       key={project.id}
                                       itemId={project.id}
                                       label={
-                                        <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: 1, color: '#111111' }}>{project.label}</Typography>
+                                        <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>{project.label}</Typography>
                                       }
                                       hdsProps={{ type: 'default' }}
                                     />
@@ -615,7 +677,7 @@ function ProjectDetail() {
                         isIconOnly: true,
                       }}
                       aria-label={t('projectDetail.header.projectSettings')}
-                      onClick={() => setIsSettingsOpen(true)}
+                      onClick={() => setIsProjectSettingsOpen(true)}
                     />
                   </Box>
                 </Box>
@@ -777,8 +839,8 @@ function ProjectDetail() {
       </Box>
 
       {/* 프로젝트 설정 다이얼로그 */}
-      <Dialog open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsSettingsOpen(false) }}>
+      <Dialog open={isProjectSettingsOpen} onClose={() => setIsProjectSettingsOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsProjectSettingsOpen(false) }}>
           {t('projectDetail.header.projectSettings')}
         </DialogTitle>
         <DialogContent hdsProps>
@@ -787,10 +849,10 @@ function ProjectDetail() {
           </Box>
         </DialogContent>
         <DialogActions hdsProps>
-          <Button hdsProps onClick={() => setIsSettingsOpen(false)}>
+          <Button hdsProps onClick={() => setIsProjectSettingsOpen(false)}>
             {t('common.button.cancel')}
           </Button>
-          <Button hdsProps={{ type: 'fill', style: 'primary' }} onClick={() => setIsSettingsOpen(false)}>
+          <Button hdsProps={{ type: 'fill', style: 'primary' }} onClick={() => setIsProjectSettingsOpen(false)}>
             {t('common.button.save')}
           </Button>
         </DialogActions>
