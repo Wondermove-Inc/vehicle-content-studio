@@ -1,31 +1,23 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import Sidebar from '@/components/Sidebar'
+import ProjectLayout from '@/components/ProjectLayout'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
-import TextField from '@hmg-fe/hmg-design-system/TextField'
-import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, Logo } from '@hmg-fe/hmg-design-system'
+import { Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, Logo } from '@hmg-fe/hmg-design-system'
 import {
-  Ic_setting_bold,
-  Ic_search_regular,
-  Ic_plus_regular,
   Ic_world_filled,
-  Ic_star_filled,
-  Ic_star_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
-import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames, PROJECT_CODE_TO_TREE_ITEM as projectCodeToTreeItem } from '@/mocks/projects.mock'
+import { MOCK_PROJECTS as sampleProjects, PROJECT_CODE_TO_TREE_ITEM as projectCodeToTreeItem, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 
 // 썸네일 이미지 목록
 function Project() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [contentType, setContentType] = useState('all')
 
   // URL 쿼리 파라미터에서 선택된 프로젝트 읽기
@@ -35,43 +27,10 @@ function Project() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [activeChannelWidth, setActiveChannelWidth] = useState(120)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
-  // localStorage에서 즐겨찾기 초기화
-  const [favorites, setFavorites] = useState<Set<string>>(() => {
-    const saved = localStorage.getItem('project-favorites')
-    if (saved) {
-      try {
-        return new Set(JSON.parse(saved))
-      } catch {
-        return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
-      }
-    }
-    return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
-  })
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
-
-  // 즐겨찾기가 변경되면 localStorage에 저장
-  useEffect(() => {
-    localStorage.setItem('project-favorites', JSON.stringify(Array.from(favorites)))
-  }, [favorites])
-
-  // 즐겨찾기 토글 함수
-  const toggleFavorite = (projectId: string) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev)
-      if (newFavorites.has(projectId)) {
-        newFavorites.delete(projectId)
-      } else {
-        newFavorites.add(projectId)
-      }
-      return newFavorites
-    })
-  }
 
   // 브랜드명 번역 함수
   const getBrandLabel = (brand: string): string => {
@@ -83,122 +42,6 @@ function Project() {
     return brandMap[brand] || brand
   }
 
-  // 트리 데이터 구조
-  const treeData = [
-    {
-      id: 'hyundai',
-      label: t('common.brand.hyundai'),
-      count: 6,
-      children: [
-        {
-          id: 'cn7-0a25',
-          label: 'CN7I(AL23)_HEV',
-          count: 3,
-          children: [
-            { id: 'hev-27-my', label: 'CN7I(AL23)_HEV_27MY' },
-            { id: 'hev-26-my', label: 'CN7I(AL23)_HEV_26MY' },
-            { id: 'hev-25-fmc', label: 'CN7I(AL23)_HEV_25FMC' },
-          ],
-        },
-        {
-          id: 'cn6-oa22',
-          label: 'CN7I(AL23)_EV',
-          count: 3,
-          children: [
-            { id: 'ice-24-my', label: 'ICE_24_MY' },
-            { id: 'ice-23-my', label: 'ICE_23_MY' },
-            { id: 'ice-22-fl', label: 'ICE_22_FL' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'kia',
-      label: t('common.brand.kia'),
-      count: 8,
-      children: [
-        {
-          id: 'ev6-25',
-          label: 'EV6',
-          count: 4,
-          children: [
-            { id: 'ev6-27-my', label: 'EV6_27_MY' },
-            { id: 'ev6-26-my', label: 'EV6_26_MY' },
-            { id: 'ev6-25-fmc', label: 'EV6_25_FMC' },
-          ],
-        },
-        {
-          id: 'k8-24',
-          label: 'K8',
-          count: 4,
-          children: [
-            { id: 'k8-26-my', label: 'K8_26_MY' },
-            { id: 'k8-25-my', label: 'K8_25_MY' },
-            { id: 'k8-24-fl', label: 'K8_24_FL' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'genesis',
-      label: t('common.brand.genesis'),
-      count: 10,
-      children: [
-        {
-          id: 'gv80-25',
-          label: 'GV80',
-          count: 5,
-          children: [
-            { id: 'gv80-27-my', label: 'GV80_27_MY' },
-            { id: 'gv80-26-my', label: 'GV80_26_MY' },
-            { id: 'gv80-25-fmc', label: 'GV80_25_FMC' },
-          ],
-        },
-        {
-          id: 'g90-24',
-          label: 'G90',
-          count: 5,
-          children: [
-            { id: 'g90-26-my', label: 'G90_26_MY' },
-            { id: 'g90-25-my', label: 'G90_25_MY' },
-            { id: 'g90-24-fl', label: 'G90_24_FL' },
-          ],
-        },
-      ],
-    },
-  ]
-
-  // 검색어로 트리 필터링
-  type TreeNode = {
-    id: string
-    label: string
-    count?: number
-    children?: TreeNode[]
-  }
-
-  const filterTree = (nodes: TreeNode[], query: string): TreeNode[] => {
-    if (!query.trim()) return nodes
-
-    const lowerQuery = query.toLowerCase()
-    const result: TreeNode[] = []
-
-    for (const node of nodes) {
-      const labelMatch = node.label.toLowerCase().includes(lowerQuery)
-      const filteredChildren = node.children ? filterTree(node.children, query) : []
-
-      if (labelMatch || filteredChildren.length > 0) {
-        result.push({
-          ...node,
-          children: labelMatch ? node.children : filteredChildren,
-        })
-      }
-    }
-
-    return result
-  }
-
-  const filteredTreeData = filterTree(treeData, searchQuery)
-
   // 프로젝트 선택 또는 컨텐츠 유형 변경 시 페이지 초기화
   useEffect(() => {
     setPage(0)
@@ -209,28 +52,6 @@ function Project() {
     const selected = searchParams.get('selected') || 'all'
     setSelectedProject(selected)
   }, [searchParams])
-
-  // 검색어 변경 시 트리 노드 자동 확장
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      // 검색 중일 때는 모든 필터된 노드 확장
-      const filtered = filterTree(treeData, searchQuery)
-      const expandedIds: string[] = []
-      const collectIds = (nodes: TreeNode[]) => {
-        nodes.forEach((node) => {
-          if (node.children && node.children.length > 0) {
-            expandedIds.push(node.id)
-            collectIds(node.children)
-          }
-        })
-      }
-      collectIds(filtered)
-      setExpandedItems(expandedIds)
-    } else {
-      // 검색어가 없을 때는 기본 확장 상태로 복원 (모두 닫힘)
-      setExpandedItems([])
-    }
-  }, [searchQuery])
 
   // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
   const treeItemToProjectCode: Record<string, string> = {
@@ -344,391 +165,19 @@ function Project() {
   }
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        backgroundColor: '#F5F5F5',
-      }}
-    >
-      {/* 사이드바 */}
-      <Sidebar
-        activeMenu={activeMenu}
-        onMenuChange={setActiveMenu}
-        isCollapsed={isSidebarCollapsed}
-        onCollapsedChange={setIsSidebarCollapsed}
+    <>
+      <ProjectLayout
         selectedProject={selectedProject ?? undefined}
-        onProjectSelect={setSelectedProject}
-        favorites={favorites}
-        projectNames={projectNames}
-      />
-
-      {/* 메인 콘텐츠 */}
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          maxWidth: isSidebarCollapsed ? 'calc(100% - 72px)' : 'calc(100% - 260px)',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '16px 16px 16px 0',
-          gap: '10px',
-          overflow: 'visible',
-          backgroundColor: 'var(--surface_container_lowest)',
-          transition: 'max-width 0.2s ease',
+        onProjectSelect={(id) => {
+          setSelectedProject(id)
+          // URL 쿼리 파라미터 업데이트 (navigate 대신 history API 사용하여 리렌더링 방지)
+          const newUrl = `/project?selected=${id}`
+          window.history.replaceState(null, '', newUrl)
         }}
+        onAddProject={() => setIsAddProjectOpen(true)}
       >
-        <Box
-          sx={{
-            flex: 1,
-            width: '100%',
-            minWidth: 0,
-            backgroundColor: '#ffffff',
-            borderRadius: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          {/* 헤더 영역 */}
-          <Box
-            sx={{
-              alignSelf: 'stretch',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              gap: '4px',
-              padding: '20px 20px 16px 24px',
-              borderBottom: '1px solid var(--outline)',
-              flexShrink: 0,
-            }}
-          >
-            {/* 첫 번째 행: 제목 + 버튼 */}
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 24,
-                    fontWeight: 600,
-                    lineHeight: '36px',
-                    color: 'var(--on_surface)',
-                  }}
-                >
-                  {t('project.header.title')}
-                </Typography>
-              </Box>
-              <Button
-                hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
-                sx={{
-                  flexShrink: 0,
-                }}
-                onClick={() => setIsAddProjectOpen(true)}
-              >
-                {t('project.header.addProject')}
-              </Button>
-            </Box>
-          </Box>
-
-          {/* 메인 영역 */}
-          <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-            {/* 좌측 패널 - 프로젝트 트리 */}
-            <Box
-              sx={{
-                width: '280px',
-                borderRight: '1px solid var(--outline)',
-                display: 'flex',
-                flexDirection: 'column',
-                flexShrink: 0,
-                backgroundColor: '#fff',
-              }}
-            >
-              {/* 검색 필드 */}
-              <Box sx={{ padding: '16px 20px 0 20px' }}>
-                <TextField
-                  hdsProps={{ size: 'medium', isClear: true }}
-                  placeholder={t('project.tree.searchPlaceholder')}
-                  fullWidth
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Ic_search_regular size="16px" color="#949494" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  inputProps={{
-                    onClickClearButton: () => setSearchQuery(''),
-                  }}
-                />
-              </Box>
-
-              {/* 트리 영역 */}
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '16px 0 20px 20px',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box
-                  sx={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    paddingRight: '14px',
-                    '&::-webkit-scrollbar': {
-                      width: '6px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      background: 'transparent',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: 'var(--outline)',
-                      borderRadius: '3px',
-                    },
-                  }}
-                >
-
-                {/* 프로젝트 트리 */}
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  {/* 검색 결과 없음 */}
-                  {searchQuery.trim() && filteredTreeData.length === 0 ? (
-                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '80px' }}>
-                      <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noSearchResult'), buttons: undefined }} />
-                    </Box>
-                  ) : (
-                    <>
-                      {/* 전체 프로젝트 - 검색 중이 아닐 때만 표시 */}
-                      {!searchQuery.trim() && (
-                        <Box
-                          onClick={() => setSelectedProject('all')}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            height: '38px',
-                            padding: '0 10px',
-                            backgroundColor: selectedProject === 'all' ? '#F5F5F5' : 'transparent',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            '&:hover': {
-                              backgroundColor: selectedProject === 'all' ? '#F5F5F5' : '#FAFAFA',
-                            },
-                          }}
-                        >
-                          <Typography
-                            sx={{
-                              fontSize: 15,
-                              fontWeight: 700,
-                              lineHeight: '22px',
-                              color: '#111111',
-                            }}
-                          >
-                            {t('project.tree.allProjects')}
-                          </Typography>
-                        </Box>
-                      )}
-
-                      {/* 트리 뷰 */}
-                      <SimpleTreeView
-                    hdsProps={{ size: 'medium', type: 'line' }}
-                    expandedItems={expandedItems}
-                    onExpandedItemsChange={(_, itemIds) => {
-                      setExpandedItems(itemIds as string[])
-                    }}
-                    selectedItems={selectedProject === 'all' ? '' : (selectedProject || '')}
-                    onSelectedItemsChange={(_, itemId) => {
-                      if (itemId) {
-                        const id = itemId as string
-                        // 2뎁스 아이템은 선택하지 않고 부모(1뎁스)를 선택
-                        const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
-                        if (depth2Items.includes(id)) {
-                          // 부모 찾기
-                          if (id.startsWith('cn7') || id.startsWith('cn6')) setSelectedProject('hyundai')
-                          else if (id.startsWith('ev6') || id.startsWith('k8')) setSelectedProject('kia')
-                          else if (id.startsWith('gv80') || id.startsWith('g90')) setSelectedProject('genesis')
-                        } else if (id === 'hyundai' || id === 'kia' || id === 'genesis') {
-                          // 1뎁스 (브랜드)를 클릭하면 필터링만
-                          setSelectedProject(id)
-                        } else {
-                          // 3뎁스 (실제 프로젝트)를 클릭하면 프로젝트 상세 페이지로 이동
-                          navigate(`/project/${id}`)
-                        }
-                      }
-                    }}
-                    sx={{
-                      '& .MuiTreeItem-content': {
-                        height: '34px',
-                        minHeight: '34px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        borderRadius: '4px',
-                        '&:hover': {
-                          backgroundColor: '#FAFAFA',
-                        },
-                      },
-                      '& .MuiTreeItem-iconContainer': {
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginRight: 0,
-                      },
-                      '& .MuiTreeItem-label': {
-                        display: 'flex',
-                        alignItems: 'center',
-                        paddingLeft: 0,
-                      },
-                      '& .MuiTreeItem-content.Mui-selected': {
-                        '&:hover': {
-                          backgroundColor: '#F5F5F5',
-                        },
-                      },
-                      // 2뎁스 hover 비활성화
-                      '& .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
-                        backgroundColor: 'transparent',
-                      },
-                      // 3뎁스 hover 다시 활성화
-                      '& .MuiTreeItem-group .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
-                        backgroundColor: '#FAFAFA',
-                      },
-                      // 3뎁스 설정 아이콘 기본 숨김
-                      '& .tree-settings-icon': {
-                        opacity: 0,
-                        transition: 'opacity 0.15s ease',
-                      },
-                      // hover 또는 선택된 상태에서 설정 아이콘 표시
-                      '& .MuiTreeItem-content:hover .tree-settings-icon, & .MuiTreeItem-content.Mui-selected .tree-settings-icon': {
-                        opacity: 1,
-                      },
-                      '& .MuiTreeItem-group': {
-                        marginLeft: '12px',
-                      },
-                      '& .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-label': {
-                        marginLeft: '12px',
-                      },
-                    }}
-                  >
-                    {filteredTreeData.map((brand) => (
-                      <TreeItem
-                        key={brand.id}
-                        itemId={brand.id}
-                        label={
-                          <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
-                            {brand.label} ({brand.count})
-                          </Typography>
-                        }
-                        hdsProps={{ type: 'default' }}
-                      >
-                        {brand.children?.map((model) => (
-                          <TreeItem
-                            key={model.id}
-                            itemId={model.id}
-                            label={`${model.label} (${model.count})`}
-                            hdsProps={{ type: 'default' }}
-                          >
-                            {model.children?.map((project) => (
-                              <TreeItem
-                                key={project.id}
-                                itemId={project.id}
-                                label={
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'space-between',
-                                      width: '100%',
-                                      pr: '4px',
-                                    }}
-                                  >
-                                    <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
-                                      {project.label}
-                                    </Typography>
-                                    <Box
-                                      className="tree-settings-icon"
-                                      sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        setSelectedProject(project.id)
-                                      }}
-                                    >
-                                      <Box
-                                        onClick={() => toggleFavorite(project.id)}
-                                        sx={{
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          cursor: 'pointer',
-                                          '&:hover': {
-                                            opacity: 0.7,
-                                          },
-                                          ...(favorites.has(project.id) && {
-                                            '& svg': {
-                                              filter: 'drop-shadow(0.5px 0 0 rgba(0,0,0,0.05)) drop-shadow(-0.5px 0 0 rgba(0,0,0,0.05)) drop-shadow(0 0.5px 0 rgba(0,0,0,0.05)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.05))',
-                                            },
-                                          }),
-                                        }}
-                                        aria-label="즐겨찾기"
-                                      >
-                                        {favorites.has(project.id)
-                                          ? <Ic_star_filled size="16px" color="var(--yellow)" />
-                                          : <Ic_star_regular size="16px" color="var(--on_surface_mid)" />
-                                        }
-                                      </Box>
-                                      <Button
-                                        hdsProps={{
-                                          size: 'xxsmall',
-                                          type: 'outline',
-                                          icon: <Ic_setting_bold size="16px" />,
-                                          style: undefined,
-                                          isIconOnly: true,
-                                        }}
-                                        aria-label="설정"
-                                        onClick={(e) => {
-                                          e.stopPropagation()
-                                          setSelectedProjectForSettings(project.id)
-                                          setIsProjectSettingsOpen(true)
-                                        }}
-                                      />
-                                    </Box>
-                                  </Box>
-                                }
-                                hdsProps={{ type: 'default' }}
-                              />
-                            ))}
-                          </TreeItem>
-                        ))}
-                      </TreeItem>
-                    ))}
-                      </SimpleTreeView>
-                    </>
-                  )}
-                </Box>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* 우측 패널 - 테이블 */}
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 20px 0' }}>
+        {/* 우측 패널 - 테이블 */}
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 20px 0' }}>
               {/* 테이블 헤더 영역 */}
               <Box
                 sx={{
@@ -979,10 +428,8 @@ function Project() {
               />
               </>
               )}
-            </Box>
-          </Box>
         </Box>
-      </Box>
+      </ProjectLayout>
 
       {/* 프로젝트 추가 다이얼로그 */}
       <Dialog
@@ -1094,7 +541,7 @@ function Project() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   )
 }
 

@@ -1,24 +1,21 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import ProjectLayout from '@/components/ProjectLayout'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
-import TextField from '@hmg-fe/hmg-design-system/TextField'
-import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
-import { Dialog, DialogTitle, DialogContent, DialogActions, SimpleTreeView, TreeItem, EmptyError } from '@hmg-fe/hmg-design-system'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
 import {
+  Ic_group_bold,
+  Ic_setting_bold,
   Ic_star_filled,
   Ic_star_regular,
-  Ic_setting_bold,
-  Ic_group_bold,
-  Ic_plus_regular,
   Ic_folder_filled,
-  Ic_search_regular,
+  Ic_plus_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
-import Sidebar from '../components/Sidebar'
-import { PROJECT_NAMES as projectNames, MOCK_PROJECTS, PROJECT_CODE_TO_TREE_ITEM } from '@/mocks/projects.mock'
+import { MOCK_PROJECTS, PROJECT_CODE_TO_TREE_ITEM, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 
 // 프로젝트 데이터 타입
 interface ProjectData {
@@ -67,43 +64,30 @@ Object.keys(projectNames).forEach((treeId) => {
   }
 })
 
-// 트리 노드 타입
-type TreeNode = {
-  id: string
-  label: string
-  count?: number
-  children?: TreeNode[]
-}
-
 function ProjectDetail() {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const [activeMenu, setActiveMenu] = useState('프로젝트')
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
 
-  // localStorage에서 즐겨찾기 초기화
+  // 프로젝트 데이터 가져오기
+  const projectData = projectId ? sampleProjects[projectId] : null
+  const projectName = projectId ? projectNames[projectId] : null
+
+  // 즐겨찾기 관련
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('project-favorites')
     if (saved) {
       try {
         return new Set(JSON.parse(saved))
       } catch {
-        return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
+        return new Set()
       }
     }
-    return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
+    return new Set()
   })
 
-  // 프로젝트 데이터 가져오기
-  const projectData = projectId ? sampleProjects[projectId] : null
-  const projectName = projectId ? projectNames[projectId] : null
-
-  // 즐겨찾기 토글
   const toggleFavorite = () => {
     if (!projectId) return
     const newFavorites = new Set(favorites)
@@ -118,161 +102,13 @@ function ProjectDetail() {
 
   const isFavorite = projectId ? favorites.has(projectId) : false
 
-  // 트리 데이터 구조
-  const treeData: TreeNode[] = [
-    {
-      id: 'hyundai',
-      label: t('common.brand.hyundai'),
-      count: 6,
-      children: [
-        {
-          id: 'cn7-0a25',
-          label: 'CN7I(AL23)_HEV',
-          count: 3,
-          children: [
-            { id: 'hev-27-my', label: 'CN7I(AL23)_HEV_27MY' },
-            { id: 'hev-26-my', label: 'CN7I(AL23)_HEV_26MY' },
-            { id: 'hev-25-fmc', label: 'CN7I(AL23)_HEV_25FMC' },
-          ],
-        },
-        {
-          id: 'cn6-oa22',
-          label: 'CN7I(AL23)_EV',
-          count: 3,
-          children: [
-            { id: 'ice-24-my', label: 'ICE_24_MY' },
-            { id: 'ice-23-my', label: 'ICE_23_MY' },
-            { id: 'ice-22-fl', label: 'ICE_22_FL' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'kia',
-      label: t('common.brand.kia'),
-      count: 8,
-      children: [
-        {
-          id: 'ev6-25',
-          label: 'EV6',
-          count: 4,
-          children: [
-            { id: 'ev6-27-my', label: 'EV6_27_MY' },
-            { id: 'ev6-26-my', label: 'EV6_26_MY' },
-            { id: 'ev6-25-fmc', label: 'EV6_25_FMC' },
-          ],
-        },
-        {
-          id: 'k8-24',
-          label: 'K8',
-          count: 4,
-          children: [
-            { id: 'k8-26-my', label: 'K8_26_MY' },
-            { id: 'k8-25-my', label: 'K8_25_MY' },
-            { id: 'k8-24-fl', label: 'K8_24_FL' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'genesis',
-      label: t('common.brand.genesis'),
-      count: 10,
-      children: [
-        {
-          id: 'gv80-25',
-          label: 'GV80',
-          count: 5,
-          children: [
-            { id: 'gv80-27-my', label: 'GV80_27_MY' },
-            { id: 'gv80-26-my', label: 'GV80_26_MY' },
-            { id: 'gv80-25-fmc', label: 'GV80_25_FMC' },
-          ],
-        },
-        {
-          id: 'g90-24',
-          label: 'G90',
-          count: 5,
-          children: [
-            { id: 'g90-26-my', label: 'G90_26_MY' },
-            { id: 'g90-25-my', label: 'G90_25_MY' },
-            { id: 'g90-24-fl', label: 'G90_24_FL' },
-          ],
-        },
-      ],
-    },
-  ]
-
-  // 검색어로 트리 필터링
-  const filterTree = (nodes: TreeNode[], query: string): TreeNode[] => {
-    if (!query.trim()) return nodes
-
-    const lowerQuery = query.toLowerCase()
-    const result: TreeNode[] = []
-
-    for (const node of nodes) {
-      const labelMatch = node.label.toLowerCase().includes(lowerQuery)
-      const filteredChildren = node.children ? filterTree(node.children, query) : []
-
-      if (labelMatch || filteredChildren.length > 0) {
-        result.push({
-          ...node,
-          children: labelMatch ? node.children : filteredChildren,
-        })
-      }
-    }
-
-    return result
-  }
-
-  const filteredTreeData = filterTree(treeData, searchQuery)
-
-  // 검색어 변경 시 트리 노드 자동 확장
+  // 잘못된 projectId(all, 브랜드, 2뎁스)로 접근 시 /project로 리다이렉트
   useEffect(() => {
-    if (searchQuery.trim()) {
-      const filtered = filterTree(treeData, searchQuery)
-      const expandedIds: string[] = []
-      const collectIds = (nodes: TreeNode[]) => {
-        nodes.forEach((node) => {
-          if (node.children && node.children.length > 0) {
-            expandedIds.push(node.id)
-            collectIds(node.children)
-          }
-        })
-      }
-      collectIds(filtered)
-      setExpandedItems(expandedIds)
-    } else {
-      setExpandedItems([])
+    const invalidIds = ['all', 'hyundai', 'kia', 'genesis', 'cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
+    if (projectId && invalidIds.includes(projectId)) {
+      navigate('/project', { replace: true })
     }
-  }, [searchQuery])
-
-  // projectId가 변경될 때 트리 자동 확장 및 선택
-  useEffect(() => {
-    // 검색 중이 아니고 projectId가 있을 때만 실행
-    if (projectId && !searchQuery.trim()) {
-      // 트리를 순회하면서 projectId를 찾고, 부모 노드들의 ID를 수집
-      const findParentIds = (nodes: TreeNode[], targetId: string, parents: string[] = []): string[] | null => {
-        for (const node of nodes) {
-          // 현재 노드가 타겟이면 부모들의 ID 반환
-          if (node.id === targetId) {
-            return parents
-          }
-          // 자식이 있으면 재귀적으로 탐색
-          if (node.children) {
-            const found = findParentIds(node.children, targetId, [...parents, node.id])
-            if (found) return found
-          }
-        }
-        return null
-      }
-
-      const parentIds = findParentIds(treeData, projectId)
-      if (parentIds) {
-        setExpandedItems(parentIds)
-      }
-    }
-  }, [projectId, searchQuery])
+  }, [projectId, navigate])
 
   if (!projectData) {
     return (
@@ -283,310 +119,35 @@ function ProjectDetail() {
   }
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100vh',
-        display: 'flex',
-        backgroundColor: '#F5F5F5',
-      }}
-    >
-      {/* 사이드바 */}
-      <Sidebar
-        activeMenu={activeMenu}
-        onMenuChange={setActiveMenu}
-        isCollapsed={isSidebarCollapsed}
-        onCollapsedChange={setIsSidebarCollapsed}
+    <>
+      <ProjectLayout
         selectedProject={projectId}
-        onProjectSelect={(id) => navigate(`/project/${id}`)}
-        favorites={favorites}
-        projectNames={projectNames}
-      />
+        onProjectSelect={(id) => {
+          const brandItems = ['hyundai', 'kia', 'genesis']
+          const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
 
-      {/* 메인 콘텐츠 */}
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          maxWidth: isSidebarCollapsed ? 'calc(100% - 72px)' : 'calc(100% - 260px)',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '16px 16px 16px 0',
-          gap: '10px',
-          overflow: 'visible',
-          backgroundColor: 'var(--surface_container_lowest)',
-          transition: 'max-width 0.2s ease',
+          if (id === 'all') {
+            // 전체 프로젝트 선택 시
+            navigate('/project?selected=all')
+          } else if (brandItems.includes(id)) {
+            // 브랜드 선택 시: 해당 브랜드로 필터링된 프로젝트 목록으로 이동
+            navigate(`/project?selected=${id}`)
+          } else if (depth2Items.includes(id)) {
+            // 2뎁스 모델 선택 시: 부모 브랜드로 필터링된 프로젝트 목록으로 이동
+            let brandId = ''
+            if (id.startsWith('cn7') || id.startsWith('cn6')) brandId = 'hyundai'
+            else if (id.startsWith('ev6') || id.startsWith('k8')) brandId = 'kia'
+            else if (id.startsWith('gv80') || id.startsWith('g90')) brandId = 'genesis'
+            navigate(`/project?selected=${brandId}`)
+          } else {
+            // 3뎁스 프로젝트는 해당 프로젝트 상세로 이동
+            navigate(`/project/${id}`)
+          }
         }}
+        onAddProject={() => {}}
       >
-        <Box
-          sx={{
-            flex: 1,
-            width: '100%',
-            minWidth: 0,
-            backgroundColor: '#ffffff',
-            borderRadius: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          {/* 헤더 영역 - Project.tsx와 동일 */}
-          <Box
-            sx={{
-              alignSelf: 'stretch',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              gap: '4px',
-              padding: '20px 24px 16px 24px',
-              borderBottom: '1px solid var(--outline)',
-              flexShrink: 0,
-            }}
-          >
-            <Box
-              sx={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 24,
-                    fontWeight: 600,
-                    lineHeight: '36px',
-                    color: 'var(--on_surface)',
-                  }}
-                >
-                  {t('project.header.title')}
-                </Typography>
-              </Box>
-              <Button
-                hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
-                sx={{
-                  flexShrink: 0,
-                }}
-                onClick={() => {
-                  // TODO: 프로젝트 추가
-                  console.log('프로젝트 추가')
-                }}
-              >
-                {t('project.header.addProject')}
-              </Button>
-            </Box>
-          </Box>
-
-          {/* 메인 영역 */}
-          <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-            {/* 좌측 패널 - 프로젝트 트리 */}
-            <Box
-              sx={{
-                width: '280px',
-                borderRight: '1px solid var(--outline)',
-                display: 'flex',
-                flexDirection: 'column',
-                flexShrink: 0,
-                backgroundColor: '#fff',
-              }}
-            >
-              {/* 검색 필드 */}
-              <Box sx={{ padding: '16px 20px 0 20px' }}>
-                <TextField
-                  hdsProps={{ size: 'medium', isClear: true }}
-                  placeholder={t('project.tree.searchPlaceholder')}
-                  fullWidth
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Ic_search_regular size="16px" color="#949494" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  inputProps={{
-                    onClickClearButton: () => setSearchQuery(''),
-                  }}
-                />
-              </Box>
-
-              {/* 트리 영역 */}
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '16px 0 20px 20px',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box
-                  sx={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    paddingRight: '14px',
-                    '&::-webkit-scrollbar': {
-                      width: '6px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      background: 'transparent',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: 'var(--outline)',
-                      borderRadius: '3px',
-                    },
-                  }}
-                >
-                  {/* 프로젝트 트리 */}
-                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    {/* 검색 결과 없음 */}
-                    {searchQuery.trim() && filteredTreeData.length === 0 ? (
-                      <Box sx={{ flex: 1, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '80px' }}>
-                        <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noSearchResult'), buttons: undefined }} />
-                      </Box>
-                    ) : (
-                      <>
-                        {/* 전체 프로젝트 - 검색 중이 아닐 때만 표시 */}
-                        {!searchQuery.trim() && (
-                          <Box
-                            onClick={() => navigate('/project')}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              height: '38px',
-                              padding: '0 10px',
-                              backgroundColor: 'transparent',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              '&:hover': {
-                                backgroundColor: '#FAFAFA',
-                              },
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontSize: 15,
-                                fontWeight: 700,
-                                lineHeight: '22px',
-                                color: '#111111',
-                              }}
-                            >
-                              {t('project.tree.allProjects')}
-                            </Typography>
-                          </Box>
-                        )}
-
-                        {/* 트리 뷰 */}
-                        <SimpleTreeView
-                          hdsProps={{ size: 'medium', type: 'line' }}
-                          expandedItems={expandedItems}
-                          onExpandedItemsChange={(_, itemIds) => {
-                            setExpandedItems(itemIds as string[])
-                          }}
-                          selectedItems={projectId || ''}
-                          onSelectedItemsChange={(_, itemId) => {
-                            if (itemId) {
-                              const id = itemId as string
-                              // 2뎁스 아이템은 선택하지 않음
-                              const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
-                              if (!depth2Items.includes(id) && id !== 'hyundai' && id !== 'kia' && id !== 'genesis') {
-                                navigate(`/project/${id}`)
-                              }
-                            }
-                          }}
-                          sx={{
-                            '& .MuiTreeItem-content': {
-                              height: '34px',
-                              minHeight: '34px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              borderRadius: '4px',
-                              '&:hover': {
-                                backgroundColor: '#FAFAFA',
-                              },
-                            },
-                            '& .MuiTreeItem-iconContainer': {
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              marginRight: 0,
-                            },
-                            '& .MuiTreeItem-label': {
-                              display: 'flex',
-                              alignItems: 'center',
-                              paddingLeft: 0,
-                            },
-                            '& .MuiTreeItem-content.Mui-selected': {
-                              '&:hover': {
-                                backgroundColor: '#F5F5F5',
-                              },
-                            },
-                            // 2뎁스 hover 비활성화
-                            '& .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
-                              backgroundColor: 'transparent',
-                            },
-                            // 3뎁스 hover 다시 활성화
-                            '& .MuiTreeItem-group .MuiTreeItem-group > .MuiTreeItem-root > .MuiTreeItem-content:hover': {
-                              backgroundColor: '#FAFAFA',
-                            },
-                            '& .MuiTreeItem-group': {
-                              marginLeft: '12px',
-                            },
-                            '& .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-root .MuiTreeItem-label': {
-                              marginLeft: '12px',
-                            },
-                          }}
-                        >
-                          {filteredTreeData.map((brand) => (
-                            <TreeItem
-                              key={brand.id}
-                              itemId={brand.id}
-                              label={
-                                <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>
-                                  {brand.label} ({brand.count})
-                                </Typography>
-                              }
-                              hdsProps={{ type: 'default' }}
-                            >
-                              {brand.children?.map((model) => (
-                                <TreeItem key={model.id} itemId={model.id} label={`${model.label} (${model.count})`} hdsProps={{ type: 'default' }}>
-                                  {model.children?.map((project) => (
-                                    <TreeItem
-                                      key={project.id}
-                                      itemId={project.id}
-                                      label={
-                                        <Typography sx={{ fontSize: 15, fontWeight: 500, lineHeight: 1, color: '#111111', display: 'flex', alignItems: 'center' }}>{project.label}</Typography>
-                                      }
-                                      hdsProps={{ type: 'default' }}
-                                    />
-                                  ))}
-                                </TreeItem>
-                              ))}
-                            </TreeItem>
-                          ))}
-                        </SimpleTreeView>
-                      </>
-                    )}
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* 우측 패널 - 컨텐츠 영역 */}
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* 우측 패널 - 프로젝트 상세 정보 */}
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               {/* 프로젝트 정보 헤더 */}
               <Box
                 sx={{
@@ -599,7 +160,7 @@ function ProjectDetail() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '12px',
+                    marginBottom: '16px',
                   }}
                 >
                   {/* 좌측: 프로젝트 코드 + 즐겨찾기 */}
@@ -883,9 +444,7 @@ function ProjectDetail() {
                 </Box>
               </Box>
             </Box>
-          </Box>
-        </Box>
-      </Box>
+      </ProjectLayout>
 
       {/* 프로젝트 설정 다이얼로그 */}
       <Dialog open={isProjectSettingsOpen} onClose={() => setIsProjectSettingsOpen(false)} maxWidth="md" fullWidth>
@@ -926,7 +485,7 @@ function ProjectDetail() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   )
 }
 
