@@ -187,12 +187,17 @@ function Sidebar({
           component="img"
           src="/images/Hyundai_Motor_Group_CI_sidebar.svg"
           alt="Hyundai Motor Group"
+          onClick={() => {
+            onMenuChange('프로젝트')
+            navigate('/project')
+          }}
           sx={{
             width: 90,
             height: 32,
             opacity: isSidebarCollapsed ? 0 : 1,
             transition: 'opacity 0.2s ease',
             pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
+            cursor: 'pointer',
           }}
         />
       </Box>

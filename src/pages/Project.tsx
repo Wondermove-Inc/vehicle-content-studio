@@ -567,8 +567,12 @@ function Project() {
                           if (id.startsWith('cn7') || id.startsWith('cn6')) setSelectedProject('hyundai')
                           else if (id.startsWith('ev6') || id.startsWith('k8')) setSelectedProject('kia')
                           else if (id.startsWith('gv80') || id.startsWith('g90')) setSelectedProject('genesis')
-                        } else {
+                        } else if (id === 'hyundai' || id === 'kia' || id === 'genesis') {
+                          // 1뎁스 (브랜드)를 클릭하면 필터링만
                           setSelectedProject(id)
+                        } else {
+                          // 3뎁스 (실제 프로젝트)를 클릭하면 프로젝트 상세 페이지로 이동
+                          navigate(`/project/${id}`)
                         }
                       }
                     }}

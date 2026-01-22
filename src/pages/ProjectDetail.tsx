@@ -341,7 +341,7 @@ function ProjectDetail() {
               flexDirection: 'column',
               alignItems: 'flex-start',
               gap: '4px',
-              padding: '20px 20px 16px 24px',
+              padding: '20px 24px 16px 24px',
               borderBottom: '1px solid var(--outline)',
               flexShrink: 0,
             }}
@@ -648,28 +648,63 @@ function ProjectDetail() {
                     {/* SOP Badge */}
                     <Badge
                       hdsProps={{
-                        size: 'medium',
+                        size: 'small',
                         style: 'default',
                         icon: false,
-                        type: 'outlined',
+                        type: 'strong',
                       }}
                       sx={{
+                        marginRight: '12px',
                         '& .MuiBadge-badge': {
                           position: 'static',
                           transform: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
                         },
                       }}
                     >
-                      {t('projectDetail.header.sop')} {projectData.sop}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Typography
+                          sx={{
+                            fontSize: '12px',
+                            fontWeight: 400,
+                            lineHeight: '18px',
+                            color: 'var(--on_surface_mid)',
+                          }}
+                        >
+                          {t('projectDetail.header.sop')}
+                        </Typography>
+                        <Box
+                          sx={{
+                            width: '1px',
+                            height: '10px',
+                            backgroundColor: 'var(--outline_low)',
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontSize: '12px',
+                            fontWeight: 400,
+                            lineHeight: '18px',
+                          }}
+                        >
+                          {projectData.sop}
+                        </Typography>
+                      </Box>
                     </Badge>
 
                     {/* 프로젝트 멤버 관리 */}
                     <Button
                       hdsProps={{
                         size: 'medium',
-                        style: 'primary',
                         type: 'outline',
-                        icon: <Ic_group_bold size="16px" />,
+                        icon: (
+                          <>
+                            <Ic_group_bold size="16px" />
+                          </>
+                        ),
+                        style: undefined,
                       }}
                       onClick={() => setIsMembersOpen(true)}
                     >
@@ -680,14 +715,19 @@ function ProjectDetail() {
                     <Button
                       hdsProps={{
                         size: 'medium',
-                        style: 'primary',
                         type: 'outline',
-                        icon: <Ic_setting_bold size="16px" />,
-                        isIconOnly: true,
+                        icon: (
+                          <>
+                            <Ic_setting_bold size="16px" />
+                          </>
+                        ),
+                        style: undefined,
                       }}
                       aria-label={t('projectDetail.header.projectSettings')}
                       onClick={() => setIsProjectSettingsOpen(true)}
-                    />
+                    >
+                      {t('projectDetail.header.projectSettings')}
+                    </Button>
                   </Box>
                 </Box>
 
