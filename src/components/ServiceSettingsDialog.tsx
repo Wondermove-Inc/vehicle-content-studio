@@ -7,7 +7,7 @@ import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { Dialog, DialogTitle, DialogContent } from '@hmg-fe/hmg-design-system'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
 import { Ic_log_out_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 interface ServiceSettingsDialogProps {
@@ -20,15 +20,18 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
   const navigate = useNavigate()
   const { logout } = useAuth()
   const [timezone, setTimezone] = useState('Asia/Seoul')
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
     navigate('/')
     onClose()
+    setLogoutConfirmOpen(false)
   }
 
   return (
-    <Dialog
+    <>
+      <Dialog
       open={open}
       onClose={onClose}
       maxWidth={false}
@@ -236,7 +239,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
               <Button
                 hdsProps={{ type: 'outline', size: 'medium' }}
                 startIcon={<Ic_log_out_regular size="16px" />}
-                onClick={handleLogout}
+                onClick={() => setLogoutConfirmOpen(true)}
               >
                 로그아웃
               </Button>
@@ -244,7 +247,24 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
           </Box>
         </Box>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      {/* 로그아웃 확인 모달 */}
+      <Dialog open={logoutConfirmOpen} onClose={() => setLogoutConfirmOpen(false)} hdsProps={{ size: 'small' }}>
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setLogoutConfirmOpen(false) }}>로그아웃</DialogTitle>
+        <DialogContent hdsProps>
+          <Typography>로그아웃 하시겠습니까?</Typography>
+        </DialogContent>
+        <DialogActions hdsProps>
+          <Button hdsProps onClick={() => setLogoutConfirmOpen(false)} sx={{ width: 'fit-content', minWidth: 'unset !important' }}>
+            취소
+          </Button>
+          <Button hdsProps={{ type: 'fill', style: 'primary' }} onClick={handleLogout}>
+            로그아웃
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
 

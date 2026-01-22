@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import Sidebar from '@/components/Sidebar'
+import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -26,19 +27,10 @@ function ContentRequest() {
       try {
         return new Set(JSON.parse(saved))
       } catch {
-        return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
+        return new Set()
       }
     }
-    return new Set(['hev-26-my', 'hev-27-my', 'ev6-26-my', 'ev6-27-my', 'gv80-26-my', 'g90-25-my'])
-  })
-
-  const [projectNames] = useState<Record<string, string>>({
-    'hev-26-my': 'HEV_26_MY',
-    'hev-27-my': 'HEV_27_MY',
-    'ev6-26-my': 'EV6_26_MY',
-    'ev6-27-my': 'EV6_27_MY',
-    'gv80-26-my': 'GV80_26_MY',
-    'g90-25-my': 'G90_25_MY',
+    return new Set()
   })
 
   return (
