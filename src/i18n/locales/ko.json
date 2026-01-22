@@ -105,14 +105,15 @@
       "brand": "브랜드",
       "projectCode": "프로젝트 코드",
       "projectType": "프로젝트 유형",
-      "contentType": "컨텐츠 유형",
-      "derivative": "파생모델",
+      "contentType": "컨텐츠",
+      "derivative": "파생 상품",
       "modifiedDate": "수정일",
       "sop": "SOP",
       "targetChannel": "타겟 채널",
       "activeChannel": "활성 채널",
       "manager": "담당자",
-      "comment": "코멘트"
+      "comment": "코멘트",
+      "noDerivative": "해당없음"
     },
     "tree": {
       "allProjects": "최근 프로젝트 & 컨텐츠",

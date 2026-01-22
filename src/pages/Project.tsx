@@ -56,7 +56,7 @@ const sampleProjects: ProjectData[] = [
     contentTypeColor: '#1967FF',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2025-12',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹', 'In-Store'],
     manager: '박미현',
@@ -71,7 +71,7 @@ const sampleProjects: ProjectData[] = [
     contentTypeColor: '#8333E6',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2025-12',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', 'IVI', '기존 홈페이지'],
     manager: '박미현, 여하은',
@@ -86,7 +86,7 @@ const sampleProjects: ProjectData[] = [
     contentTypeColor: '#2C5A0C',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2025-12',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', 'IVI'],
     manager: '박미현',
@@ -101,7 +101,7 @@ const sampleProjects: ProjectData[] = [
     contentTypeColor: '',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-12-16',
+    sop: '2025-12',
     targetChannel: 'WebCC',
     activeChannels: ['In-Store'],
     manager: '여하은',
@@ -115,9 +115,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-06-15',
+    sop: '2026-06',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹'],
     manager: '박미현',
@@ -130,9 +130,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-06-15',
+    sop: '2026-06',
     targetChannel: 'WebCC',
     activeChannels: ['원웹'],
     manager: '박미현',
@@ -146,9 +146,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: 'GT-Line',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-03-15',
+    sop: '2026-03',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹'],
     manager: '김지수',
@@ -161,9 +161,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
-    derivative: 'GT-Line',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-03-15',
+    sop: '2026-03',
     targetChannel: 'WebCC',
     activeChannels: ['원웹', 'IVI'],
     manager: '김지수',
@@ -176,9 +176,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: '',
     contentTypeColor: '',
-    derivative: 'GT-Line',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-03-15',
+    sop: '2026-03',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', 'IVI', '원웹'],
     manager: '김지수',
@@ -192,9 +192,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-08-20',
+    sop: '2025-08',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹'],
     manager: '이서연',
@@ -207,9 +207,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-08-20',
+    sop: '2025-08',
     targetChannel: 'WebCC',
     activeChannels: ['IVI', '기존 홈페이지'],
     manager: '이서연, 최민준',
@@ -223,9 +223,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-01-10',
+    sop: '2026-01',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹', 'In-Store'],
     manager: '정하늘',
@@ -238,9 +238,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-01-10',
+    sop: '2026-01',
     targetChannel: 'WebCC',
     activeChannels: ['원웹'],
     manager: '정하늘',
@@ -253,9 +253,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: '',
     contentTypeColor: '',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-01-10',
+    sop: '2026-01',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', 'In-Store'],
     manager: '정하늘',
@@ -269,9 +269,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-09-30',
+    sop: '2025-09',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹'],
     manager: '여하은',
@@ -284,9 +284,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: '',
     contentTypeColor: '',
-    derivative: '--',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-09-30',
+    sop: '2025-09',
     targetChannel: 'WebCC',
     activeChannels: ['원웹', 'In-Store'],
     manager: '여하은',
@@ -300,9 +300,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'FMC',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: 'GT',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-11-05',
+    sop: '2025-11',
     targetChannel: 'WebCC',
     activeChannels: ['IVI', '원웹'],
     manager: '김지수, 정하늘',
@@ -315,9 +315,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: '',
     contentTypeColor: '',
-    derivative: 'Sport',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-06-20',
+    sop: '2026-06',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', '원웹', 'In-Store'],
     manager: '여하은, 박미현',
@@ -330,9 +330,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'FMC',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
-    derivative: 'Hybrid',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2025-10-18',
+    sop: '2025-10',
     targetChannel: 'WebCC',
     activeChannels: ['원앱', 'IVI'],
     manager: '최민준, 이서연',
@@ -345,9 +345,9 @@ const sampleProjects: ProjectData[] = [
     projectType: 'MY',
     contentType: '2D 360',
     contentTypeColor: '#2C5A0C',
-    derivative: 'X-Line',
+    derivative: '',
     modifiedDate: 'YYYY-MM-DD',
-    sop: '2026-05-12',
+    sop: '2026-05',
     targetChannel: 'WebCC',
     activeChannels: ['원웹', '기존 홈페이지'],
     manager: '정하늘',
@@ -1258,7 +1258,7 @@ function Project() {
                       </TableCell>
                       <TableCell sx={{ width: '1%', minWidth: 80, textAlign: 'center' }}>{t('project.table.comment')}</TableCell>
                       <TableCell sx={{ minWidth: 100, position: 'relative' }}>
-                        {t('project.table.activeChannel')}
+                        {t('project.table.derivative')}
                         <Box
                           onMouseDown={handleResizeStart}
                           sx={{
@@ -1365,16 +1365,23 @@ function Project() {
                             </Box>
                           )}
                         </TableCell>
-                        <TableCell sx={{ minWidth: 100, overflow: 'hidden' }}>
-                          <Box sx={{ overflow: 'hidden' }}>
-                            <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
-                              {project.activeChannels.map((channel, idx) => (
-                                <Badge key={idx} hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
-                                  {getChannelLabel(channel)}
-                                </Badge>
-                              ))}
-                            </Stack>
-                          </Box>
+                        <TableCell sx={{ minWidth: 100 }}>
+                          {project.derivative ? (
+                            <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
+                              {project.derivative}
+                            </Badge>
+                          ) : (
+                            <Typography
+                              sx={{
+                                fontSize: 14,
+                                fontWeight: 400,
+                                lineHeight: '21px',
+                                color: 'var(--on_surface_mid)',
+                              }}
+                            >
+                              {t('project.table.noDerivative')}
+                            </Typography>
+                          )}
                         </TableCell>
                         <TableCell sx={{ width: '1%', minWidth: 100 }}>
                           <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>

@@ -104,14 +104,15 @@
       "brand": "Brand",
       "projectCode": "Project Code",
       "projectType": "Project Type",
-      "contentType": "Content Type",
+      "contentType": "Content",
       "derivative": "Derivative",
       "modifiedDate": "Modified Date",
       "sop": "SOP",
       "targetChannel": "Target Channel",
       "activeChannel": "Active Channel",
       "manager": "Manager",
-      "comment": "Comment"
+      "comment": "Comment",
+      "noDerivative": "N/A"
     },
     "tree": {
       "allProjects": "Recent Projects & Contents",
