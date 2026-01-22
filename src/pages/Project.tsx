@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import Sidebar from '@/components/Sidebar'
 import Box from '@hmg-fe/hmg-design-system/Box'
-import Stack from '@hmg-fe/hmg-design-system/Stack'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import TextField from '@hmg-fe/hmg-design-system/TextField'
@@ -14,7 +13,7 @@ import RadioGroup from '@hmg-fe/hmg-design-system/RadioGroup'
 import Radio from '@hmg-fe/hmg-design-system/Radio'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
+import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem, Logo } from '@hmg-fe/hmg-design-system'
 import {
   Ic_setting_bold,
   Ic_search_regular,
@@ -23,7 +22,6 @@ import {
   Ic_star_filled,
   Ic_star_regular,
   Ic_log_out_regular,
-  Ic_arrow_forward_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 테이블 데이터 타입
@@ -46,11 +44,11 @@ interface ProjectData {
 
 // 샘플 데이터
 const sampleProjects: ProjectData[] = [
-  // 현대자동차 - CN7_HEV_25 (hev-25-fmc)
+  // 현대자동차 - CN7I(AL23)_HEV_25FMC (hev-25-fmc)
   {
     id: 1,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_25',
+    projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
@@ -65,7 +63,7 @@ const sampleProjects: ProjectData[] = [
   {
     id: 2,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_25',
+    projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
@@ -80,7 +78,7 @@ const sampleProjects: ProjectData[] = [
   {
     id: 3,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_25',
+    projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
     contentType: '2D 360',
     contentTypeColor: '#2C5A0C',
@@ -95,7 +93,7 @@ const sampleProjects: ProjectData[] = [
   {
     id: 4,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_25',
+    projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
     contentType: '',
     contentTypeColor: '',
@@ -107,11 +105,11 @@ const sampleProjects: ProjectData[] = [
     manager: '여하은',
     comments: 0,
   },
-  // 현대자동차 - CN7_HEV_26 (hev-26-my)
+  // 현대자동차 - CN7I(AL23)_HEV_26MY (hev-26-my)
   {
     id: 5,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_26',
+    projectCode: 'CN7I(AL23)_HEV_26MY',
     projectType: 'MY',
     contentType: 'VCM',
     contentTypeColor: '#1967FF',
@@ -126,7 +124,7 @@ const sampleProjects: ProjectData[] = [
   {
     id: 6,
     brand: '현대자동차',
-    projectCode: 'CN7_HEV_26',
+    projectCode: 'CN7I(AL23)_HEV_26MY',
     projectType: 'MY',
     contentType: 'Web CC',
     contentTypeColor: '#8333E6',
@@ -367,9 +365,9 @@ const projectNames: Record<string, string> = {
   'k8-24': 'K8',
   'gv80-25': 'GV80',
   'g90-24': 'G90',
-  'hev-27-my': 'HEV_27_MY',
-  'hev-26-my': 'HEV_26_MY',
-  'hev-25-fmc': 'HEV_25_FMC',
+  'hev-27-my': 'CN7I(AL23)_HEV_27MY',
+  'hev-26-my': 'CN7I(AL23)_HEV_26MY',
+  'hev-25-fmc': 'CN7I(AL23)_HEV_25FMC',
   'ice-24-my': 'ICE_24_MY',
   'ice-23-my': 'ICE_23_MY',
   'ice-22-fl': 'ICE_22_FL',
@@ -387,49 +385,7 @@ const projectNames: Record<string, string> = {
   'g90-24-fl': 'G90_24_FL',
 }
 
-// 부모 ID 매핑
-const parentMap: Record<string, string> = {
-  'hyundai': 'all',
-  'kia': 'all',
-  'genesis': 'all',
-  'cn7-0a25': 'hyundai',
-  'cn6-oa22': 'hyundai',
-  'ev6-25': 'kia',
-  'k8-24': 'kia',
-  'gv80-25': 'genesis',
-  'g90-24': 'genesis',
-  'hev-27-my': 'cn7-0a25',
-  'hev-26-my': 'cn7-0a25',
-  'hev-25-fmc': 'cn7-0a25',
-  'ice-24-my': 'cn6-oa22',
-  'ice-23-my': 'cn6-oa22',
-  'ice-22-fl': 'cn6-oa22',
-  'ev6-27-my': 'ev6-25',
-  'ev6-26-my': 'ev6-25',
-  'ev6-25-fmc': 'ev6-25',
-  'k8-26-my': 'k8-24',
-  'k8-25-my': 'k8-24',
-  'k8-24-fl': 'k8-24',
-  'gv80-27-my': 'gv80-25',
-  'gv80-26-my': 'gv80-25',
-  'gv80-25-fmc': 'gv80-25',
-  'g90-26-my': 'g90-24',
-  'g90-25-my': 'g90-24',
-  'g90-24-fl': 'g90-24',
-}
-
-// 2뎁스 항목 (선택 불가, 경로에서 생략)
-const depth2Items = ['cn7-0a25', 'cn6-oa22', 'ev6-25', 'k8-24', 'gv80-25', 'g90-24']
-
 // 썸네일 이미지 목록
-const thumbnailImages = [
-  '/images/car_01.png',
-  '/images/car_02.png',
-  '/images/car_03.png',
-  '/images/car_04.png',
-  '/images/car_05.png',
-]
-
 function Project() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
@@ -494,18 +450,6 @@ function Project() {
     return brandMap[brand] || brand
   }
 
-  // 채널명 번역 함수
-  const getChannelLabel = (channel: string): string => {
-    const channelMap: Record<string, string> = {
-      '원앱': t('common.channel.oneApp'),
-      '원웹': t('common.channel.oneWeb'),
-      'IVI': t('common.channel.ivi'),
-      'In-Store': t('common.channel.inStore'),
-      '기존 홈페이지': t('common.channel.legacyWeb'),
-    }
-    return channelMap[channel] || channel
-  }
-
   // 트리 데이터 구조
   const treeData = [
     {
@@ -518,9 +462,9 @@ function Project() {
           label: 'CN7I(AL23)_HEV',
           count: 3,
           children: [
-            { id: 'hev-27-my', label: 'HEV_27_MY' },
-            { id: 'hev-26-my', label: 'HEV_26_MY' },
-            { id: 'hev-25-fmc', label: 'HEV_25_FMC' },
+            { id: 'hev-27-my', label: 'CN7I(AL23)_HEV_27MY' },
+            { id: 'hev-26-my', label: 'CN7I(AL23)_HEV_26MY' },
+            { id: 'hev-25-fmc', label: 'CN7I(AL23)_HEV_25FMC' },
           ],
         },
         {
@@ -657,10 +601,10 @@ function Project() {
 
   // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
   const treeItemToProjectCode: Record<string, string> = {
-    // 현대자동차 - CN7
-    'hev-27-my': 'CN7_HEV_27',
-    'hev-26-my': 'CN7_HEV_26',
-    'hev-25-fmc': 'CN7_HEV_25',
+    // 현대자동차 - CN7I(AL23)
+    'hev-27-my': 'CN7I(AL23)_HEV_27MY',
+    'hev-26-my': 'CN7I(AL23)_HEV_26MY',
+    'hev-25-fmc': 'CN7I(AL23)_HEV_25FMC',
     'ice-24-my': 'CN7_ICE_24',
     'ice-23-my': 'CN7_ICE_23',
     'ice-22-fl': 'CN7_ICE_22',
@@ -1167,7 +1111,10 @@ function Project() {
                     color: 'var(--primary)',
                   }}
                 >
-                  {t('project.tree.recentUpdates')}
+                  {selectedProject === 'hyundai' ? t('common.brand.hyundai') :
+                   selectedProject === 'kia' ? t('common.brand.kia') :
+                   selectedProject === 'genesis' ? t('common.brand.genesis') :
+                   t('project.tree.recentUpdates')}
                 </Typography>
 
                 {/* 우측: Select + 버튼 */}
@@ -1217,22 +1164,27 @@ function Project() {
               <>
               <TableContainer sx={{
                 flex: 1,
-                overflowY: 'auto',
-                overflowX: 'auto',
+                overflowY: 'overlay',
+                overflowX: 'overlay',
+                scrollbarGutter: 'stable',
                 '&::-webkit-scrollbar': {
-                  width: '6px',
-                  height: '6px',
+                  width: '8px',
+                  height: '8px',
                 },
                 '&::-webkit-scrollbar-track': {
                   background: 'transparent',
                 },
                 '&::-webkit-scrollbar-thumb': {
                   background: 'var(--outline)',
-                  borderRadius: '3px',
+                  borderRadius: '4px',
                 },
               }}>
-                <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'auto', '& .MuiTableCell-root': { whiteSpace: 'nowrap' }, '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', height: '64px !important', minHeight: '64px !important', maxHeight: '64px !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { height: '64px !important', display: 'flex', alignItems: 'center' } }}>
+                <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'fixed', '& .MuiTableCell-root': { whiteSpace: 'nowrap' }, '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', height: '64px !important', minHeight: '64px !important', maxHeight: '64px !important' }, '& .MuiTableBody-root .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { height: '64px !important', display: 'flex', alignItems: 'center' } }}>
                   <TableHead sx={{
+                      position: 'sticky',
+                      top: 0,
+                      zIndex: 1,
+                      backgroundColor: 'var(--surface)',
                       '& .MuiTableCell-root': { fontSize: '14px !important' },
                       '& .MuiTableCell-root *': { fontSize: '14px !important' },
                       '& .MuiTableCell-root .cell_text': { fontSize: '14px !important' },
@@ -1241,13 +1193,13 @@ function Project() {
                       '& span': { fontSize: '14px !important' },
                       '& .label_medium': { fontSize: '14px !important' },
                     }}>
-                    <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
-                      <TableCell sx={{ width: '1%', minWidth: 106 }}>{t('project.table.thumbnail')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.brand')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 160 }}>{t('project.table.projectCode')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.projectType')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.contentType')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 120 }}>
+                    <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important' }, '& .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
+                      <TableCell sx={{ width: '7%', textAlign: 'center', '& .cell_text': { padding: '0 !important', display: 'flex', justifyContent: 'center', width: '100%', height: '40px', alignItems: 'center' } }}>{t('project.table.brand')}</TableCell>
+                      <TableCell sx={{ width: '11%' }}></TableCell>
+                      <TableCell sx={{ width: '10%' }}>{t('project.table.projectType')}</TableCell>
+                      <TableCell sx={{ width: '25%' }}>{t('project.table.projectCode')}</TableCell>
+                      <TableCell sx={{ width: '18%' }}>{t('project.table.contentType')}</TableCell>
+                      <TableCell sx={{ width: '13%' }}>
                         <TableSortLabel
                           active={sopSortOrder !== null}
                           direction={sopSortOrder === 'asc' ? 'asc' : 'desc'}
@@ -1256,8 +1208,7 @@ function Project() {
                           {t('project.table.sop')}
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 80, textAlign: 'center' }}>{t('project.table.comment')}</TableCell>
-                      <TableCell sx={{ minWidth: 100, position: 'relative' }}>
+                      <TableCell sx={{ width: '16%', position: 'relative' }}>
                         {t('project.table.derivative')}
                         <Box
                           onMouseDown={handleResizeStart}
@@ -1275,8 +1226,6 @@ function Project() {
                           }}
                         />
                       </TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 100 }}>{t('project.table.manager')}</TableCell>
-                      <TableCell sx={{ width: '1%', minWidth: 48 }}></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -1294,26 +1243,37 @@ function Project() {
                       >
                         <TableCell>
                           <Box
-                            component="img"
-                            src={thumbnailImages[project.id % thumbnailImages.length]}
-                            alt="thumbnail"
                             sx={{
-                              width: 72,
-                              height: 42,
-                              backgroundColor: '#F5F5F5',
-                              borderRadius: '4px',
-                              border: '1px solid rgba(0, 0, 0, 0.15)',
-                              objectFit: 'cover',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              width: '100%',
+                              height: '64px',
+                              '& .cell_text': {
+                                width: 'fit-content !important',
+                                padding: '0 !important',
+                              }
                             }}
-                          />
+                          >
+                            <Logo
+                              hdsProps={{
+                                type: project.brand === '현대자동차' ? 'hyundai' : project.brand === '기아' ? 'kia' : 'genesis'
+                              }}
+                              style={{
+                                width: project.brand === '현대자동차' ? '26px' : project.brand === '기아' ? '31px' : '46px',
+                                height: project.brand === '현대자동차' ? '15px' : '13px',
+                                display: 'block'
+                              }}
+                            />
+                          </Box>
                         </TableCell>
                         <TableCell>{getBrandLabel(project.brand)}</TableCell>
-                        <TableCell>{project.projectCode}</TableCell>
                         <TableCell>
                           <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'strong' }}>
                             {project.projectType}
                           </Badge>
                         </TableCell>
+                        <TableCell>{project.projectCode}</TableCell>
                         <TableCell>
                           {project.contentType ? (
                             <Badge hdsProps={{
@@ -1338,34 +1298,7 @@ function Project() {
                           )}
                         </TableCell>
                         <TableCell>{project.sop}</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>
-                          {project.comments > 0 ? (
-                            <Badge hdsProps={{ size: 'small', style: 'default', isDigit: true }}>
-                              {project.comments}
-                            </Badge>
-                          ) : (
-                            <Box
-                              sx={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                minWidth: 20,
-                                height: 20,
-                                padding: '1px 6px',
-                                borderRadius: '999px',
-                                border: '1px solid var(--outline)',
-                                backgroundColor: 'var(--on_surface_container_lowest)',
-                                color: 'var(--on_surface_container)',
-                                fontSize: 12,
-                                fontWeight: 500,
-                                boxSizing: 'border-box',
-                              }}
-                            >
-                              {project.comments}
-                            </Box>
-                          )}
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 100 }}>
+                        <TableCell>
                           {project.derivative ? (
                             <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
                               {project.derivative}
@@ -1382,34 +1315,6 @@ function Project() {
                               {t('project.table.noDerivative')}
                             </Typography>
                           )}
-                        </TableCell>
-                        <TableCell sx={{ width: '1%', minWidth: 100 }}>
-                          <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'nowrap' }}>
-                            {project.manager.split(', ').map((name, idx) => (
-                              <Button
-                                key={idx}
-                                hdsProps={{ size: 'medium', type: 'text', icon: false, style: 'strong' }}
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  // TODO: 어드민 페이지로 연결
-                                  console.log('Navigate to admin:', name)
-                                }}
-                              >
-                                {name}{idx < project.manager.split(', ').length - 1 ? ',' : ''}
-                              </Button>
-                            ))}
-                          </Stack>
-                        </TableCell>
-                        <TableCell sx={{ width: '1%', minWidth: 48 }}>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Ic_arrow_forward_regular size="16px" color="var(--on_surface_mid)" />
-                          </Box>
                         </TableCell>
                       </TableRow>
                     ))}
