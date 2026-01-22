@@ -18,7 +18,7 @@ import {
   Ic_search_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
-import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
+import { PROJECT_NAMES as projectNames, MOCK_PROJECTS, PROJECT_CODE_TO_TREE_ITEM } from '@/mocks/projects.mock'
 
 // 프로젝트 데이터 타입
 interface ProjectData {
@@ -30,33 +30,42 @@ interface ProjectData {
   hasContent: boolean
 }
 
-// 샘플 프로젝트 데이터
-const sampleProjects: Record<string, ProjectData> = {
-  'hev-25-fmc': {
-    id: 'hev-25-fmc',
-    name: 'CN7I(AL23)_HEV_25FMC',
-    code: 'CN7I(AL23)_HEV_25FMC',
-    brand: '현대자동차',
-    sop: '2026-03',
-    hasContent: false,
-  },
-  'hev-26-my': {
-    id: 'hev-26-my',
-    name: 'CN7I(AL23)_HEV_26MY',
-    code: 'CN7I(AL23)_HEV_26MY',
-    brand: '현대자동차',
-    sop: '2026-06',
-    hasContent: true,
-  },
-  'ev6-26-my': {
-    id: 'ev6-26-my',
-    name: 'EV6_26MY',
-    code: 'EV6_26MY',
-    brand: '기아',
-    sop: '2026-03',
-    hasContent: true,
-  },
-}
+// Tree Item ID -> Project Code 역매핑 생성
+const TREE_ITEM_TO_PROJECT_CODE: Record<string, string> = {}
+Object.entries(PROJECT_CODE_TO_TREE_ITEM).forEach(([code, treeId]) => {
+  TREE_ITEM_TO_PROJECT_CODE[treeId] = code
+})
+
+// Mock 데이터를 사용하여 모든 프로젝트 데이터 생성
+const sampleProjects: Record<string, ProjectData> = {}
+Object.keys(projectNames).forEach((treeId) => {
+  const projectCode = TREE_ITEM_TO_PROJECT_CODE[treeId]
+  if (projectCode) {
+    // MOCK_PROJECTS에서 해당 프로젝트 찾기
+    const mockProject = MOCK_PROJECTS.find((p) => p.projectCode === projectCode)
+
+    if (mockProject) {
+      sampleProjects[treeId] = {
+        id: treeId,
+        name: projectCode,
+        code: projectCode,
+        brand: mockProject.brand,
+        sop: mockProject.sop,
+        hasContent: !!mockProject.contentType, // contentType이 있으면 컨텐츠가 있는 것으로 간주
+      }
+    } else {
+      // Mock 데이터에 없는 경우 기본값 생성
+      sampleProjects[treeId] = {
+        id: treeId,
+        name: projectNames[treeId],
+        code: projectCode,
+        brand: '현대자동차', // 기본값
+        sop: '2026-01', // 기본값
+        hasContent: false,
+      }
+    }
+  }
+})
 
 // 트리 노드 타입
 type TreeNode = {
