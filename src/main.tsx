@@ -9,6 +9,7 @@ setConfig({ useDefaultHdsProps: true })
 
 import Login from './pages/Login'
 import Project from './pages/Project'
+import ProjectDetail from './pages/ProjectDetail'
 import ContentRequest from './pages/ContentRequest'
 import ContentDetail from './pages/ContentDetail'
 import Preview from './pages/Preview'
@@ -32,10 +33,20 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/project/content/:contentId',
+    path: '/project/:projectId/content/:contentId',
     element: (
       <ProtectedRoute requiredPermissions={[Permission.CONTENT_VIEW]}>
         <ContentDetail />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/project/:projectId',
+    element: (
+      <ProtectedRoute
+        requiredAnyPermission={[Permission.PROJECT_VIEW_ALL, Permission.PROJECT_VIEW_ASSIGNED]}
+      >
+        <ProjectDetail />
       </ProtectedRoute>
     ),
   },

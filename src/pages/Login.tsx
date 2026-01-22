@@ -657,7 +657,7 @@ function Login() {
           </Typography>
         </DialogContent>
         <DialogActions
-          hdsProps={{ scrollable: false }}
+          hdsProps
           sx={{
             padding: '0 24px 24px 24px !important',
             margin: '0 !important',

@@ -624,6 +624,28 @@ function Project() {
     'g90-24-fl': 'G90_24FL',
   }
 
+  // 프로젝트 코드 → 트리 아이템 ID 역매핑
+  const projectCodeToTreeItem: Record<string, string> = {
+    'CN7I(AL23)_HEV_27MY': 'hev-27-my',
+    'CN7I(AL23)_HEV_26MY': 'hev-26-my',
+    'CN7I(AL23)_HEV_25FMC': 'hev-25-fmc',
+    'CN7_ICE_24': 'ice-24-my',
+    'CN7_ICE_23': 'ice-23-my',
+    'CN7_ICE_22': 'ice-22-fl',
+    'EV6_27MY': 'ev6-27-my',
+    'EV6_26MY': 'ev6-26-my',
+    'EV6_25FMC': 'ev6-25-fmc',
+    'K8_26MY': 'k8-26-my',
+    'K8_25MY': 'k8-25-my',
+    'K8_24FL': 'k8-24-fl',
+    'GV80_27MY': 'gv80-27-my',
+    'GV80_26MY': 'gv80-26-my',
+    'GV80_25FMC': 'gv80-25-fmc',
+    'G90_26MY': 'g90-26-my',
+    'G90_25MY': 'g90-25-my',
+    'G90_24FL': 'g90-24-fl',
+  }
+
   // 선택된 프로젝트에 따른 브랜드 필터링
   const getBrandFromSelectedProject = (projectId: string | null): string | null => {
     if (!projectId || projectId === 'all') return null
@@ -1229,10 +1251,17 @@ function Project() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {paginatedProjects.map((project) => (
+                    {paginatedProjects.map((project) => {
+                      // 프로젝트 코드로 트리 아이템 ID 찾기
+                      const projectTreeId = projectCodeToTreeItem[project.projectCode]
+                      return (
                       <TableRow
                         key={project.id}
-                        onClick={() => navigate(`/project/content/${project.id}?project=${selectedProject}`)}
+                        onClick={() => {
+                          if (projectTreeId) {
+                            navigate(`/project/${projectTreeId}`)
+                          }
+                        }}
                         sx={{
                           cursor: 'pointer',
                           transition: 'background-color 0.15s ease',
@@ -1317,7 +1346,8 @@ function Project() {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

@@ -131,6 +131,23 @@
       "languageEnglish": "영문"
     }
   },
+  "projectDetail": {
+    "header": {
+      "sop": "SOP",
+      "manageMembers": "프로젝트 멤버 관리",
+      "projectSettings": "프로젝트 설정"
+    },
+    "contents": {
+      "title": "컨텐츠",
+      "emptyTitle": "아직 Beauty Angle Cut 컨텐츠가 추가되지 않았습니다.",
+      "emptyDescription": "컨텐츠를 추가해 주세요.",
+      "beautyAngleCut": {
+        "title": "Beauty Angle Cut",
+        "description": "컨피규레이터 내, 외관 컨텐츠",
+        "addButton": "추가"
+      }
+    }
+  },
   "contentDetail": {
     "tabs": {
       "preview": "미리보기",

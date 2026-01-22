@@ -130,6 +130,23 @@
       "languageEnglish": "English"
     }
   },
+  "projectDetail": {
+    "header": {
+      "sop": "SOP",
+      "manageMembers": "Manage Project Members",
+      "projectSettings": "Project Settings"
+    },
+    "contents": {
+      "title": "Contents",
+      "emptyTitle": "No Beauty Angle Cut content has been added yet.",
+      "emptyDescription": "Please add content.",
+      "beautyAngleCut": {
+        "title": "Beauty Angle Cut",
+        "description": "Configurator interior and exterior content",
+        "addButton": "Add"
+      }
+    }
+  },
   "contentDetail": {
     "tabs": {
       "preview": "Preview",

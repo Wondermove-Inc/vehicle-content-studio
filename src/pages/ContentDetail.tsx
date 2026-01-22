@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -287,31 +287,6 @@ const thumbnailImages = [
   '/images/car_05.png',
 ]
 
-// 프로젝트 코드 -> 트리 아이템 ID 매핑
-const projectCodeToTreeId: Record<string, string> = {
-  'CN7_HEV_27': 'hev-27-my',
-  'CN7_HEV_26': 'hev-26-my',
-  'CN7_HEV_25': 'hev-25-fmc',
-  'CN7_ICE_24': 'ice-24-my',
-  'CN7_ICE_23': 'ice-23-my',
-  'CN7_ICE_22': 'ice-22-fl',
-  'EV6_27MY': 'ev6-27-my',
-  'EV6_26MY': 'ev6-26-my',
-  'EV6_25FMC': 'ev6-25-fmc',
-  'K8_26MY': 'k8-26-my',
-  'K8_25MY': 'k8-25-my',
-  'K8_24FL': 'k8-24-fl',
-  'GV80_27MY': 'gv80-27-my',
-  'GV80_26MY': 'gv80-26-my',
-  'GV80_25FMC': 'gv80-25-fmc',
-  'G90_26MY': 'g90-26-my',
-  'G90_25MY': 'g90-25-my',
-  'G90_24FL': 'g90-24-fl',
-  'GV70_26MY': 'gv70-26-my',
-  'SANTA_FE_25': 'santa-fe-25',
-  'SPORTAGE_26': 'sportage-26',
-}
-
 // 트리 아이템 ID -> 이름 매핑
 const projectNames: Record<string, string> = {
   'hev-27-my': 'HEV_27_MY',
@@ -366,9 +341,8 @@ const parentMap: Record<string, string> = {
 }
 
 function ContentDetail() {
-  const { contentId } = useParams<{ contentId: string }>()
+  const { projectId, contentId } = useParams<{ projectId: string; contentId: string }>()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const { t, i18n } = useTranslation()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
@@ -386,18 +360,8 @@ function ContentDetail() {
   // contentId로 프로젝트 데이터 찾기
   const contentData = sampleProjects.find(p => p.id === Number(contentId))
 
-  // URL에서 프로젝트 ID 가져오기
-  const projectFromUrl = searchParams.get('project')
-
-  // 프로젝트 ID 결정 로직
-  // 1. URL 파라미터가 있고 'all'이 아닌 경우 사용
-  // 2. 그렇지 않으면 contentData에서 projectCode로 찾기
-  const projectId = (projectFromUrl && projectFromUrl !== 'all')
-    ? projectFromUrl
-    : (contentData ? projectCodeToTreeId[contentData.projectCode] : null)
-
   // Breadcrumb 생성 함수
-  const getBreadcrumb = (projectId: string | null, contentType: string): { id: string; name: string }[] => {
+  const getBreadcrumb = (projectId: string | null | undefined, contentType: string): { id: string; name: string }[] => {
     const path: { id: string; name: string }[] = [{ id: 'all', name: t('project.header.title') }]
 
     if (!projectId || projectId === 'all') {
@@ -438,8 +402,11 @@ function ContentDetail() {
     // 클릭한 항목에 따라 적절한 경로로 이동
     if (itemId === 'all') {
       navigate('/project')
+    } else if (itemId === projectId) {
+      // 프로젝트 상세 페이지로 이동
+      navigate(`/project/${itemId}`)
     } else {
-      // 선택된 프로젝트 ID를 URL 쿼리 파라미터로 전달
+      // 선택된 프로젝트 ID로 프로젝트 목록 페이지 이동
       navigate(`/project?selected=${itemId}`)
     }
   }
@@ -799,7 +766,7 @@ function ContentDetail() {
                     <CardActionArea
                       hdsProps
                       onClick={() => {
-                        if (!contentData) return
+                        if (!contentData || !projectId) return
                         navigate(`/preview/${index}`, {
                           state: {
                             contentData,
