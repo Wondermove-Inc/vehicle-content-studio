@@ -14,6 +14,8 @@
     },
     "contentType": {
       "all": "전체 컨텐츠 유형",
+      "beautyAngleCut": "Beauty Angle Cut",
+      "none": "컨텐츠 없음",
       "vcm": "VCM",
       "webcc": "Web CC",
       "360": "2D 360",
@@ -88,7 +90,7 @@
   "project": {
     "header": {
       "title": "프로젝트",
-      "addProject": "프로젝트 추가하기",
+      "addProject": "프로젝트 추가",
       "addContent": "컨텐츠 추가하기"
     },
     "sidebar": {
@@ -113,8 +115,9 @@
       "comment": "코멘트"
     },
     "tree": {
-      "allProjects": "전체 프로젝트",
-      "searchPlaceholder": "프로젝트 검색"
+      "allProjects": "최근 프로젝트 & 컨텐츠",
+      "searchPlaceholder": "프로젝트 검색",
+      "recentUpdates": "최근 업데이트된 프로젝트"
     },
     "empty": {
       "noSearchResult": "검색 결과가 없습니다.",

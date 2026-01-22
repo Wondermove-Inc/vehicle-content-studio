@@ -10,21 +10,16 @@ import Button from '@hmg-fe/hmg-design-system/Button'
 import TextField from '@hmg-fe/hmg-design-system/TextField'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import Divider from '@hmg-fe/hmg-design-system/Divider'
-import Tabs from '@hmg-fe/hmg-design-system/Tabs'
-import Tab from '@hmg-fe/hmg-design-system/Tab'
 import RadioGroup from '@hmg-fe/hmg-design-system/RadioGroup'
 import Radio from '@hmg-fe/hmg-design-system/Radio'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import { SimpleTreeView, TreeItem, Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, List, ListItem } from '@hmg-fe/hmg-design-system'
 import {
-  Ic_file_filled,
   Ic_setting_bold,
   Ic_search_regular,
   Ic_plus_regular,
   Ic_world_filled,
-  Ic_refresh_bold,
-  Ic_picture_filled,
   Ic_star_filled,
   Ic_star_regular,
   Ic_log_out_regular,
@@ -102,8 +97,8 @@ const sampleProjects: ProjectData[] = [
     brand: '현대자동차',
     projectCode: 'CN7_HEV_25',
     projectType: 'FMC',
-    contentType: 'PI',
-    contentTypeColor: '#B8860B',
+    contentType: '',
+    contentTypeColor: '',
     derivative: 'N Line',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-12-16',
@@ -179,8 +174,8 @@ const sampleProjects: ProjectData[] = [
     brand: '기아',
     projectCode: 'EV6_26MY',
     projectType: 'MY',
-    contentType: '2D 360',
-    contentTypeColor: '#2C5A0C',
+    contentType: '',
+    contentTypeColor: '',
     derivative: 'GT-Line',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2026-03-15',
@@ -256,8 +251,8 @@ const sampleProjects: ProjectData[] = [
     brand: '제네시스',
     projectCode: 'GV80_26MY',
     projectType: 'MY',
-    contentType: 'PI',
-    contentTypeColor: '#B8860B',
+    contentType: '',
+    contentTypeColor: '',
     derivative: '--',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2026-01-10',
@@ -287,8 +282,8 @@ const sampleProjects: ProjectData[] = [
     brand: '제네시스',
     projectCode: 'G90_25MY',
     projectType: 'MY',
-    contentType: '2D 360',
-    contentTypeColor: '#2C5A0C',
+    contentType: '',
+    contentTypeColor: '',
     derivative: '--',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2025-09-30',
@@ -318,8 +313,8 @@ const sampleProjects: ProjectData[] = [
     brand: '제네시스',
     projectCode: 'GV70_26MY',
     projectType: 'MY',
-    contentType: 'Web CC',
-    contentTypeColor: '#8333E6',
+    contentType: '',
+    contentTypeColor: '',
     derivative: 'Sport',
     modifiedDate: 'YYYY-MM-DD',
     sop: '2026-06-20',
@@ -366,8 +361,8 @@ const projectNames: Record<string, string> = {
   'hyundai': '현대자동차',
   'kia': '기아',
   'genesis': '제네시스',
-  'cn7-0a25': 'CN7',
-  'cn6-oa22': 'CN6',
+  'cn7-0a25': 'CN7I(AL23)_HEV',
+  'cn6-oa22': 'CN7I(AL23)_EV',
   'ev6-25': 'EV6',
   'k8-24': 'K8',
   'gv80-25': 'GV80',
@@ -435,38 +430,12 @@ const thumbnailImages = [
   '/images/car_05.png',
 ]
 
-// 경로 생성 함수
-function getBreadcrumb(projectId: string | null): { id: string; name: string }[] {
-  if (!projectId || projectId === 'all') {
-    return [{ id: 'all', name: '프로젝트' }]
-  }
-
-  const path: { id: string; name: string }[] = [{ id: 'all', name: '프로젝트' }]
-  const ancestors: string[] = []
-
-  let current = projectId
-  while (current && current !== 'all') {
-    ancestors.unshift(current)
-    current = parentMap[current]
-  }
-
-  for (const id of ancestors) {
-    // 2뎁스 항목은 경로에서 생략
-    if (!depth2Items.includes(id)) {
-      path.push({ id, name: projectNames[id] || id })
-    }
-  }
-
-  return path
-}
-
 function Project() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const { logout, hasLevel } = useAuth()
+  const { logout } = useAuth()
   const [searchParams] = useSearchParams()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
-  const [activeTab, setActiveTab] = useState('컨텐츠')
   const [contentType, setContentType] = useState('all')
 
   // URL 쿼리 파라미터에서 선택된 프로젝트 읽기
@@ -537,28 +506,17 @@ function Project() {
     return channelMap[channel] || channel
   }
 
-  // Breadcrumb 이름 번역 함수
-  const getBreadcrumbLabel = (id: string, name: string): string => {
-    const labelMap: Record<string, string> = {
-      'all': t('project.header.title'),
-      'hyundai': t('common.brand.hyundai'),
-      'kia': t('common.brand.kia'),
-      'genesis': t('common.brand.genesis'),
-    }
-    return labelMap[id] || name
-  }
-
   // 트리 데이터 구조
   const treeData = [
     {
       id: 'hyundai',
       label: t('common.brand.hyundai'),
-      count: 2,
+      count: 6,
       children: [
         {
           id: 'cn7-0a25',
-          label: 'CN7',
-          count: 6,
+          label: 'CN7I(AL23)_HEV',
+          count: 3,
           children: [
             { id: 'hev-27-my', label: 'HEV_27_MY' },
             { id: 'hev-26-my', label: 'HEV_26_MY' },
@@ -567,7 +525,7 @@ function Project() {
         },
         {
           id: 'cn6-oa22',
-          label: 'CN6',
+          label: 'CN7I(AL23)_EV',
           count: 3,
           children: [
             { id: 'ice-24-my', label: 'ICE_24_MY' },
@@ -664,8 +622,6 @@ function Project() {
 
   const filteredTreeData = filterTree(treeData, searchQuery)
 
-  const breadcrumb = getBreadcrumb(selectedProject)
-
   // 프로젝트 선택 또는 컨텐츠 유형 변경 시 페이지 초기화
   useEffect(() => {
     setPage(0)
@@ -743,14 +699,6 @@ function Project() {
   const selectedBrand = getBrandFromSelectedProject(selectedProject)
   const selectedProjectCode = selectedProject ? treeItemToProjectCode[selectedProject] : null
 
-  // 컨텐츠 유형 셀렉트 값 → 실제 컨텐츠 유형 매핑
-  const contentTypeMap: Record<string, string> = {
-    'vcm': 'VCM',
-    'webcc': 'Web CC',
-    '360': '2D 360',
-    'pi': 'PI',
-  }
-
   const filteredProjects = sampleProjects.filter((project) => {
     // 프로젝트 필터링
     let projectMatch = true
@@ -764,9 +712,11 @@ function Project() {
 
     // 컨텐츠 유형 필터링
     let contentTypeMatch = true
-    if (contentType !== 'all') {
-      contentTypeMatch = project.contentType === contentTypeMap[contentType]
+    if (contentType === 'none') {
+      // "컨텐츠 없음" 선택 시: contentType이 없거나 빈 문자열인 항목만 표시
+      contentTypeMatch = !project.contentType || project.contentType.trim() === ''
     }
+    // "all"과 "beautyAngleCut"은 모두 전체 표시 (실제로는 모든 컨텐츠가 Beauty Angle Cut으로 표시됨)
 
     return projectMatch && contentTypeMatch
   })
@@ -899,28 +849,16 @@ function Project() {
                   gap: '8px',
                 }}
               >
-                {breadcrumb.map((item, index) => (
-                  <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {index > 0 && (
-                      <Ic_arrow_forward_regular size="16px" color="var(--on_surface_mid)" />
-                    )}
-                    <Typography
-                      onClick={() => setSelectedProject(item.id)}
-                      sx={{
-                        fontSize: 24,
-                        fontWeight: 600,
-                        lineHeight: '36px',
-                        color: 'var(--on_surface)',
-                        cursor: index === breadcrumb.length - 1 ? 'default' : 'pointer',
-                        '&:hover': {
-                          textDecoration: index === breadcrumb.length - 1 ? 'none' : 'underline',
-                        },
-                      }}
-                    >
-                      {getBreadcrumbLabel(item.id, item.name)}
-                    </Typography>
-                  </Box>
-                ))}
+                <Typography
+                  sx={{
+                    fontSize: 24,
+                    fontWeight: 600,
+                    lineHeight: '36px',
+                    color: 'var(--on_surface)',
+                  }}
+                >
+                  {t('project.header.title')}
+                </Typography>
               </Box>
               <Button
                 hdsProps={{ size: 'medium', style: 'strong', type: 'fill', icon: <Ic_plus_regular size="16px" color="#fff" /> }}
@@ -1030,7 +968,7 @@ function Project() {
                               color: '#111111',
                             }}
                           >
-                            {t('project.tree.allProjects')} (20)
+                            {t('project.tree.allProjects')}
                           </Typography>
                         </Box>
                       )}
@@ -1211,7 +1149,7 @@ function Project() {
 
             {/* 우측 패널 - 테이블 */}
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 20px 0' }}>
-              {/* 테이블 헤더 영역 - 탭 구조 */}
+              {/* 테이블 헤더 영역 */}
               <Box
                 sx={{
                   display: 'flex',
@@ -1220,44 +1158,17 @@ function Project() {
                   gap: '8px',
                 }}
               >
-                {/* 좌측: 탭 */}
-                <Tabs
-                  value={activeTab}
-                  onChange={(_, newValue) => setActiveTab(newValue)}
-                  hdsProps={{ size: 'medium', type: 'line' }}
+                {/* 좌측: 제목 */}
+                <Typography
                   sx={{
-                    borderBottom: 'none',
-                    '&::before, &::after': {
-                      display: 'none',
-                    },
-                    '& .MuiTabs-scroller': {
-                      borderBottom: 'none',
-                      '&::before, &::after': {
-                        display: 'none',
-                      },
-                    },
-                    '& .MuiTabs-flexContainer': {
-                      borderBottom: 'none',
-                      gap: '16px !important',
-                    },
-                    '& .MuiTab-root': {
-                      fontSize: '16px !important',
-                    },
-                    '& .MuiTab-root .tab_text': {
-                      fontSize: '16px !important',
-                    },
-                    '& .MuiTab-root:not(.Mui-selected)': {
-                      borderBottom: 'none',
-                      boxShadow: 'none',
-                      '&::before, &::after': {
-                        display: 'none',
-                      },
-                    },
+                    fontSize: 20,
+                    fontWeight: 700,
+                    lineHeight: '30px',
+                    color: 'var(--primary)',
                   }}
                 >
-                  <Tab hdsProps={{ size: 'medium' }} label={t('project.tabs.content')} value="컨텐츠" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-                  <Tab hdsProps={{ size: 'medium' }} label={t('project.tabs.dataPrep')} value="데이터 프랩" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
-                </Tabs>
+                  {t('project.tree.recentUpdates')}
+                </Typography>
 
                 {/* 우측: Select + 버튼 */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1265,28 +1176,34 @@ function Project() {
                   <Select
                     value={contentType}
                     onChange={(e) => setContentType(e.target.value as string)}
-                    hdsProps={{ size: 'medium', type: 'outline' }}
-                    sx={{ width: '180px' }}
-                  >
-                    <MenuItem hdsProps value="all">{t('common.contentType.all')}</MenuItem>
-                    <MenuItem hdsProps value="vcm">{t('common.contentType.vcm')}</MenuItem>
-                    <MenuItem hdsProps value="webcc">{t('common.contentType.webcc')}</MenuItem>
-                    <MenuItem hdsProps value="360">{t('common.contentType.360')}</MenuItem>
-                    <MenuItem hdsProps value="pi">{t('common.contentType.pi')}</MenuItem>
-                  </Select>
-
-                  {/* 컨텐츠 추가하기 버튼 */}
-                  <Button
-                    hdsProps={{
-                      size: 'medium',
-                      type: 'outline',
-                      style: 'primary',
-                      icon: <Ic_plus_regular size="16px" color="#002C5F" />,
+                    hdsProps={{ size: 'medium', type: 'filter' }}
+                    style={{ width: 'fit-content' }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          width: '186px',
+                        }
+                      },
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                      },
+                      transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'right',
+                      },
                     }}
-                    onClick={() => setIsAddContentOpen(true)}
                   >
-                    {t('project.header.addContent')}
-                  </Button>
+                    <MenuItem hdsProps={{ size: 'medium', icon: false, nested: true, multiple: true }} value="all">
+                      {t('common.contentType.all')}
+                    </MenuItem>
+                    <MenuItem hdsProps={{ size: 'medium', icon: false, nested: true, multiple: true }} value="beautyAngleCut">
+                      {t('common.contentType.beautyAngleCut')}
+                    </MenuItem>
+                    <MenuItem hdsProps={{ size: 'medium', icon: false, nested: true, multiple: true }} value="none">
+                      {t('common.contentType.none')}
+                    </MenuItem>
+                  </Select>
                 </Box>
               </Box>
 
@@ -1398,14 +1315,27 @@ function Project() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge hdsProps={{
-                            size: 'medium',
-                            style: project.contentType === 'VCM' ? 'info' : project.contentType === 'Web CC' ? 'purple' : project.contentType === '2D 360' ? 'success' : project.contentType === 'PI' ? 'yellow' : 'default',
-                            icon: project.contentType === 'VCM' ? <Ic_file_filled size="16px" color="currentColor" /> : project.contentType === 'Web CC' ? <Ic_world_filled size="16px" color="currentColor" /> : project.contentType === '2D 360' ? <Ic_refresh_bold size="16px" color="currentColor" /> : project.contentType === 'PI' ? <Ic_picture_filled size="16px" color="currentColor" /> : true,
-                            type: 'strong'
-                          }}>
-                            {project.contentType}
-                          </Badge>
+                          {project.contentType ? (
+                            <Badge hdsProps={{
+                              size: 'medium',
+                              style: 'purple',
+                              icon: <Ic_world_filled size="16px" color="currentColor" />,
+                              type: 'strong'
+                            }}>
+                              Beauty Angle Cut
+                            </Badge>
+                          ) : (
+                            <Typography
+                              sx={{
+                                fontSize: 14,
+                                fontWeight: 400,
+                                lineHeight: '21px',
+                                color: 'var(--on_surface_mid)',
+                              }}
+                            >
+                              {t('common.contentType.none')}
+                            </Typography>
+                          )}
                         </TableCell>
                         <TableCell>{project.sop}</TableCell>
                         <TableCell sx={{ textAlign: 'center' }}>
