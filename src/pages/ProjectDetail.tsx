@@ -18,6 +18,7 @@ import {
   Ic_search_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
+import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 
 // 프로젝트 데이터 타입
 interface ProjectData {
@@ -55,32 +56,6 @@ const sampleProjects: Record<string, ProjectData> = {
     sop: '2026-03',
     hasContent: true,
   },
-}
-
-// 프로젝트 이름 매핑
-const projectNames: Record<string, string> = {
-  'all': '전체 프로젝트',
-  'hyundai': '현대자동차',
-  'kia': '기아',
-  'genesis': '제네시스',
-  'hev-27-my': 'CN7I(AL23)_HEV_27MY',
-  'hev-26-my': 'CN7I(AL23)_HEV_26MY',
-  'hev-25-fmc': 'CN7I(AL23)_HEV_25FMC',
-  'ice-24-my': 'ICE_24_MY',
-  'ice-23-my': 'ICE_23_MY',
-  'ice-22-fl': 'ICE_22_FL',
-  'ev6-27-my': 'EV6_27_MY',
-  'ev6-26-my': 'EV6_26MY',
-  'ev6-25-fmc': 'EV6_25_FMC',
-  'k8-26-my': 'K8_26_MY',
-  'k8-25-my': 'K8_25_MY',
-  'k8-24-fl': 'K8_24_FL',
-  'gv80-27-my': 'GV80_27_MY',
-  'gv80-26-my': 'GV80_26_MY',
-  'gv80-25-fmc': 'GV80_25_FMC',
-  'g90-26-my': 'G90_26_MY',
-  'g90-25-my': 'G90_25_MY',
-  'g90-24-fl': 'G90_24_FL',
 }
 
 // 트리 노드 타입
