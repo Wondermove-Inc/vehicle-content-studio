@@ -15,7 +15,7 @@ import ContentDetail from './pages/ContentDetail'
 import Preview from './pages/Preview'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
-import { Permission } from './types/auth.types'
+import { Permission, PermissionLevel } from './types/auth.types'
 
 const router = createBrowserRouter([
   {
@@ -62,7 +62,7 @@ const router = createBrowserRouter([
     path: '/content-request',
     element: (
       <ProtectedRoute
-        requiredAnyPermission={[Permission.PROJECT_CREATE, Permission.CONTENT_CREATE]}
+        requiredLevels={[PermissionLevel.L1_ADMIN, PermissionLevel.L2_SERVICE_MANAGER, PermissionLevel.L3_BUSINESS_USER]}
       >
         <ContentRequest />
       </ProtectedRoute>
