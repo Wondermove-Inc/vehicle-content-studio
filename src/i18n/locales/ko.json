@@ -58,7 +58,7 @@
     },
     "permissionRequest": {
       "title": "로그인 권한 요청",
-      "description": "시스템 접속 권한이 없습니다. 아래 양식의 사유를 작성하여 권한 승인을 요청해 주세요.",
+      "description": "차량 컨텐츠 제작 시스템에 접속 권한 등록이 필요한 계정입니다. 요청 사유를 작성한 후 권한을 요청해 주세요.",
       "emailLabel": "ID (Email)",
       "reasonLabel": "요청 사유",
       "reasonPlaceholder": "권한 요청 사유 입력",

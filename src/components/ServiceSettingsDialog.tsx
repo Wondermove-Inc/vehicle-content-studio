@@ -42,7 +42,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
       <DialogTitle hdsProps={{ closeIcon: true, onClose }}>
         {t('project.settings.title')}
       </DialogTitle>
-      <DialogContent hdsProps sx={{ py: '18px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <DialogContent hdsProps sx={{ pt: '18px', pb: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* 서비스 언어 */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <Typography
@@ -103,7 +103,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
           >
             로그인 정보
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* 로그인 정보 테이블 */}
             <Box sx={{ display: 'flex', gap: 0 }}>
               {/* 현재 접속 정보 컬럼 */}
