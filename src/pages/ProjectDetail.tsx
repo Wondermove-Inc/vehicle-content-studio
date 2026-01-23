@@ -77,6 +77,7 @@ function ProjectDetail() {
   const { user } = useAuth()
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
+  const [isAddContentOpen, setIsAddContentOpen] = useState(false)
 
   // URL에서 contentId 가져오기
   const contentId = searchParams.get('contentId')
@@ -764,10 +765,7 @@ function ProjectDetail() {
                                   minWidth: '0 !important',
                                 }
                               }}
-                              onClick={() => {
-                                // TODO: 컨텐츠 추가 로직
-                                console.log('Beauty Angle Cut 추가')
-                              }}
+                              onClick={() => setIsAddContentOpen(true)}
                             >
                               {t('projectDetail.contents.beautyAngleCut.addButton')}
                             </Button>
@@ -819,6 +817,45 @@ function ProjectDetail() {
           </Button>
           <Button hdsProps={{ type: 'fill', style: 'primary' }} onClick={() => setIsMembersOpen(false)}>
             {t('common.button.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 컨텐츠 추가 다이얼로그 */}
+      <Dialog
+        open={isAddContentOpen}
+        onClose={() => setIsAddContentOpen(false)}
+        maxWidth={false}
+        PaperProps={{
+          sx: { width: '620px', height: 'auto' }
+        }}
+      >
+        <DialogTitle hdsProps={{ closeIcon: false }}>컨텐츠 추가</DialogTitle>
+        <DialogContent hdsProps>
+          <Typography sx={{ color: 'var(--on_surface_mid)' }}>
+            컨텐츠 추가 기능이 구현될 예정입니다.
+          </Typography>
+        </DialogContent>
+        <DialogActions hdsProps>
+          <Button
+            hdsProps
+            onClick={() => setIsAddContentOpen(false)}
+            sx={{
+              minWidth: '0 !important',
+              width: 'fit-content',
+              padding: '8px 16px !important',
+            }}
+          >
+            {t('common.button.cancel')}
+          </Button>
+          <Button
+            hdsProps={{ type: 'fill', style: 'primary' }}
+            onClick={() => {
+              // TODO: 컨텐츠 추가 로직
+              setIsAddContentOpen(false)
+            }}
+          >
+            컨텐츠 추가
           </Button>
         </DialogActions>
       </Dialog>
