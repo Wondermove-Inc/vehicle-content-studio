@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
-import { Ic_arrow_forward_regular, Ic_time_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
+import Button from '@hmg-fe/hmg-design-system/Button'
+import { Ic_time_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
 import ContentCard from './ContentCard'
 import { RecentlyVisitedContent } from '@/types/content.types'
 
@@ -14,6 +15,7 @@ function RecentlyVisitedContents() {
 
   const [recentContents, setRecentContents] = useState<RecentlyVisitedContent[]>([])
   const [contentFavorites, setContentFavorites] = useState<Set<string>>(new Set())
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
   // localStorage에서 최근 방문 데이터 로드
   useEffect(() => {
@@ -230,10 +232,11 @@ function RecentlyVisitedContents() {
         flexDirection: 'column',
         gap: '12px',
         padding: '12px',
-        background: 'var(--surface_container_lowest)',
+        background: isCollapsed ? '#ffffff' : 'var(--surface_container_lowest)',
         border: '1px solid var(--outline)',
         borderRadius: '8px',
         boxSizing: 'border-box',
+        transition: 'background 0.1s ease',
       }}
     >
       {/* 섹션 헤더 */}
@@ -264,74 +267,60 @@ function RecentlyVisitedContents() {
           </Typography>
         </Box>
 
-        {/* 전체 보기 링크 */}
-        <Box
-          onClick={() => {
-            // TODO: 전체 최근 방문 페이지로 이동 (구현 필요시)
-            console.log('View all recently visited contents')
-          }}
+        {/* 접기/펼치기 버튼 */}
+        <Button
+          hdsProps={{ size: 'small', type: 'filter', icon: false, style: undefined }}
+          onClick={() => setIsCollapsed(!isCollapsed)}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
-            '&:hover': {
-              opacity: 0.7,
-            },
+            minWidth: '0 !important',
+            width: 'fit-content',
+            padding: '4px 8px !important',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: 500,
-              lineHeight: '20px',
-              color: 'var(--on_surface_mid)',
-            }}
-          >
-            {t('projectDetail.recentlyVisited.viewAll')}
-          </Typography>
-          <Ic_arrow_forward_regular size="16px" color="var(--on_surface_mid)" />
-        </Box>
+          {isCollapsed ? '펼치기' : '접기'}
+        </Button>
       </Box>
 
       {/* 컨텐츠 카드 리스트 */}
-      <Box
-        ref={scrollContainerRef}
-        sx={{
-          display: 'flex',
-          gap: '12px',
-          overflowX: 'auto',
-          overflowY: 'visible',
-          paddingTop: '12px',
-          paddingBottom: '12px',
-          paddingLeft: '12px',
-          paddingRight: '12px',
-          marginTop: '-12px',
-          marginBottom: '-12px',
-          marginLeft: '-12px',
-          marginRight: '-12px',
-          width: '100%',
-          minWidth: 0,
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-          scrollbarWidth: 'none', // Firefox
-          msOverflowStyle: 'none', // IE and Edge
-        }}
-      >
-        {recentContents.map((content) => (
-          <ContentCard
-            key={content.id}
-            data={{
-              ...content,
-              isFavorite: contentFavorites.has(content.id),
-            }}
-            timestamp={formatTimeAgo(content.visitedAt)}
-            onFavoriteToggle={handleFavoriteToggle}
-            onClick={() => handleContentClick(content)}
-          />
-        ))}
-      </Box>
+      {!isCollapsed && (
+        <Box
+          ref={scrollContainerRef}
+          sx={{
+            display: 'flex',
+            gap: '12px',
+            overflowX: 'auto',
+            overflowY: 'visible',
+            paddingTop: '12px',
+            paddingBottom: '12px',
+            paddingLeft: '12px',
+            paddingRight: '12px',
+            marginTop: '-12px',
+            marginBottom: '-12px',
+            marginLeft: '-12px',
+            marginRight: '-12px',
+            width: '100%',
+            minWidth: 0,
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            scrollbarWidth: 'none', // Firefox
+            msOverflowStyle: 'none', // IE and Edge
+          }}
+        >
+          {recentContents.map((content) => (
+            <ContentCard
+              key={content.id}
+              data={{
+                ...content,
+                isFavorite: contentFavorites.has(content.id),
+              }}
+              timestamp={formatTimeAgo(content.visitedAt)}
+              onFavoriteToggle={handleFavoriteToggle}
+              onClick={() => handleContentClick(content)}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   )
 }

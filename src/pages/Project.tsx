@@ -179,10 +179,12 @@ function Project() {
       >
         {/* 우측 패널 - 테이블 */}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
-              {/* 최근 방문한 컨텐츠 섹션 */}
-              <Box sx={{ flexShrink: 0, padding: '16px 24px 0', minWidth: 0 }}>
-                <RecentlyVisitedContents />
-              </Box>
+              {/* 최근 방문한 컨텐츠 섹션 - "전체" 선택 시에만 표시 */}
+              {selectedProject === 'all' && (
+                <Box sx={{ flexShrink: 0, padding: '16px 24px 0', minWidth: 0 }}>
+                  <RecentlyVisitedContents />
+                </Box>
+              )}
 
               {/* 테이블 영역 (스크롤 가능) */}
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px 0', minHeight: 0 }}>
