@@ -435,8 +435,8 @@ function Project() {
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[10, 20, 50]}
-                hdsProps={{ size: 'small', isRowsPerPage: true }}
-                sx={{ flexShrink: 0 }}
+                hdsProps={{ size: 'xsmall', isRowsPerPage: true }}
+                sx={{ flexShrink: 0, height: '60px', minHeight: '60px' }}
               />
               </Box>
               )}
