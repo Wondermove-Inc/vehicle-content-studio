@@ -150,6 +150,7 @@
     "header": {
       "sop": "SOP",
       "manageMembers": "프로젝트 멤버 관리",
+      "members": "프로젝트 멤버",
       "projectSettings": "프로젝트 설정"
     },
     "contents": {

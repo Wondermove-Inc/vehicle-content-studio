@@ -10,6 +10,8 @@ import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
 import { SimpleTreeView, TreeItem, EmptyError } from '@hmg-fe/hmg-design-system'
 import { Ic_search_regular, Ic_plus_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
+import { useAuth } from '@/contexts/AuthContext'
+import { PermissionLevel } from '@/types/auth.types'
 
 // 트리 노드 타입
 type TreeNode = {
@@ -30,9 +32,14 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
   const [activeMenu, setActiveMenu] = useState('프로젝트')
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+
+  // 권한 레벨 체크 - L1, L2만 프로젝트 추가 가능
+  const canAddProject = user?.permissionLevel === PermissionLevel.L1_ADMIN ||
+                        user?.permissionLevel === PermissionLevel.L2_SERVICE_MANAGER
 
   // localStorage에서 트리 확장 상태 초기화
   const [expandedItems, setExpandedItems] = useState<string[]>(() => {
@@ -360,20 +367,23 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
                   {t('project.header.title')}
                 </Typography>
               </Box>
-              <Button
-                hdsProps={{
-                  size: 'medium',
-                  style: 'strong',
-                  type: 'fill',
-                  icon: <Ic_plus_regular size="16px" color="#fff" />,
-                }}
-                sx={{
-                  flexShrink: 0,
-                }}
-                onClick={onAddProject}
-              >
-                {t('project.header.addProject')}
-              </Button>
+              {/* 프로젝트 추가 버튼 - L1, L2 권한만 표시 */}
+              {canAddProject && (
+                <Button
+                  hdsProps={{
+                    size: 'medium',
+                    style: 'strong',
+                    type: 'fill',
+                    icon: <Ic_plus_regular size="16px" color="#fff" />,
+                  }}
+                  sx={{
+                    flexShrink: 0,
+                  }}
+                  onClick={onAddProject}
+                >
+                  {t('project.header.addProject')}
+                </Button>
+              )}
             </Box>
           </Box>
 

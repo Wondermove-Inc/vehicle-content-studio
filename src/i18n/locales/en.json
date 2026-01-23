@@ -149,6 +149,7 @@
     "header": {
       "sop": "SOP",
       "manageMembers": "Manage Project Members",
+      "members": "Project Members",
       "projectSettings": "Project Settings"
     },
     "contents": {

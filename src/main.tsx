@@ -62,7 +62,13 @@ const router = createBrowserRouter([
     path: '/content-request',
     element: (
       <ProtectedRoute
-        requiredLevels={[PermissionLevel.L1_ADMIN, PermissionLevel.L2_SERVICE_MANAGER, PermissionLevel.L3_BUSINESS_USER]}
+        requiredLevels={[
+          PermissionLevel.L1_ADMIN,
+          PermissionLevel.L2_SERVICE_MANAGER,
+          PermissionLevel.L3_BUSINESS_USER,
+          PermissionLevel.L4_3D_MODELER,
+          PermissionLevel.L5_CONTENT_CREATOR,
+        ]}
       >
         <ContentRequest />
       </ProtectedRoute>

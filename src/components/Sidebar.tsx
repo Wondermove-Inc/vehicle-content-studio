@@ -14,8 +14,6 @@ import {
   Ic_menu_regular,
   Ic_arrow_forward_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
-import { useAuth } from '@/contexts/AuthContext'
-import { PermissionLevel } from '@/types/auth.types'
 import ServiceSettingsDialog from './ServiceSettingsDialog'
 
 // 사이드바 메뉴 아이템 컴포넌트
@@ -102,7 +100,6 @@ function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { user } = useAuth()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
   const [isServiceSettingsOpen, setIsServiceSettingsOpen] = useState(false)
@@ -126,15 +123,6 @@ function Sidebar({
       setIsFavoritesExpanded(false)
     }
   }, [isSidebarCollapsed])
-
-  // 권한 레벨 체크 함수
-  const isL1 = user?.permissionLevel === PermissionLevel.L1_ADMIN
-  const isL2L3 =
-    user?.permissionLevel === PermissionLevel.L2_SERVICE_MANAGER ||
-    user?.permissionLevel === PermissionLevel.L3_BUSINESS_USER
-  const isL4L5 =
-    user?.permissionLevel === PermissionLevel.L4_3D_MODELER ||
-    user?.permissionLevel === PermissionLevel.L5_CONTENT_CREATOR
 
   const handleMenuClick = (menu: string) => {
     onMenuChange(menu)
@@ -205,7 +193,7 @@ function Sidebar({
       {/* 메뉴 그룹 */}
       <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
         <Stack spacing={0}>
-          {/* 프로젝트 - 모든 권한 */}
+          {/* 프로젝트 */}
           <SidebarItem
             icon={<Ic_folder_filled size="16px" color={activeMenu === '프로젝트' ? '#111111' : 'var(--surface_high)'} />}
             label={t('common.menu.project')}
@@ -213,27 +201,23 @@ function Sidebar({
             collapsed={isSidebarCollapsed}
             onClick={() => handleMenuClick('프로젝트')}
           />
-          {/* 컨텐츠 요청 - L1, L2, L3만 */}
-          {(isL1 || isL2L3) && (
-            <SidebarItem
-              icon={<Ic_writing_filled size="16px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
-              label={t('common.menu.contentRequest')}
-              isActive={activeMenu === '컨텐츠 요청'}
-              collapsed={isSidebarCollapsed}
-              onClick={() => handleMenuClick('컨텐츠 요청')}
-            />
-          )}
-          {/* 다운로드 - L1, L4, L5만 */}
-          {(isL1 || isL4L5) && (
-            <SidebarItem
-              icon={<Ic_download_regular size="16px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
-              label={t('common.menu.download')}
-              isActive={activeMenu === '다운로드'}
-              collapsed={isSidebarCollapsed}
-              onClick={() => onMenuChange('다운로드')}
-            />
-          )}
-          {/* 설정 - 모든 권한 */}
+          {/* 컨텐츠 요청 */}
+          <SidebarItem
+            icon={<Ic_writing_filled size="16px" color={activeMenu === '컨텐츠 요청' ? '#111111' : 'var(--surface_high)'} />}
+            label={t('common.menu.contentRequest')}
+            isActive={activeMenu === '컨텐츠 요청'}
+            collapsed={isSidebarCollapsed}
+            onClick={() => handleMenuClick('컨텐츠 요청')}
+          />
+          {/* 다운로드 */}
+          <SidebarItem
+            icon={<Ic_download_regular size="16px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
+            label={t('common.menu.download')}
+            isActive={activeMenu === '다운로드'}
+            collapsed={isSidebarCollapsed}
+            onClick={() => onMenuChange('다운로드')}
+          />
+          {/* 설정 */}
           <SidebarItem
             icon={<Ic_setting_filled size="16px" color="var(--surface_high)" />}
             label={t('common.menu.settings')}

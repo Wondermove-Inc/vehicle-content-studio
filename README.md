@@ -198,5 +198,5 @@ Copyright © 2024 Hyundai Motor Group. All rights reserved.
 ---
 
 **개발**: Wondermove Inc.
-**버전**: 1.0.2
-**최종 업데이트**: 2026-01-21
+**버전**: 1.0.4
+**최종 업데이트**: 2026-01-23

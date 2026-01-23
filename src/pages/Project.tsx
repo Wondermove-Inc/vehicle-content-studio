@@ -322,7 +322,7 @@ function Project() {
                         key={project.id}
                         onClick={() => {
                           if (projectTreeId) {
-                            navigate(`/project/${projectTreeId}`)
+                            navigate(`/project/${projectTreeId}?contentId=${project.id}`)
                           }
                         }}
                         sx={{
