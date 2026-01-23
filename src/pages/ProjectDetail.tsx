@@ -12,7 +12,7 @@ import {
   Ic_setting_bold,
   Ic_star_filled,
   Ic_star_regular,
-  Ic_folder_filled,
+  Ic_picture_filled,
   Ic_plus_regular,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { MOCK_PROJECTS, PROJECT_CODE_TO_TREE_ITEM, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
@@ -159,13 +159,15 @@ function ProjectDetail() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '16px',
                   }}
                 >
                   {/* 좌측: 프로젝트 코드 + 즐겨찾기 */}
                   <Box
                     sx={{
-                      flex: 1,
-                      minWidth: 0,
+                      flex: '1 1 auto',
+                      minWidth: '200px',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
@@ -203,7 +205,15 @@ function ProjectDetail() {
                   </Box>
 
                   {/* 우측: SOP + 버튼들 */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      flexWrap: 'wrap',
+                      flex: '0 1 auto',
+                    }}
+                  >
                     {/* SOP Badge */}
                     <Badge
                       hdsProps={{
@@ -330,7 +340,7 @@ function ProjectDetail() {
                       flex: '1 1 0',
                       paddingLeft: '28px',
                       paddingRight: '28px',
-                      paddingTop: '52px',
+                      paddingTop: '64px',
                       paddingBottom: '52px',
                       background: 'linear-gradient(180deg, #F4F5F6 0%, rgba(244, 245, 246, 0.50) 100%)',
                       overflow: 'hidden',
@@ -385,6 +395,8 @@ function ProjectDetail() {
                     <Box
                       sx={{
                         width: '360px',
+                        maxWidth: '360px',
+                        minWidth: '360px',
                         paddingLeft: '13px',
                         paddingRight: '13px',
                         paddingTop: '10px',
@@ -423,7 +435,7 @@ function ProjectDetail() {
                             display: 'flex',
                           }}
                         >
-                          <Ic_folder_filled size="16px" color="white" />
+                          <Ic_picture_filled size="16px" color="white" />
                         </Box>
 
                         {/* 텍스트와 버튼 */}
@@ -445,7 +457,7 @@ function ProjectDetail() {
                           >
                             <Typography
                               sx={{
-                                color: '#111111',
+                                color: 'var(--primary)',
                                 fontSize: 16,
                                 fontWeight: 700,
                                 lineHeight: '24px',
@@ -458,9 +470,9 @@ function ProjectDetail() {
                                 justifyContent: 'center',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                color: '#676D79',
+                                color: 'var(--on_surface_high)',
                                 fontSize: 12,
-                                fontWeight: 400,
+                                fontWeight: 500,
                                 lineHeight: '18px',
                               }}
                             >
@@ -472,9 +484,16 @@ function ProjectDetail() {
                           <Button
                             hdsProps={{
                               size: 'medium',
-                              style: 'primary',
                               type: 'fill',
                               icon: <Ic_plus_regular size="16px" color="white" />,
+                              style: undefined,
+                            }}
+                            sx={{
+                              width: 'fit-content',
+                              minWidth: '0 !important',
+                              '&.MuiButton-root': {
+                                minWidth: '0 !important',
+                              }
                             }}
                             onClick={() => {
                               // TODO: 컨텐츠 추가 로직
