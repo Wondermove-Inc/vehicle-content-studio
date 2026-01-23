@@ -151,8 +151,7 @@ function ProjectDetail() {
               {/* 프로젝트 정보 헤더 */}
               <Box
                 sx={{
-                  padding: '20px 24px 16px',
-                  borderBottom: '1px solid var(--outline)',
+                  padding: '16px 24px 0',
                 }}
               >
                 <Box
@@ -160,7 +159,6 @@ function ProjectDetail() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '16px',
                   }}
                 >
                   {/* 좌측: 프로젝트 코드 + 즐겨찾기 */}
@@ -291,18 +289,6 @@ function ProjectDetail() {
                     </Button>
                   </Box>
                 </Box>
-
-                {/* 컨텐츠 타이틀 */}
-                <Typography
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    lineHeight: '24px',
-                    color: 'var(--on_surface)',
-                  }}
-                >
-                  {t('projectDetail.contents.title')}
-                </Typography>
               </Box>
 
               {/* Empty State - 컨텐츠 없는 상태 */}
@@ -310,136 +296,196 @@ function ProjectDetail() {
                 sx={{
                   flex: 1,
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '40px 24px',
+                  flexDirection: 'column',
+                  padding: '16px 24px',
                 }}
               >
                 <Box
                   sx={{
-                    display: 'flex',
+                    width: '100%',
+                    height: '100%',
                     flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '24px',
-                    maxWidth: '600px',
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    display: 'inline-flex',
                   }}
                 >
-                  {/* Empty State 메시지 */}
-                  <Box sx={{ textAlign: 'center' }}>
+                  {/* 컨텐츠 타이틀 */}
+                  <Typography
+                    sx={{
+                      fontSize: 16,
+                      fontWeight: 700,
+                      lineHeight: '24px',
+                      color: 'var(--primary)',
+                    }}
+                  >
+                    {t('projectDetail.contents.title')}
+                  </Typography>
+
+                  {/* Empty State 컨테이너 */}
+                  <Box
+                    sx={{
+                      alignSelf: 'stretch',
+                      flex: '1 1 0',
+                      paddingLeft: '28px',
+                      paddingRight: '28px',
+                      paddingTop: '52px',
+                      paddingBottom: '52px',
+                      background: 'linear-gradient(180deg, #F4F5F6 0%, rgba(244, 245, 246, 0.50) 100%)',
+                      overflow: 'hidden',
+                      borderRadius: '8px',
+                      border: '1px dashed rgba(0, 0, 0, 0.15)',
+                      flexDirection: 'column',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      gap: '16px',
+                      display: 'flex',
+                    }}
+                  >
+                    {/* 안내 메시지 */}
                     <Typography
                       sx={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        lineHeight: '24px',
-                        color: 'var(--on_surface)',
-                        marginBottom: '8px',
+                        alignSelf: 'stretch',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        color: 'var(--on_primary_highest)',
+                        fontSize: 15,
+                        fontWeight: 700,
+                        lineHeight: '22px',
                       }}
                     >
                       {t('projectDetail.contents.emptyTitle')}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontSize: 14,
-                        fontWeight: 400,
-                        lineHeight: '21px',
-                        color: 'var(--on_surface_mid)',
-                      }}
-                    >
+                      <br />
                       {t('projectDetail.contents.emptyDescription')}
                     </Typography>
-                  </Box>
 
-                  {/* 일러스트레이션 (임시로 아이콘 사용) */}
-                  <Box
-                    sx={{
-                      width: '200px',
-                      height: '150px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: '#F5F5F5',
-                      borderRadius: '8px',
-                    }}
-                  >
-                    <Ic_folder_filled size="48px" color="var(--on_surface_low)" />
-                  </Box>
-
-                  {/* Beauty Angle Cut 추가 섹션 */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      padding: '16px 20px',
-                      border: '1px solid var(--outline)',
-                      borderRadius: '8px',
-                      width: '100%',
-                    }}
-                  >
-                    {/* 아이콘 + 텍스트 */}
+                    {/* 일러스트레이션 */}
                     <Box
                       sx={{
+                        alignSelf: 'stretch',
                         display: 'flex',
+                        justifyContent: 'center',
                         alignItems: 'center',
-                        gap: '12px',
-                        flex: 1,
                       }}
                     >
-                      {/* 보라색 아이콘 배경 */}
-                      <Box
-                        sx={{
-                          width: '40px',
-                          height: '40px',
-                          backgroundColor: '#8333E6',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                      <img
+                        src="/images/contents_card.png"
+                        alt="Content cards illustration"
+                        style={{
+                          width: '360px',
+                          height: 'auto',
                         }}
-                      >
-                        <Ic_folder_filled size="24px" color="#ffffff" />
-                      </Box>
-
-                      {/* 텍스트 */}
-                      <Box>
-                        <Typography
-                          sx={{
-                            fontSize: 15,
-                            fontWeight: 600,
-                            lineHeight: '22px',
-                            color: 'var(--on_surface)',
-                          }}
-                        >
-                          {t('projectDetail.contents.beautyAngleCut.title')}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: 13,
-                            fontWeight: 400,
-                            lineHeight: '19px',
-                            color: 'var(--on_surface_mid)',
-                          }}
-                        >
-                          {t('projectDetail.contents.beautyAngleCut.description')}
-                        </Typography>
-                      </Box>
+                      />
                     </Box>
 
-                    {/* 추가 버튼 */}
-                    <Button
-                      hdsProps={{
-                        size: 'medium',
-                        style: 'strong',
-                        type: 'fill',
-                        icon: <Ic_plus_regular size="16px" color="#fff" />,
-                      }}
-                      onClick={() => {
-                        // TODO: 컨텐츠 추가 로직
-                        console.log('Beauty Angle Cut 추가')
+                    {/* Beauty Angle Cut 추가 버튼 섹션 */}
+                    <Box
+                      sx={{
+                        width: '360px',
+                        paddingLeft: '13px',
+                        paddingRight: '13px',
+                        paddingTop: '10px',
+                        paddingBottom: '10px',
+                        background: 'white',
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.04)',
+                        overflow: 'hidden',
+                        borderRadius: '8px',
+                        outline: '1px #EEEFF1 solid',
+                        outlineOffset: '-1px',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        display: 'inline-flex',
                       }}
                     >
-                      {t('projectDetail.contents.beautyAngleCut.addButton')}
-                    </Button>
+                      <Box
+                        sx={{
+                          flex: '1 1 0',
+                          justifyContent: 'flex-start',
+                          alignItems: 'center',
+                          gap: '10px',
+                          display: 'flex',
+                        }}
+                      >
+                        {/* 아이콘 */}
+                        <Box
+                          sx={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'linear-gradient(180deg, #8333E6 40%, rgba(131, 51, 230, 0.85) 100%)',
+                            borderRadius: '4px',
+                            outline: '1px rgba(0, 0, 0, 0.10) solid',
+                            outlineOffset: '-1px',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            display: 'flex',
+                          }}
+                        >
+                          <Ic_folder_filled size="16px" color="white" />
+                        </Box>
+
+                        {/* 텍스트와 버튼 */}
+                        <Box
+                          sx={{
+                            flex: '1 1 0',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            display: 'flex',
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              flexDirection: 'column',
+                              justifyContent: 'flex-start',
+                              alignItems: 'flex-start',
+                              display: 'inline-flex',
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                color: '#111111',
+                                fontSize: 16,
+                                fontWeight: 700,
+                                lineHeight: '24px',
+                              }}
+                            >
+                              {t('projectDetail.contents.beautyAngleCut.title')}
+                            </Typography>
+                            <Typography
+                              sx={{
+                                justifyContent: 'center',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                color: '#676D79',
+                                fontSize: 12,
+                                fontWeight: 400,
+                                lineHeight: '18px',
+                              }}
+                            >
+                              {t('projectDetail.contents.beautyAngleCut.description')}
+                            </Typography>
+                          </Box>
+
+                          {/* 추가 버튼 */}
+                          <Button
+                            hdsProps={{
+                              size: 'medium',
+                              style: 'primary',
+                              type: 'fill',
+                              icon: <Ic_plus_regular size="16px" color="white" />,
+                            }}
+                            onClick={() => {
+                              // TODO: 컨텐츠 추가 로직
+                              console.log('Beauty Angle Cut 추가')
+                            }}
+                          >
+                            {t('projectDetail.contents.beautyAngleCut.addButton')}
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Box>
                   </Box>
                 </Box>
               </Box>

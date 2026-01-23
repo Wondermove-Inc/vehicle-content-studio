@@ -177,7 +177,7 @@ function Project() {
         onAddProject={() => setIsAddProjectOpen(true)}
       >
         {/* 우측 패널 - 테이블 */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 20px 0' }}>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px 0' }}>
               {/* 테이블 헤더 영역 */}
               <Box
                 sx={{
