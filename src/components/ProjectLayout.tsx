@@ -57,7 +57,7 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
     return []
   })
 
-  // localStorage에서 즐겨찾기 초기화
+  // localStorage에서 프로젝트 즐겨찾기 초기화
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('project-favorites')
     if (saved) {
@@ -70,18 +70,72 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
     return new Set()
   })
 
+  // localStorage에서 컨텐츠 즐겨찾기 초기화
+  const [contentFavorites, setContentFavorites] = useState<Array<{
+    id: string
+    type: string
+    projectCode: string
+    projectId: string
+  }>>(() => {
+    const defaultFavorites = [
+      {
+        id: 'hev-25-fmc-beauty-angle-cut-1',
+        type: 'Beauty Angle Cut',
+        projectCode: 'CN7I(AL23)_HEV_25FMC',
+        projectId: 'hev-25-fmc',
+      },
+      {
+        id: 'hev-26-my-beauty-angle-cut-2',
+        type: 'Beauty Angle Cut',
+        projectCode: 'CN7I(AL23)_HEV_26MY',
+        projectId: 'hev-26-my',
+      },
+      {
+        id: 'gv80-26-my-beauty-angle-cut-3',
+        type: 'Beauty Angle Cut',
+        projectCode: 'GV80_26MY',
+        projectId: 'gv80-26-my',
+      },
+    ]
+
+    const saved = localStorage.getItem('content-favorites')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        // 파싱 실패시 기본값 저장 후 반환
+        localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
+        return defaultFavorites
+      }
+    }
+    // localStorage에 데이터가 없으면 기본값 저장 후 반환
+    localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
+    return defaultFavorites
+  })
+
   // localStorage 변경 감지 (즐겨찾기 동기화)
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('project-favorites')
-      if (saved) {
+      const savedProjects = localStorage.getItem('project-favorites')
+      if (savedProjects) {
         try {
-          setFavorites(new Set(JSON.parse(saved)))
+          setFavorites(new Set(JSON.parse(savedProjects)))
         } catch {
           setFavorites(new Set())
         }
       } else {
         setFavorites(new Set())
+      }
+
+      const savedContents = localStorage.getItem('content-favorites')
+      if (savedContents) {
+        try {
+          setContentFavorites(JSON.parse(savedContents))
+        } catch {
+          setContentFavorites([])
+        }
+      } else {
+        setContentFavorites([])
       }
     }
 
@@ -294,6 +348,10 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
         onProjectSelect={onProjectSelect}
         favorites={favorites}
         projectNames={projectNames}
+        contentFavorites={contentFavorites}
+        onContentSelect={(projectId, contentId) => {
+          navigate(`/project/${projectId}`)
+        }}
       />
 
       {/* 메인 콘텐츠 */}

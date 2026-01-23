@@ -13,6 +13,7 @@ import {
   Ic_setting_filled,
   Ic_menu_regular,
   Ic_arrow_forward_regular,
+  Ic_picture_filled,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import ServiceSettingsDialog from './ServiceSettingsDialog'
 
@@ -86,6 +87,13 @@ interface SidebarProps {
   onProjectSelect?: (projectId: string) => void
   favorites?: Set<string>
   projectNames?: Record<string, string>
+  contentFavorites?: Array<{
+    id: string
+    type: string
+    projectCode: string
+    projectId: string
+  }>
+  onContentSelect?: (projectId: string, contentId: string) => void
 }
 
 function Sidebar({
@@ -97,6 +105,27 @@ function Sidebar({
   onProjectSelect,
   favorites = new Set<string>(),
   projectNames = {},
+  contentFavorites = [
+    {
+      id: 'hev-25-fmc-beauty-angle-cut-1',
+      type: 'Beauty Angle Cut',
+      projectCode: 'CN7I(AL23)_HEV_25FMC',
+      projectId: 'hev-25-fmc',
+    },
+    {
+      id: 'hev-26-my-beauty-angle-cut-2',
+      type: 'Beauty Angle Cut',
+      projectCode: 'CN7I(AL23)_HEV_26MY',
+      projectId: 'hev-26-my',
+    },
+    {
+      id: 'gv80-26-my-beauty-angle-cut-3',
+      type: 'Beauty Angle Cut',
+      projectCode: 'GV80_26MY',
+      projectId: 'gv80-26-my',
+    },
+  ],
+  onContentSelect,
 }: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -285,7 +314,7 @@ function Sidebar({
         </Box>
         {isFavoritesExpanded && (
           <Stack spacing={0}>
-            {favorites.size === 0 ? (
+            {favorites.size === 0 && contentFavorites.length === 0 ? (
               <Typography
                 sx={{
                   fontSize: 14,
@@ -296,60 +325,124 @@ function Sidebar({
                 {t('common.menu.noFavorites')}
               </Typography>
             ) : (
-              Array.from(favorites).map((id) => (
-                <Box
-                  key={id}
-                  onClick={() => onProjectSelect && onProjectSelect(id)}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '6px 16px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    '&:hover': {
-                      '& .favorite-label': {
-                        color: '#111111',
-                        fontWeight: 700,
-                      },
-                    },
-                  }}
-                >
-                  {/* 아이콘 컨테이너 */}
+              <>
+                {/* 프로젝트 즐겨찾기 */}
+                {Array.from(favorites).map((id) => (
                   <Box
+                    key={id}
+                    onClick={() => onProjectSelect && onProjectSelect(id)}
                     sx={{
-                      width: '18px',
-                      height: '18px',
-                      backgroundColor: '#111111',
-                      borderRadius: '4px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      '& svg': {
-                        width: '12px !important',
-                        height: '12px !important',
+                      gap: '8px',
+                      padding: '6px 8px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      '&:hover': {
+                        '& .favorite-label': {
+                          color: '#111111',
+                          fontWeight: 700,
+                        },
                       },
                     }}
                   >
-                    <Ic_folder_filled size="12px" color="#FFFFFF" />
+                    {/* 아이콘 컨테이너 */}
+                    <Box
+                      sx={{
+                        width: '18px',
+                        height: '18px',
+                        backgroundColor: '#111111',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        '& svg': {
+                          width: '12px !important',
+                          height: '12px !important',
+                        },
+                      }}
+                    >
+                      <Ic_folder_filled size="12px" color="#FFFFFF" />
+                    </Box>
+                    <Typography
+                      className="favorite-label"
+                      sx={{
+                        fontSize: 15,
+                        fontWeight: selectedProject === id ? 700 : 500,
+                        lineHeight: '22px',
+                        color: selectedProject === id ? '#000000' : 'var(--on_surface_highest)',
+                        transition: 'color 0.15s ease, font-weight 0.15s ease',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {projectNames[id] || id}
+                    </Typography>
                   </Box>
-                  <Typography
-                    className="favorite-label"
+                ))}
+                {/* 컨텐츠 즐겨찾기 */}
+                {contentFavorites.map((content) => (
+                  <Box
+                    key={content.id}
+                    onClick={() => onContentSelect && onContentSelect(content.projectId, content.id.split('-').pop() || '')}
                     sx={{
-                      fontSize: 15,
-                      fontWeight: selectedProject === id ? 700 : 500,
-                      lineHeight: '22px',
-                      color: selectedProject === id ? '#000000' : 'var(--on_surface_highest)',
-                      transition: 'color 0.15s ease, font-weight 0.15s ease',
-                      whiteSpace: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '6px 8px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      '&:hover': {
+                        '& .favorite-label': {
+                          color: '#111111',
+                          fontWeight: 700,
+                        },
+                      },
                     }}
                   >
-                    {projectNames[id] || id}
-                  </Typography>
-                </Box>
-              ))
+                    {/* 아이콘 컨테이너 - 보라색 배경 */}
+                    <Box
+                      sx={{
+                        width: '18px',
+                        height: '18px',
+                        backgroundColor: 'rgba(233, 221, 248, 1)',
+                        borderRadius: '4px',
+                        border: '1px solid rgba(0, 0, 0, 0.04)',
+                        boxSizing: 'border-box',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        '& svg': {
+                          width: '12px !important',
+                          height: '12px !important',
+                        },
+                      }}
+                    >
+                      <Ic_picture_filled size="12px" color="#8333E6" />
+                    </Box>
+                    <Typography
+                      className="favorite-label"
+                      sx={{
+                        fontSize: 15,
+                        fontWeight: 500,
+                        lineHeight: '22px',
+                        color: 'var(--on_surface_highest)',
+                        transition: 'color 0.15s ease, font-weight 0.15s ease',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      [{content.type}] {content.projectCode}
+                    </Typography>
+                  </Box>
+                ))}
+              </>
             )}
           </Stack>
         )}

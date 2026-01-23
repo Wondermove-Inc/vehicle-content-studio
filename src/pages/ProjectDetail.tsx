@@ -98,7 +98,7 @@ function ProjectDetail() {
     }
   }
 
-  // 즐겨찾기 관련
+  // 프로젝트 즐겨찾기 관련
   const [favorites, setFavorites] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('project-favorites')
     if (saved) {
@@ -124,6 +124,79 @@ function ProjectDetail() {
   }
 
   const isFavorite = projectId ? favorites.has(projectId) : false
+
+  // 컨텐츠 즐겨찾기 관련
+  const [contentFavorites, setContentFavorites] = useState<Array<{
+    id: string
+    type: string
+    projectCode: string
+    projectId: string
+  }>>(() => {
+    const defaultFavorites = [
+      {
+        id: 'hev-25-fmc-beauty-angle-cut-1',
+        type: 'Beauty Angle Cut',
+        projectCode: 'CN7I(AL23)_HEV_25FMC',
+        projectId: 'hev-25-fmc',
+      },
+      {
+        id: 'hev-26-my-beauty-angle-cut-2',
+        type: 'Beauty Angle Cut',
+        projectCode: 'CN7I(AL23)_HEV_26MY',
+        projectId: 'hev-26-my',
+      },
+      {
+        id: 'gv80-26-my-beauty-angle-cut-3',
+        type: 'Beauty Angle Cut',
+        projectCode: 'GV80_26MY',
+        projectId: 'gv80-26-my',
+      },
+    ]
+
+    const saved = localStorage.getItem('content-favorites')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        // 파싱 실패시 기본값 저장 후 반환
+        localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
+        return defaultFavorites
+      }
+    }
+    // localStorage에 데이터가 없으면 기본값 저장 후 반환
+    localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
+    return defaultFavorites
+  })
+
+  const toggleContentFavorite = (contentId: string, contentType: string) => {
+    if (!projectId || !projectData) return
+
+    const contentKey = `${projectId}-${contentId}`
+    const existingIndex = contentFavorites.findIndex(f => f.id === contentKey)
+
+    let newFavorites
+    if (existingIndex >= 0) {
+      // 이미 즐겨찾기에 있으면 제거
+      newFavorites = contentFavorites.filter((_, idx) => idx !== existingIndex)
+    } else {
+      // 없으면 추가
+      newFavorites = [...contentFavorites, {
+        id: contentKey,
+        type: contentType,
+        projectCode: projectData.code,
+        projectId: projectId,
+      }]
+    }
+
+    setContentFavorites(newFavorites)
+    localStorage.setItem('content-favorites', JSON.stringify(newFavorites))
+  }
+
+  const isContentFavorite = (contentId: string) => {
+    if (!projectId) return false
+    const contentKey = `${projectId}-${contentId}`
+    return contentFavorites.some(f => f.id === contentKey)
+  }
 
   // 잘못된 projectId(all, 브랜드, 2뎁스)로 접근 시 /project로 리다이렉트
   useEffect(() => {
@@ -425,6 +498,10 @@ function ProjectDetail() {
 
                           {/* 별 아이콘 (우측 상단) */}
                           <Box
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleContentFavorite('beauty-angle-cut-1', 'Beauty Angle Cut')
+                            }}
                             sx={{
                               position: 'absolute',
                               top: '4px',
@@ -435,9 +512,16 @@ function ProjectDetail() {
                               alignItems: 'center',
                               justifyContent: 'center',
                               cursor: 'pointer',
+                              '&:hover': {
+                                opacity: 0.8,
+                              },
                             }}
                           >
-                            <Ic_star_filled size="20px" color="white" />
+                            {isContentFavorite('beauty-angle-cut-1') ? (
+                              <Ic_star_filled size="20px" color="var(--yellow)" />
+                            ) : (
+                              <Ic_star_filled size="20px" color="white" />
+                            )}
                           </Box>
                         </Box>
 
