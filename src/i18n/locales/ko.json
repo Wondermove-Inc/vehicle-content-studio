@@ -27,7 +27,9 @@
       "admin": "어드민",
       "settings": "설정",
       "notification": "알림",
-      "favorites": "즐겨찾기"
+      "favorites": "즐겨찾기",
+      "download": "다운로드",
+      "noFavorites": "즐겨찾기가 없습니다"
     },
     "button": {
       "cancel": "취소",
@@ -127,8 +129,21 @@
     "settings": {
       "title": "설정",
       "language": "서비스 언어",
-      "languageKorean": "국문",
-      "languageEnglish": "영문"
+      "languageKorean": "한국어",
+      "languageEnglish": "English",
+      "timezone": "시간대",
+      "timezoneSeoul": "(UTC+09:00) 서울",
+      "timezoneNewYork": "(UTC-05:00) 뉴욕",
+      "timezoneLondon": "(UTC+00:00) 런던",
+      "timezoneTokyo": "(UTC+09:00) 도쿄",
+      "loginInfo": "로그인 정보",
+      "currentSession": "현재 접속 정보",
+      "recentSession": "최근 접속 정보",
+      "ip": "IP",
+      "sessionStart": "세션 시작",
+      "logout": "로그아웃",
+      "logoutConfirm": "로그아웃",
+      "logoutMessage": "로그아웃 하시겠습니까?"
     }
   },
   "projectDetail": {

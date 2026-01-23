@@ -50,8 +50,8 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
     return []
   })
 
-  // localStorage에서 즐겨찾기 초기화 (읽기 전용)
-  const [favorites] = useState<Set<string>>(() => {
+  // localStorage에서 즐겨찾기 초기화
+  const [favorites, setFavorites] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('project-favorites')
     if (saved) {
       try {
@@ -62,6 +62,27 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
     }
     return new Set()
   })
+
+  // localStorage 변경 감지 (즐겨찾기 동기화)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('project-favorites')
+      if (saved) {
+        try {
+          setFavorites(new Set(JSON.parse(saved)))
+        } catch {
+          setFavorites(new Set())
+        }
+      } else {
+        setFavorites(new Set())
+      }
+    }
+
+    // storage 이벤트는 다른 탭에서만 발생하므로, 같은 탭 내 변경을 위해 interval 사용
+    const intervalId = setInterval(handleStorageChange, 500)
+
+    return () => clearInterval(intervalId)
+  }, [])
 
   // 트리 데이터 구조
   const treeData: TreeNode[] = [

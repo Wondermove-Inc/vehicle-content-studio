@@ -227,7 +227,7 @@ function Sidebar({
           {(isL1 || isL4L5) && (
             <SidebarItem
               icon={<Ic_download_regular size="16px" color={activeMenu === '다운로드' ? '#111111' : 'var(--surface_high)'} />}
-              label="다운로드"
+              label={t('common.menu.download')}
               isActive={activeMenu === '다운로드'}
               collapsed={isSidebarCollapsed}
               onClick={() => onMenuChange('다운로드')}
@@ -309,7 +309,7 @@ function Sidebar({
                   padding: '8px 16px',
                 }}
               >
-                즐겨찾기가 없습니다
+                {t('common.menu.noFavorites')}
               </Typography>
             ) : (
               Array.from(favorites).map((id) => (

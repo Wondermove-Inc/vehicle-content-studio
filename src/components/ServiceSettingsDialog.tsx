@@ -56,7 +56,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
               color: '#0E0F11',
             }}
           >
-            서비스 언어
+            {t('project.settings.language')}
           </Typography>
           <Select
             value={i18n.language}
@@ -64,8 +64,8 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
             hdsProps={{ size: 'medium' }}
             fullWidth
           >
-            <MenuItem value="ko">한국어</MenuItem>
-            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="ko">{t('project.settings.languageKorean')}</MenuItem>
+            <MenuItem value="en">{t('project.settings.languageEnglish')}</MenuItem>
           </Select>
         </Box>
 
@@ -79,7 +79,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
               color: '#0E0F11',
             }}
           >
-            시간대
+            {t('project.settings.timezone')}
           </Typography>
           <Select
             value={timezone}
@@ -87,10 +87,10 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
             hdsProps={{ size: 'medium' }}
             fullWidth
           >
-            <MenuItem value="Asia/Seoul">(UTC+09:00) 서울</MenuItem>
-            <MenuItem value="America/New_York">(UTC-05:00) 뉴욕</MenuItem>
-            <MenuItem value="Europe/London">(UTC+00:00) 런던</MenuItem>
-            <MenuItem value="Asia/Tokyo">(UTC+09:00) 도쿄</MenuItem>
+            <MenuItem value="Asia/Seoul">{t('project.settings.timezoneSeoul')}</MenuItem>
+            <MenuItem value="America/New_York">{t('project.settings.timezoneNewYork')}</MenuItem>
+            <MenuItem value="Europe/London">{t('project.settings.timezoneLondon')}</MenuItem>
+            <MenuItem value="Asia/Tokyo">{t('project.settings.timezoneTokyo')}</MenuItem>
           </Select>
         </Box>
 
@@ -104,7 +104,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
               color: '#0E0F11',
             }}
           >
-            로그인 정보
+            {t('project.settings.loginInfo')}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* 로그인 정보 테이블 */}
@@ -126,7 +126,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                   }}
                 >
                   <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>
-                    현재 접속 정보
+                    {t('project.settings.currentSession')}
                   </Typography>
                 </Box>
                 {/* IP 셀 */}
@@ -142,7 +142,9 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                   }}
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', py: '1px' }}>
-                    <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#111111' }}>IP</Typography>
+                    <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#111111' }}>
+                      {t('project.settings.ip')}
+                    </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#6b6b6b' }}>
                       123.123.123.123
                     </Typography>
@@ -162,7 +164,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', py: '1px' }}>
                     <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#111111' }}>
-                      세션 시작
+                      {t('project.settings.sessionStart')}
                     </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#6b6b6b' }}>
                       2025-11-14 10:10:20
@@ -188,7 +190,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                   }}
                 >
                   <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#111111' }}>
-                    최근 접속 정보
+                    {t('project.settings.recentSession')}
                   </Typography>
                 </Box>
                 {/* IP 셀 */}
@@ -204,7 +206,9 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                   }}
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', py: '1px' }}>
-                    <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#ce302c' }}>IP</Typography>
+                    <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#ce302c' }}>
+                      {t('project.settings.ip')}
+                    </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#ce302c' }}>
                       123.123.123.100
                     </Typography>
@@ -224,7 +228,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                 >
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px', py: '1px' }}>
                     <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: '#111111' }}>
-                      세션 시작
+                      {t('project.settings.sessionStart')}
                     </Typography>
                     <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#6b6b6b' }}>
                       2025-11-12 10:10:20
@@ -241,7 +245,7 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
                 startIcon={<Ic_log_out_regular size="16px" />}
                 onClick={() => setLogoutConfirmOpen(true)}
               >
-                로그아웃
+                {t('project.settings.logout')}
               </Button>
             </Box>
           </Box>
@@ -251,16 +255,18 @@ function ServiceSettingsDialog({ open, onClose }: ServiceSettingsDialogProps) {
 
       {/* 로그아웃 확인 모달 */}
       <Dialog open={logoutConfirmOpen} onClose={() => setLogoutConfirmOpen(false)} hdsProps={{ size: 'small' }}>
-        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setLogoutConfirmOpen(false) }}>로그아웃</DialogTitle>
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setLogoutConfirmOpen(false) }}>
+          {t('project.settings.logoutConfirm')}
+        </DialogTitle>
         <DialogContent hdsProps>
-          <Typography>로그아웃 하시겠습니까?</Typography>
+          <Typography>{t('project.settings.logoutMessage')}</Typography>
         </DialogContent>
         <DialogActions hdsProps>
           <Button hdsProps onClick={() => setLogoutConfirmOpen(false)} sx={{ width: 'fit-content', minWidth: 'unset !important' }}>
-            취소
+            {t('common.button.cancel')}
           </Button>
           <Button hdsProps={{ type: 'fill', style: 'primary' }} onClick={handleLogout}>
-            로그아웃
+            {t('project.settings.logout')}
           </Button>
         </DialogActions>
       </Dialog>
