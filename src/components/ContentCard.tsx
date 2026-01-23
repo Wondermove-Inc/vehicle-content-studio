@@ -15,12 +15,15 @@ interface ContentCardProps {
 function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCardProps) {
   const { t } = useTranslation()
 
+  // car_06.png 이미지인지 확인
+  const isCar06 = data.thumbnailUrl?.includes('car_06.png')
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     onFavoriteToggle?.(data.id, data.contentType)
   }
 
-  const getContentTypeIcon = (type: string) => {
+  const getContentTypeIcon = (_type: string) => {
     // 컨텐츠 타입별 아이콘 매핑 (필요시 확장 가능)
     return <Ic_picture_filled size="16px" color="currentColor" />
   }
@@ -43,6 +46,9 @@ function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCard
       onClick={onClick}
       sx={{
         width: '220px',
+        minWidth: '220px',
+        maxWidth: '220px',
+        flexShrink: 0,
         background: 'white',
         boxShadow: '0px 4px 12px rgba(34, 34, 34, 0.1)',
         borderRadius: '8px',
@@ -91,24 +97,55 @@ function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCard
           />
         </Box>
 
-        {/* 프로젝트 코드 (좌측 하단 오버레이) */}
+        {/* 이미지 테두리 (inside) */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            border: '1px solid rgba(0, 0, 0, 0.04)',
+            borderRadius: '4px',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* 하단 그라디언트 박스 - car_06.png가 아닐 때만 표시 */}
+        {!isCar06 && (
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '52px',
+              background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+
+        {/* 프로젝트 코드 텍스트 */}
         <Box
           sx={{
             position: 'absolute',
             bottom: '8px',
             left: '8px',
-            padding: '4px 8px',
-            background: 'rgba(0, 0, 0, 0.6)',
-            borderRadius: '4px',
-            backdropFilter: 'blur(4px)',
+            right: '8px',
           }}
         >
           <Typography
             sx={{
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: 700,
-              lineHeight: '18px',
-              color: 'white',
+              lineHeight: '20px',
+              color: isCar06 ? 'var(--primary)' : 'white',
+              overflow: 'hidden',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              wordBreak: 'break-word',
             }}
           >
             {data.projectCode}

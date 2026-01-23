@@ -17,8 +17,12 @@ function RecentlyVisitedContents() {
 
   // localStorage에서 최근 방문 데이터 로드
   useEffect(() => {
+    // 이전 버전 localStorage 키 정리
+    localStorage.removeItem('recently-visited-contents')
+    localStorage.removeItem('recently-visited-contents-v2')
+
     const loadRecentContents = () => {
-      const saved = localStorage.getItem('recently-visited-contents')
+      const saved = localStorage.getItem('recently-visited-contents-v3')
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
@@ -46,7 +50,7 @@ function RecentlyVisitedContents() {
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_01.png',
             channels: ['oneApp', 'oneWeb', 'inStore'],
-            visitedAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4시간 전
+            visitedAt: new Date(Date.now() - 30 * 60 * 1000), // 30분 전
           },
           {
             id: '2',
@@ -55,7 +59,7 @@ function RecentlyVisitedContents() {
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_02.png',
             channels: ['oneApp', 'ivi', 'legacyWeb'],
-            visitedAt: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5시간 전
+            visitedAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1시간 전
           },
           {
             id: '3',
@@ -64,20 +68,74 @@ function RecentlyVisitedContents() {
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_03.png',
             channels: ['oneApp', 'ivi'],
-            visitedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1일 전
+            visitedAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2시간 전
+          },
+          {
+            id: '4',
+            projectId: 'hev-26-my',
+            projectCode: 'CN7I(AL23)_HEV_26MY',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_04.png',
+            channels: ['oneWeb', 'ivi'],
+            visitedAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3시간 전
           },
           {
             id: '5',
             projectId: 'hev-26-my',
             projectCode: 'CN7I(AL23)_HEV_26MY',
             contentType: 'Beauty Angle Cut',
-            thumbnailUrl: '/images/car_04.png',
-            channels: ['oneWeb', 'ivi'],
+            thumbnailUrl: '/images/car_05.png',
+            channels: ['oneApp', 'oneWeb'],
+            visitedAt: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5시간 전
+          },
+          {
+            id: '6',
+            projectId: 'ev6-26-my',
+            projectCode: 'EV6_26MY',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_06.png',
+            channels: ['oneWeb', 'ivi', 'inStore'],
+            visitedAt: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8시간 전
+          },
+          {
+            id: '7',
+            projectId: 'k8-25-my',
+            projectCode: 'K8_25MY',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_07.jpg',
+            channels: ['oneApp', 'legacyWeb'],
+            visitedAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12시간 전
+          },
+          {
+            id: '8',
+            projectId: 'gv80-26-my',
+            projectCode: 'GV80_26MY',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_01.png',
+            channels: ['oneApp', 'oneWeb', 'ivi'],
+            visitedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1일 전
+          },
+          {
+            id: '9',
+            projectId: 'g90-25-my',
+            projectCode: 'G90_25MY',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_02.png',
+            channels: ['oneWeb', 'inStore'],
             visitedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2일 전
+          },
+          {
+            id: '10',
+            projectId: 'ev6-25-fmc',
+            projectCode: 'EV6_25FMC',
+            contentType: 'Beauty Angle Cut',
+            thumbnailUrl: '/images/car_03.png',
+            channels: ['oneApp', 'ivi', 'oneWeb'],
+            visitedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3일 전
           },
         ]
         setRecentContents(sampleData)
-        localStorage.setItem('recently-visited-contents', JSON.stringify(sampleData))
+        localStorage.setItem('recently-visited-contents-v3', JSON.stringify(sampleData))
       }
     }
 
@@ -255,19 +313,10 @@ function RecentlyVisitedContents() {
           width: '100%',
           minWidth: 0,
           '&::-webkit-scrollbar': {
-            height: '8px',
+            display: 'none',
           },
-          '&::-webkit-scrollbar-track': {
-            background: 'var(--surface_container_low)',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'var(--outline)',
-            borderRadius: '4px',
-            '&:hover': {
-              background: 'var(--outline_high)',
-            },
-          },
+          scrollbarWidth: 'none', // Firefox
+          msOverflowStyle: 'none', // IE and Edge
         }}
       >
         {recentContents.map((content) => (

@@ -1,6 +1,6 @@
 import { RecentlyVisitedContent, ContentCardData } from '@/types/content.types'
 
-const STORAGE_KEY = 'recently-visited-contents'
+const STORAGE_KEY = 'recently-visited-contents-v3'
 const MAX_ITEMS = 20 // 최대 저장 개수
 
 /**
