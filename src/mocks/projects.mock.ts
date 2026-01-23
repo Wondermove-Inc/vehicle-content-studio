@@ -30,6 +30,7 @@ export const MOCK_PROJECTS: ProjectData[] = [
   // 현대자동차 - CN7I(AL23)_HEV_25FMC (hev-25-fmc)
   {
     id: 1,
+    thumbnail: '/images/car_01.png',
     brand: '현대자동차',
     projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
@@ -45,6 +46,7 @@ export const MOCK_PROJECTS: ProjectData[] = [
   },
   {
     id: 2,
+    thumbnail: '/images/car_02.png',
     brand: '현대자동차',
     projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',
@@ -60,6 +62,7 @@ export const MOCK_PROJECTS: ProjectData[] = [
   },
   {
     id: 3,
+    thumbnail: '/images/car_03.png',
     brand: '현대자동차',
     projectCode: 'CN7I(AL23)_HEV_25FMC',
     projectType: 'FMC',

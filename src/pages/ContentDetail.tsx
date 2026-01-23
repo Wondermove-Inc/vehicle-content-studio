@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
@@ -16,6 +16,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, L
 import { Ic_arrow_forward_regular, Ic_download_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
 import { MOCK_PROJECTS as sampleProjects } from '@/mocks/projects.mock'
+import { addRecentlyVisitedContent } from '@/utils/recentlyVisited'
 
 // 썸네일 이미지 목록
 const thumbnailImages = [
@@ -98,6 +99,31 @@ function ContentDetail() {
 
   // contentId로 프로젝트 데이터 찾기
   const contentData = sampleProjects.find(p => p.id === Number(contentId))
+
+  // 컨텐츠 방문 기록 추가
+  useEffect(() => {
+    if (contentData && projectId && contentId) {
+      // activeChannels 배열을 영문 키로 변환
+      const channelMap: Record<string, string> = {
+        '원앱': 'oneApp',
+        '원웹': 'oneWeb',
+        'IVI': 'ivi',
+        'In-Store': 'inStore',
+        '기존 홈페이지': 'legacyWeb',
+      }
+
+      const channels = contentData.activeChannels.map(ch => channelMap[ch] || ch)
+
+      addRecentlyVisitedContent({
+        id: contentId,
+        projectId: projectId,
+        projectCode: contentData.projectCode,
+        contentType: contentData.contentType || 'Unknown',
+        thumbnailUrl: contentData.thumbnail,
+        channels: channels,
+      })
+    }
+  }, [contentData, projectId, contentId])
 
   // Breadcrumb 생성 함수
   const getBreadcrumb = (projectId: string | null | undefined, contentType: string): { id: string; name: string }[] => {

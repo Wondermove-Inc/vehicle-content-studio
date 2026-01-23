@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProjectLayout from '@/components/ProjectLayout'
+import RecentlyVisitedContents from '@/components/RecentlyVisitedContents'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -177,16 +178,25 @@ function Project() {
         onAddProject={() => setIsAddProjectOpen(true)}
       >
         {/* 우측 패널 - 테이블 */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px 0' }}>
-              {/* 테이블 헤더 영역 */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
+              {/* 최근 방문한 컨텐츠 섹션 */}
+              <Box sx={{ flexShrink: 0, padding: '16px 24px 0', minWidth: 0 }}>
+                <RecentlyVisitedContents />
+              </Box>
+
+              {/* 테이블 영역 (스크롤 가능) */}
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px 0', minHeight: 0 }}>
+                {/* 테이블 헤더 영역 */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '8px',
+                    flexShrink: 0,
+                    marginBottom: '16px',
+                  }}
+                >
                 {/* 좌측: 제목 */}
                 <Typography
                   sx={{
@@ -240,18 +250,17 @@ function Project() {
               </Box>
 
               {/* 테이블 */}
-              <Box sx={{ height: '16px', flexShrink: 0 }} />
               {filteredProjects.length === 0 ? (
                 <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noContent'), buttons: undefined }} />
                 </Box>
               ) : (
-              <>
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
               <TableContainer sx={{
                 flex: 1,
-                overflowY: 'overlay',
-                overflowX: 'overlay',
-                scrollbarGutter: 'stable',
+                overflowY: 'auto',
+                overflowX: 'auto',
+                minHeight: 0,
                 '&::-webkit-scrollbar': {
                   width: '8px',
                   height: '8px',
@@ -425,9 +434,11 @@ function Project() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[10, 20, 50]}
                 hdsProps={{ size: 'small', isRowsPerPage: true }}
+                sx={{ flexShrink: 0 }}
               />
-              </>
+              </Box>
               )}
+              </Box>
         </Box>
       </ProjectLayout>
 

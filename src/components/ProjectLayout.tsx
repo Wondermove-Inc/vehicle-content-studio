@@ -382,6 +382,7 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
             boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
             position: 'relative',
             zIndex: 1,
+            minHeight: 0,
           }}
         >
           {/* 헤더 영역 */}
@@ -446,7 +447,7 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
           </Box>
 
           {/* 메인 영역 */}
-          <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+          <Box sx={{ flex: 1, display: 'flex', overflow: 'hidden', minHeight: 0 }}>
             {/* 좌측 패널 - 프로젝트 트리 */}
             <Box
               sx={{

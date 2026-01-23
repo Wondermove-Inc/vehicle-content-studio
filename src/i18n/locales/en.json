@@ -161,6 +161,16 @@
         "description": "Configurator interior and exterior content",
         "addButton": "Add"
       }
+    },
+    "recentlyVisited": {
+      "title": "Recently Visited Contents",
+      "viewAll": "View All",
+      "timeAgo": {
+        "justNow": "Just now",
+        "minutesAgo": "{{minutes}}m ago",
+        "hoursAgo": "{{hours}}h ago",
+        "daysAgo": "{{days}}d ago"
+      }
     }
   },
   "contentDetail": {
