@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProjectLayout from '@/components/ProjectLayout'
+import AddProjectDialog from '@/components/AddProjectDialog'
 import RecentlyVisitedContents from '@/components/RecentlyVisitedContents'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
@@ -445,36 +446,15 @@ function Project() {
       </ProjectLayout>
 
       {/* 프로젝트 추가 다이얼로그 */}
-      <Dialog
+      <AddProjectDialog
         open={isAddProjectOpen}
         onClose={() => setIsAddProjectOpen(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsAddProjectOpen(false) }}>{t('project.header.addProject')}</DialogTitle>
-        <DialogContent hdsProps>
-          <Box sx={{ padding: '20px 0' }}>
-            {/* 내용은 나중에 추가 */}
-            <Typography sx={{ color: 'var(--on_surface_mid)' }}>
-              프로젝트 추가 기능이 구현될 예정입니다.
-            </Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions hdsProps>
-          <Button hdsProps onClick={() => setIsAddProjectOpen(false)}>
-            {t('common.button.cancel')}
-          </Button>
-          <Button
-            hdsProps={{ type: 'fill', style: 'primary' }}
-            onClick={() => {
-              // TODO: 프로젝트 추가 로직
-              setIsAddProjectOpen(false)
-            }}
-          >
-            {t('common.button.save')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onNext={(projectCode) => {
+          console.log('Selected project:', projectCode)
+          // TODO: 다음 단계 구현 (프로젝트 상세 정보 입력)
+          setIsAddProjectOpen(false)
+        }}
+      />
 
       {/* 컨텐츠 추가 다이얼로그 */}
       <Dialog

@@ -94,6 +94,13 @@
       "addProject": "Add Project",
       "addContent": "Add Content"
     },
+    "addDialog": {
+      "title": "Add Project",
+      "searchPlaceholder": "Search project, model, V-Bom code",
+      "emptySearch": "Please search for a project code\n(e.g., CN7)",
+      "canCreateMY": "MY Creation Available",
+      "next": "Next"
+    },
     "sidebar": {
       "hmgSystem": "HMG System"
     },
