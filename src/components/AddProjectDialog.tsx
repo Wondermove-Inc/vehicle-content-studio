@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Radio, EmptyError } from '@hmg-fe/hmg-design-system'
+import { Dialog, DialogTitle, DialogContent, DialogActions, EmptyError, Divider } from '@hmg-fe/hmg-design-system'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
 import TextField from '@hmg-fe/hmg-design-system/TextField'
 import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
-import { Ic_search_bold, Ic_information_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { Ic_search_bold, Ic_check_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { SEARCH_PROJECT_MOCK } from '@/mocks/searchProjects.mock'
 
 interface AddProjectDialogProps {
@@ -31,6 +31,12 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
         project.modelName.toLowerCase().includes(query)
     )
   }, [searchQuery])
+
+  // 선택된 프로젝트의 상세 정보
+  const selectedProjectDetail = useMemo(() => {
+    if (!selectedProject) return null
+    return SEARCH_PROJECT_MOCK.find(p => p.projectCode === selectedProject)
+  }, [selectedProject])
 
   const handleNext = () => {
     if (!selectedProject) return
@@ -64,8 +70,7 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          paddingTop: '20px',
-          paddingBottom: '20px',
+          padding: '20px 16px',
         }}
       >
         {/* 검색 필드 */}
@@ -87,17 +92,33 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
           }}
         />
 
-        {/* 검색 결과 영역 */}
+        {/* 하단 영역: 리스트 + 정보 패널 */}
         <Box
           sx={{
-            flex: 1,
-            minHeight: '400px',
-            maxHeight: '400px',
-            overflowY: 'auto',
             display: 'flex',
-            flexDirection: 'column',
+            gap: '16px',
+            alignItems: 'stretch',
           }}
         >
+          {/* 좌측 패널: 검색 결과 리스트 */}
+          <Box
+            sx={{
+              flex: selectedProject ? '0 0 300px' : '1 1 auto',
+              transition: 'flex-basis 0.3s ease',
+              height: '548px',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+          {/* 검색 결과 영역 */}
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
           {!searchQuery.trim() ? (
             // 검색 전 초기 상태
             <Box
@@ -168,16 +189,15 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
               {searchResults.map((project) => (
                 <Box
                   key={project.projectCode}
-                  onClick={() => {
-                    // MY 생성 가능한 항목은 클릭 불가
-                    if (!project.canCreateMY) {
-                      setSelectedProject(project.projectCode)
-                    }
-                  }}
+                  onClick={() => setSelectedProject(project.projectCode)}
                   sx={{
                     borderBottom: '1px solid #EEEFF1',
                     padding: '10px 8px',
-                    cursor: project.canCreateMY ? 'default' : 'pointer',
+                    cursor: 'pointer',
+                    backgroundColor: selectedProject === project.projectCode ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
                     '&:last-child': {
                       borderBottom: 'none',
                     },
@@ -188,28 +208,9 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
                       display: 'flex',
                       gap: '6px',
                       alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}
                   >
-                    {/* 라디오 버튼 - MY 생성 가능한 항목에는 없음 */}
-                    {!project.canCreateMY && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '24px',
-                          height: '24px',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <Radio
-                          checked={selectedProject === project.projectCode}
-                          onChange={() => setSelectedProject(project.projectCode)}
-                          value={project.projectCode}
-                        />
-                      </Box>
-                    )}
-
                     {/* 텍스트 영역 */}
                     <Box
                       sx={{
@@ -241,20 +242,10 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
                         {project.canCreateMY && (
                           <Badge
                             hdsProps={{
-                              size: 'medium',
+                              size: 'small',
                               type: 'strong',
-                              style: 'default',
-                              icon: <Ic_information_bold size="16px" color="#1967FF" />,
-                            }}
-                            sx={{
-                              '& .MuiBadge-badge': {
-                                backgroundColor: '#E2F1FD',
-                                color: '#1967FF',
-                                fontSize: 12,
-                                fontWeight: 400,
-                                height: '24px',
-                                padding: '0 8px 0 6px',
-                              },
+                              style: 'info',
+                              icon: true,
                             }}
                           >
                             {t('project.addDialog.canCreateMY')}
@@ -274,11 +265,190 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
                         {project.modelYear} ∙ {project.modelName}
                       </Typography>
                     </Box>
+
+                    {/* 체크마크 아이콘 (오른쪽) */}
+                    <Box
+                      sx={{
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {selectedProject === project.projectCode && (
+                        <Ic_check_regular size="20px" color="var(--primary)" />
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               ))}
             </>
           )}
+          </Box>
+        </Box>
+
+        {/* 우측 패널: 선택된 프로젝트 정보 */}
+        {selectedProject && selectedProjectDetail && (
+          <Box
+              sx={{
+                flex: '1 1 0',
+                minWidth: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '18px',
+                overflowY: 'auto',
+                height: '548px',
+                minHeight: '548px',
+                maxHeight: '548px',
+                padding: '16px 20px',
+                border: '1px solid #EEEFF1',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.04)',
+                boxSizing: 'border-box',
+              }}
+            >
+              {/* 헤더 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
+                  <Typography sx={{ fontSize: 18, fontWeight: 700, lineHeight: '26px', color: '#111111', wordBreak: 'break-word', flex: 1 }}>
+                    {selectedProjectDetail.projectCode}
+                  </Typography>
+                  {selectedProjectDetail.canCreateMY && (
+                    <Box sx={{ flexShrink: 0 }}>
+                      <Badge hdsProps={{ size: 'medium', type: 'strong', style: 'default', icon: false }}>
+                        MY 프로젝트
+                      </Badge>
+                    </Box>
+                  )}
+                </Box>
+                <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(101, 107, 118, 1)' }}>
+                  {selectedProjectDetail.modelYear} ∙ {selectedProjectDetail.modelName}
+                </Typography>
+              </Box>
+
+              {/* V-BOM 정보 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <Typography sx={{ fontSize: 12, fontWeight: 700, lineHeight: '18px', color: '#111111' }}>
+                    V-BOM 정보
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      V-BOM Project Code
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.vbom.projectCode}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      V-BOM Project Year
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.vbom.projectYear}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      V-BOM Project Type
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.vbom.projectType}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      V-BOM DESC.
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.vbom.description}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+
+              {/* BOM 정보 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <Typography sx={{ fontSize: 12, fontWeight: 700, lineHeight: '18px', color: '#111111' }}>
+                    BOM 정보
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      Model Code
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.modelCode}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      Model Number
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.modelNumber}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      Model Year
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.modelYear}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      Grade
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.grade}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      BOM Project Code
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.projectCode}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      BOM Code
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.code}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      BOM Spec Region
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.specRegion}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '4px' }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'rgba(130, 130, 130, 1)' }}>
+                      BOM DESC.
+                    </Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: '#111111', textAlign: 'right' }}>
+                      {selectedProjectDetail.bom.description}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+        )}
         </Box>
       </DialogContent>
       <DialogActions>

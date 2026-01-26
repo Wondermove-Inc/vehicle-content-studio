@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProjectLayout from '@/components/ProjectLayout'
+import AddProjectDialog from '@/components/AddProjectDialog'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -89,6 +90,7 @@ function ProjectDetail() {
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
+  const [isAddProjectOpen, setIsAddProjectOpen] = useState(false)
   const [launchDate, setLaunchDate] = useState<Date | null>(null)
   const [activeChannel, setActiveChannel] = useState<string[]>([])
   const [showSnackbar, setShowSnackbar] = useState(false)
@@ -396,7 +398,7 @@ function ProjectDetail() {
             navigate(`/project/${id}`)
           }
         }}
-        onAddProject={() => {}}
+        onAddProject={() => setIsAddProjectOpen(true)}
       >
         {/* 우측 패널 - 프로젝트 상세 정보 */}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -1440,6 +1442,16 @@ function ProjectDetail() {
           onClose={() => setShowSnackbar(false)}
         />
       </Snackbar>
+
+      {/* 프로젝트 추가 다이얼로그 */}
+      <AddProjectDialog
+        open={isAddProjectOpen}
+        onClose={() => setIsAddProjectOpen(false)}
+        onNext={(projectCode) => {
+          console.log('Selected project:', projectCode)
+          // TODO: 프로젝트 추가 로직 구현
+        }}
+      />
     </>
   )
 }
