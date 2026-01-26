@@ -85,7 +85,7 @@ function ProjectDetail() {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user } = useAuth()
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
@@ -94,6 +94,7 @@ function ProjectDetail() {
   const [launchDate, setLaunchDate] = useState<Date | null>(null)
   const [activeChannel, setActiveChannel] = useState<string[]>([])
   const [showSnackbar, setShowSnackbar] = useState(false)
+  const [showProjectSnackbar, setShowProjectSnackbar] = useState(false)
 
   // 컨텐츠 추가 여부 상태 (localStorage 기반)
   const [addedContents, setAddedContents] = useState<Set<string>>(() => {
@@ -151,20 +152,20 @@ function ProjectDetail() {
 
   // 멤버 데이터
   const members = [
-    { email: 'username@kia.com', role: '비즈니스 유저', company: '현대자동차' },
-    { email: 'username@hyundai.com', role: '비즈니스 유저', company: '현대자동차' },
-    { email: 'superusername@hyundai.com', role: '컨텐츠 크리에이터', company: '현대자동차' },
-    { email: 'username@genesis', role: '컨텐츠 크리에이터', company: '협력사' },
-    { email: 'username@email.com', role: '3D 모델러', company: '협력사' },
+    { email: 'username@kia.com', role: 'businessUser', company: 'hyundai' },
+    { email: 'username@hyundai.com', role: 'businessUser', company: 'hyundai' },
+    { email: 'superusername@hyundai.com', role: 'contentCreator', company: 'hyundai' },
+    { email: 'username@genesis', role: 'contentCreator', company: 'partner' },
+    { email: 'username@email.com', role: '3dModeler', company: 'partner' },
   ]
 
   // 역할별 아이콘 반환 함수
   const getRoleIcon = (role: string) => {
-    if (role === '비즈니스 유저') {
+    if (role === 'businessUser') {
       return <Ic_employ_card_filled size="12px" color="currentColor" />
-    } else if (role === '3D 모델러') {
+    } else if (role === '3dModeler') {
       return <Ic_laptop_filled size="12px" color="currentColor" />
-    } else if (role === '컨텐츠 크리에이터') {
+    } else if (role === 'contentCreator') {
       return <Ic_pencil_filled size="12px" color="currentColor" />
     }
     return undefined
@@ -808,7 +809,7 @@ function ProjectDetail() {
                       }}
                     >
                       <img
-                        src="/images/contents_card.png"
+                        src={i18n.language === 'en' ? '/images/contents_card_en.png' : '/images/contents_card.png'}
                         alt="Content cards illustration"
                         style={{
                           width: '360px',
@@ -1031,11 +1032,11 @@ function ProjectDetail() {
                     <Ic_picture_filled size="16px" color="white" />
                   </Box>
                   <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: 'var(--primary)' }}>
-                    Beauty Angle Cut
+                    {t('projectDetail.contents.beautyAngleCut.title')}
                   </Typography>
                 </Box>
                 <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'var(--on_surface_high)' }}>
-                  컨피규레이터 내, 외관 컨텐츠
+                  {t('projectDetail.contents.beautyAngleCut.description')}
                 </Typography>
               </Box>
             </Box>
@@ -1062,7 +1063,7 @@ function ProjectDetail() {
                   selected={launchDate}
                   onChange={(date: Date | null) => setLaunchDate(date)}
                   dateFormat="yyyy-MM-dd"
-                  placeholderText="0000-00-00"
+                  placeholderText={t('projectDetail.dialogs.addContent.selectLaunchDate')}
                 />
               </Box>
 
@@ -1372,12 +1373,12 @@ function ProjectDetail() {
                                 type: 'strong',
                               }}
                             >
-                              {member.role}
+                              {t(`common.role.${member.role}`)}
                             </Badge>
                           </TableCell>
                           <TableCell>
                             <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px' }}>
-                              {member.company}
+                              {t(`common.company.${member.company}`)}
                             </Typography>
                           </TableCell>
                         </TableRow>
@@ -1449,9 +1450,31 @@ function ProjectDetail() {
         onClose={() => setIsAddProjectOpen(false)}
         onNext={(projectCode) => {
           console.log('Selected project:', projectCode)
-          // TODO: 프로젝트 추가 로직 구현
+          setIsAddProjectOpen(false)
+          setShowProjectSnackbar(true)
         }}
       />
+
+      {/* 프로젝트 추가 완료 스낵바 */}
+      <Snackbar
+        open={showProjectSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowProjectSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{
+          bottom: '40px !important',
+        }}
+      >
+        <SnackbarContent
+          hdsProps={{
+            type: 'dark_low',
+            isClose: true,
+            icon: true,
+          }}
+          message={t('project.addDialog.success')}
+          onClose={() => setShowProjectSnackbar(false)}
+        />
+      </Snackbar>
     </>
   )
 }

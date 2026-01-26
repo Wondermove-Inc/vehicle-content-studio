@@ -20,6 +20,15 @@
       "360": "2D 360",
       "pi": "PI"
     },
+    "role": {
+      "businessUser": "Business User",
+      "contentCreator": "Content Creator",
+      "3dModeler": "3D Modeler"
+    },
+    "company": {
+      "hyundai": "Hyundai",
+      "partner": "Partner"
+    },
     "menu": {
       "project": "Project",
       "contentRequest": "Content Request",
@@ -99,8 +108,26 @@
       "emptySearch": "Please search for a project code\n(e.g., CN7)",
       "emptySearchTitle": "Please search for a project code",
       "emptySearchDesc": "(e.g., CN7)",
-      "canCreateMY": "MY Creation Available",
-      "next": "Next"
+      "canCreateMY": "Available MY",
+      "myProject": "MY Project",
+      "vbomInfo": "V-BOM Information",
+      "bomInfo": "BOM Information",
+      "salesModelYear": "Sales Model Year",
+      "sop": "SOP",
+      "derivative": "Derivative",
+      "noDerivative": "N/A",
+      "nLine": "N Line",
+      "visibility": "Visibility",
+      "public": "Public",
+      "private": "Private",
+      "projectMembers": "Project Members",
+      "selectMembers": "Please select project members",
+      "searchMembers": "Search",
+      "previous": "Previous",
+      "cancel": "Cancel",
+      "addProject": "Add Project",
+      "next": "Next",
+      "success": "Project has been added"
     },
     "sidebar": {
       "hmgSystem": "HMG System"
@@ -190,6 +217,7 @@
       "addContent": {
         "title": "Add Content",
         "launchDate": "Launch Date",
+        "selectLaunchDate": "Please select a launch date",
         "activeChannel": "Active Channel",
         "selectChannel": "Please select active channels.",
         "accessPermission": "Content Access Permission",

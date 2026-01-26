@@ -20,6 +20,15 @@
       "360": "2D 360",
       "pi": "PI"
     },
+    "role": {
+      "businessUser": "비즈니스 유저",
+      "contentCreator": "컨텐츠 크리에이터",
+      "3dModeler": "3D 모델러"
+    },
+    "company": {
+      "hyundai": "현대자동차",
+      "partner": "협력사"
+    },
     "menu": {
       "project": "프로젝트",
       "contentRequest": "컨텐츠 요청",
@@ -101,7 +110,25 @@
       "emptySearchTitle": "프로젝트 코드를 검색해 주세요",
       "emptySearchDesc": "(예시: CN7)",
       "canCreateMY": "MY 생성 가능",
-      "next": "다음"
+      "myProject": "MY 프로젝트",
+      "vbomInfo": "V-BOM 정보",
+      "bomInfo": "BOM 정보",
+      "salesModelYear": "Sales Model Year",
+      "sop": "SOP",
+      "derivative": "파생 상품",
+      "noDerivative": "해당 없음",
+      "nLine": "N Line",
+      "visibility": "공개 설정",
+      "public": "공개",
+      "private": "비공개",
+      "projectMembers": "프로젝트 멤버",
+      "selectMembers": "프로젝트 멤버를 지정해 주세요",
+      "searchMembers": "검색",
+      "previous": "이전",
+      "cancel": "취소",
+      "addProject": "프로젝트 추가",
+      "next": "다음",
+      "success": "프로젝트를 추가했습니다"
     },
     "sidebar": {
       "hmgSystem": "HMG System"
@@ -191,15 +218,16 @@
       "addContent": {
         "title": "컨텐츠 추가",
         "launchDate": "런칭 일정",
+        "selectLaunchDate": "런칭 일정을 선택해 주세요",
         "activeChannel": "활성 채널",
-        "selectChannel": "활성 채널을 선택해 주세요.",
+        "selectChannel": "활성 채널을 선택해 주세요",
         "accessPermission": "컨텐츠 접근 권한",
-        "selectMembers": "프로젝트 멤버 중 Beauty Angle Cut 컨텐츠에 접근할 수 있는 멤버를 선택해 주세요.",
+        "selectMembers": "프로젝트 멤버 중 Beauty Angle Cut 컨텐츠에 접근할 수 있는 멤버를 선택해 주세요",
         "searchMembers": "프로젝트 멤버 검색",
         "role": "권한",
         "company": "회사",
         "addButton": "컨텐츠 추가",
-        "success": "컨텐츠를 추가했습니다."
+        "success": "컨텐츠를 추가했습니다"
       }
     }
   },
