@@ -22,9 +22,10 @@ function RecentlyVisitedContents() {
     // 이전 버전 localStorage 키 정리
     localStorage.removeItem('recently-visited-contents')
     localStorage.removeItem('recently-visited-contents-v2')
+    localStorage.removeItem('recently-visited-contents-v3')
 
     const loadRecentContents = () => {
-      const saved = localStorage.getItem('recently-visited-contents-v3')
+      const saved = localStorage.getItem('recently-visited-contents-v4')
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
@@ -33,6 +34,8 @@ function RecentlyVisitedContents() {
             .map((item: any) => ({
               ...item,
               visitedAt: new Date(item.visitedAt),
+              // inStore 채널 필터링
+              channels: item.channels?.filter((ch: string) => ch !== 'inStore') || [],
             }))
             .sort((a: RecentlyVisitedContent, b: RecentlyVisitedContent) =>
               b.visitedAt.getTime() - a.visitedAt.getTime()
@@ -51,7 +54,7 @@ function RecentlyVisitedContents() {
             projectCode: 'CN7I(AL23)_HEV_25FMC',
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_01.png',
-            channels: ['oneApp', 'oneWeb', 'inStore'],
+            channels: ['oneApp', 'oneWeb'],
             visitedAt: new Date(Date.now() - 30 * 60 * 1000), // 30분 전
           },
           {
@@ -60,7 +63,7 @@ function RecentlyVisitedContents() {
             projectCode: 'CN7I(AL23)_HEV_25FMC',
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_02.png',
-            channels: ['oneApp', 'ivi', 'legacyWeb'],
+            channels: ['oneApp', 'ivi'],
             visitedAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1시간 전
           },
           {
@@ -96,7 +99,7 @@ function RecentlyVisitedContents() {
             projectCode: 'EV6_26MY',
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_06.png',
-            channels: ['oneWeb', 'ivi', 'inStore'],
+            channels: ['oneWeb', 'ivi'],
             visitedAt: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8시간 전
           },
           {
@@ -123,7 +126,7 @@ function RecentlyVisitedContents() {
             projectCode: 'G90_25MY',
             contentType: 'Beauty Angle Cut',
             thumbnailUrl: '/images/car_02.png',
-            channels: ['oneWeb', 'inStore'],
+            channels: ['oneWeb'],
             visitedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2일 전
           },
           {
@@ -137,7 +140,7 @@ function RecentlyVisitedContents() {
           },
         ]
         setRecentContents(sampleData)
-        localStorage.setItem('recently-visited-contents-v3', JSON.stringify(sampleData))
+        localStorage.setItem('recently-visited-contents-v4', JSON.stringify(sampleData))
       }
     }
 

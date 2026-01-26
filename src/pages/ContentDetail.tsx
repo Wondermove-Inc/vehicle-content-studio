@@ -108,7 +108,6 @@ function ContentDetail() {
         '원앱': 'oneApp',
         '원웹': 'oneWeb',
         'IVI': 'ivi',
-        'In-Store': 'inStore',
         '기존 홈페이지': 'legacyWeb',
       }
 
