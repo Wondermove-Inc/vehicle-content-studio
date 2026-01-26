@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, FormControlLabel, EmptyError } from '@hmg-fe/hmg-design-system'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Radio, EmptyError } from '@hmg-fe/hmg-design-system'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -45,8 +45,20 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{t('project.addDialog.title')}</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth={false}
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '620px',
+          maxWidth: '620px',
+        },
+      }}
+    >
+      <DialogTitle hdsProps={{ closeIcon: true, onClose: handleClose }}>
+        {t('project.addDialog.title')}
+      </DialogTitle>
       <DialogContent
         sx={{
           display: 'flex',
@@ -82,16 +94,24 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
             minHeight: '400px',
             maxHeight: '400px',
             overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {!searchQuery.trim() ? (
             // 검색 전 초기 상태
             <Box
               sx={{
+                width: '100%',
+                height: 'auto',
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: 'column',
                 justifyContent: 'center',
-                height: '100%',
+                alignItems: 'center',
+                gap: '16px',
+                padding: '24px 0',
+                flexGrow: 1,
+                alignSelf: 'stretch',
               }}
             >
               <EmptyError
@@ -107,10 +127,16 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
             // 검색 결과 없음
             <Box
               sx={{
+                width: '100%',
+                height: 'auto',
                 display: 'flex',
-                alignItems: 'center',
+                flexDirection: 'column',
                 justifyContent: 'center',
-                height: '100%',
+                alignItems: 'center',
+                gap: '16px',
+                padding: '24px 0',
+                flexGrow: 1,
+                alignSelf: 'stretch',
               }}
             >
               <EmptyError
@@ -124,104 +150,147 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
             </Box>
           ) : (
             // 검색 결과 리스트
-            <RadioGroup value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
+            <>
               {searchResults.map((project) => (
                 <Box
                   key={project.projectCode}
+                  onClick={() => {
+                    // MY 생성 가능한 항목은 클릭 불가
+                    if (!project.canCreateMY) {
+                      setSelectedProject(project.projectCode)
+                    }
+                  }}
                   sx={{
-                    borderBottom: '1px solid var(--outline)',
+                    borderBottom: '1px solid #EEEFF1',
                     padding: '10px 8px',
+                    cursor: project.canCreateMY ? 'default' : 'pointer',
                     '&:last-child': {
                       borderBottom: 'none',
                     },
                   }}
                 >
-                  <FormControlLabel
-                    value={project.projectCode}
-                    control={<Radio />}
-                    label={
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        {/* 프로젝트 코드 + 배지 */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', height: '24px' }}>
-                          <Typography
-                            sx={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              lineHeight: '22px',
-                              color: 'var(--on_surface)',
-                            }}
-                          >
-                            {project.projectCode}
-                          </Typography>
-                          {project.canCreateMY && (
-                            <Badge
-                              hdsProps={{
-                                size: 'medium',
-                                type: 'strong',
-                                style: 'default',
-                                icon: <Ic_information_bold size="16px" color="#1967FF" />,
-                              }}
-                              sx={{
-                                '& .MuiBadge-badge': {
-                                  backgroundColor: '#E2F1FD',
-                                  color: '#1967FF',
-                                  fontSize: 12,
-                                  fontWeight: 400,
-                                  height: '24px',
-                                  padding: '0 8px 0 6px',
-                                },
-                              }}
-                            >
-                              {t('project.addDialog.canCreateMY')}
-                            </Badge>
-                          )}
-                        </Box>
-                        {/* 서브 텍스트 */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: '6px',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {/* 라디오 버튼 - MY 생성 가능한 항목에는 없음 */}
+                    {!project.canCreateMY && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '24px',
+                          height: '24px',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Radio
+                          checked={selectedProject === project.projectCode}
+                          onChange={() => setSelectedProject(project.projectCode)}
+                          value={project.projectCode}
+                        />
+                      </Box>
+                    )}
+
+                    {/* 텍스트 영역 */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        flex: 1,
+                      }}
+                    >
+                      {/* 프로젝트 코드 + 배지 */}
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          height: '24px',
+                        }}
+                      >
                         <Typography
                           sx={{
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: 400,
-                            lineHeight: '18px',
-                            color: '#8E949F',
+                            lineHeight: '22px',
+                            color: '#0E0F11',
                           }}
                         >
-                          {project.modelYear} ∙ {project.modelName}
+                          {project.projectCode}
                         </Typography>
+                        {project.canCreateMY && (
+                          <Badge
+                            hdsProps={{
+                              size: 'medium',
+                              type: 'strong',
+                              style: 'default',
+                              icon: <Ic_information_bold size="16px" color="#1967FF" />,
+                            }}
+                            sx={{
+                              '& .MuiBadge-badge': {
+                                backgroundColor: '#E2F1FD',
+                                color: '#1967FF',
+                                fontSize: 12,
+                                fontWeight: 400,
+                                height: '24px',
+                                padding: '0 8px 0 6px',
+                              },
+                            }}
+                          >
+                            {t('project.addDialog.canCreateMY')}
+                          </Badge>
+                        )}
                       </Box>
-                    }
-                    sx={{
-                      margin: 0,
-                      width: '100%',
-                      '& .MuiFormControlLabel-label': {
-                        width: '100%',
-                      },
-                    }}
-                  />
+
+                      {/* 서브 텍스트 */}
+                      <Typography
+                        sx={{
+                          fontSize: 12,
+                          fontWeight: 400,
+                          lineHeight: '18px',
+                          color: '#8E949F',
+                        }}
+                      >
+                        {project.modelYear} ∙ {project.modelName}
+                      </Typography>
+                    </Box>
+                  </Box>
                 </Box>
               ))}
-            </RadioGroup>
+            </>
           )}
         </Box>
       </DialogContent>
       <DialogActions>
         <Button
           hdsProps={{
-            size: 'large',
-            style: 'primary',
             type: 'outline',
           }}
           onClick={handleClose}
+          sx={{
+            minWidth: 'fit-content !important',
+            padding: '8px 16px !important',
+          }}
         >
           {t('common.button.cancel')}
         </Button>
         <Button
           hdsProps={{
-            size: 'large',
-            style: 'primary',
             type: 'fill',
+            style: 'primary',
           }}
           onClick={handleNext}
           disabled={!selectedProject}
+          sx={{
+            minWidth: 'fit-content !important',
+            padding: '8px 16px !important',
+          }}
         >
           {t('project.addDialog.next')}
         </Button>
