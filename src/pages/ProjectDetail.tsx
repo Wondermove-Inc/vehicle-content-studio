@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProjectLayout from '@/components/ProjectLayout'
@@ -6,7 +6,11 @@ import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
+import TextField from '@hmg-fe/hmg-design-system/TextField'
+import InputAdornment from '@hmg-fe/hmg-design-system/InputAdornment'
+import Checkbox from '@hmg-fe/hmg-design-system/Checkbox'
+import Chip from '@hmg-fe/hmg-design-system/Chip'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Table, TableHead, TableBody, TableRow, TableCell, TableSortLabel, DatePicker, Select, MenuItem, Snackbar, SnackbarContent } from '@hmg-fe/hmg-design-system'
 import {
   Ic_group_bold,
   Ic_setting_bold,
@@ -14,6 +18,13 @@ import {
   Ic_star_regular,
   Ic_picture_filled,
   Ic_plus_regular,
+  Ic_calendar_bold,
+  Ic_search_regular,
+  Ic_search_bold,
+  Ic_caution_bold,
+  Ic_employ_card_filled,
+  Ic_laptop_filled,
+  Ic_pencil_filled,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import { MOCK_PROJECTS, PROJECT_CODE_TO_TREE_ITEM, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import { useAuth } from '@/contexts/AuthContext'
@@ -78,6 +89,146 @@ function ProjectDetail() {
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [isMembersOpen, setIsMembersOpen] = useState(false)
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
+  const [launchDate, setLaunchDate] = useState<Date | null>(null)
+  const [activeChannel, setActiveChannel] = useState<string[]>([])
+  const [showSnackbar, setShowSnackbar] = useState(false)
+
+  // 컨텐츠 추가 여부 상태 (localStorage 기반)
+  const [addedContents, setAddedContents] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('added-contents')
+    if (saved) {
+      try {
+        return new Set(JSON.parse(saved))
+      } catch {
+        return new Set()
+      }
+    }
+    return new Set()
+  })
+
+  // 검색어 상태
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // 테이블 체크박스 상태
+  const [selectedMembers, setSelectedMembers] = useState<Set<number>>(new Set())
+
+  // 테이블 정렬 상태
+  const [orderBy, setOrderBy] = useState<'email' | 'role' | 'company'>('email')
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+
+  // 전체 선택/해제
+  const handleSelectAll = () => {
+    if (totalMembers === 0) return // 검색 결과가 없으면 동작 안함
+
+    if (selectedMembers.size === totalMembers) {
+      setSelectedMembers(new Set())
+    } else {
+      // 현재 필터링된 멤버들의 인덱스로 선택
+      const allIndices = sortedMembers.map((_, idx) => idx)
+      setSelectedMembers(new Set(allIndices))
+    }
+  }
+
+  // 개별 선택/해제
+  const handleSelectMember = (index: number) => {
+    const newSelected = new Set(selectedMembers)
+    if (newSelected.has(index)) {
+      newSelected.delete(index)
+    } else {
+      newSelected.add(index)
+    }
+    setSelectedMembers(newSelected)
+  }
+
+  // 정렬 핸들러
+  const handleSort = (column: 'email' | 'role' | 'company') => {
+    const isAsc = orderBy === column && order === 'asc'
+    setOrder(isAsc ? 'desc' : 'asc')
+    setOrderBy(column)
+  }
+
+  // 멤버 데이터
+  const members = [
+    { email: 'username@kia.com', role: '비즈니스 유저', company: '현대자동차' },
+    { email: 'username@hyundai.com', role: '비즈니스 유저', company: '현대자동차' },
+    { email: 'superusername@hyundai.com', role: '컨텐츠 크리에이터', company: '현대자동차' },
+    { email: 'username@genesis', role: '컨텐츠 크리에이터', company: '협력사' },
+    { email: 'username@email.com', role: '3D 모델러', company: '협력사' },
+  ]
+
+  // 역할별 아이콘 반환 함수
+  const getRoleIcon = (role: string) => {
+    if (role === '비즈니스 유저') {
+      return <Ic_employ_card_filled size="12px" color="currentColor" />
+    } else if (role === '3D 모델러') {
+      return <Ic_laptop_filled size="12px" color="currentColor" />
+    } else if (role === '컨텐츠 크리에이터') {
+      return <Ic_pencil_filled size="12px" color="currentColor" />
+    }
+    return undefined
+  }
+
+  // 활성 채널 Chip 삭제 핸들러
+  const handleDeleteChannel = (channelToDelete: string) => {
+    setActiveChannel((prev) => prev.filter((item) => item !== channelToDelete))
+  }
+
+  // 선택된 멤버 Chip 삭제 핸들러
+  const handleDeleteMember = (indexToDelete: number) => {
+    const newSelected = new Set(selectedMembers)
+    newSelected.delete(indexToDelete)
+    setSelectedMembers(newSelected)
+  }
+
+  // 다이얼로그 닫을 때 폼 초기화
+  const handleCloseAddContentDialog = () => {
+    setIsAddContentOpen(false)
+    setLaunchDate(null)
+    setActiveChannel([])
+    setSelectedMembers(new Set())
+    setSearchQuery('')
+  }
+
+  // 정렬 및 필터링된 멤버 데이터
+  const sortedMembers = useMemo(() => {
+    // 1. 검색 필터링
+    let filtered = members
+    if (searchQuery.trim()) {
+      filtered = members.filter((member) =>
+        member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.company.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // 2. 정렬
+    const sorted = [...filtered]
+    sorted.sort((a, b) => {
+      let aValue = ''
+      let bValue = ''
+
+      if (orderBy === 'email') {
+        aValue = a.email
+        bValue = b.email
+      } else if (orderBy === 'role') {
+        aValue = a.role
+        bValue = b.role
+      } else if (orderBy === 'company') {
+        aValue = a.company
+        bValue = b.company
+      }
+
+      if (order === 'asc') {
+        return aValue.localeCompare(bValue, 'ko')
+      } else {
+        return bValue.localeCompare(aValue, 'ko')
+      }
+    })
+    return sorted
+  }, [orderBy, order, searchQuery])
+
+  // 총 멤버 수 (필터링된 결과 기준)
+  const totalMembers = sortedMembers.length
 
   // URL에서 contentId 가져오기
   const contentId = searchParams.get('contentId')
@@ -97,6 +248,10 @@ function ProjectDetail() {
     if (specificContent) {
       actualHasContent = !!(specificContent.contentType && specificContent.contentType.trim() !== '')
     }
+  }
+  // 컨텐츠를 추가한 경우 true로 설정
+  if (projectId && addedContents.has(projectId)) {
+    actualHasContent = true
   }
 
   // 프로젝트 즐겨찾기 관련
@@ -404,7 +559,7 @@ function ProjectDetail() {
                   flex: 1,
                   display: 'flex',
                   flexDirection: 'column',
-                  padding: '16px 24px',
+                  padding: '20px 24px',
                 }}
               >
                 <Box
@@ -442,7 +597,7 @@ function ProjectDetail() {
                       background: 'linear-gradient(180deg, #F4F5F6 0%, rgba(244, 245, 246, 0.50) 100%)',
                       overflow: 'hidden',
                       borderRadius: '8px',
-                      border: '1px solid var(--outline)',
+                      border: actualHasContent ? '1px solid var(--outline)' : '1px dashed rgba(0, 0, 0, 0.12)',
                       flexDirection: 'column',
                       justifyContent: 'flex-start',
                       alignItems: actualHasContent ? 'flex-start' : 'center',
@@ -558,7 +713,7 @@ function ProjectDetail() {
                                 },
                               }}
                             >
-                              Beauty Angle Cut
+                              {t('common.contentType.beautyAngleCut')}
                             </Badge>
 
                             {/* 타임스탬프 */}
@@ -570,7 +725,7 @@ function ProjectDetail() {
                                 color: 'var(--on_surface_mid)',
                               }}
                             >
-                              4시간 전
+                              {t('projectDetail.recentlyVisited.timeAgo.hoursAgo', { hours: 4 })}
                             </Typography>
                           </Box>
 
@@ -590,7 +745,7 @@ function ProjectDetail() {
                                 type: 'strong',
                               }}
                             >
-                              IVI
+                              {t('common.channel.ivi')}
                             </Badge>
                             <Badge
                               hdsProps={{
@@ -600,7 +755,7 @@ function ProjectDetail() {
                                 type: 'strong',
                               }}
                             >
-                              원웹
+                              {t('common.channel.oneWeb')}
                             </Badge>
                             <Badge
                               hdsProps={{
@@ -610,7 +765,7 @@ function ProjectDetail() {
                                 type: 'strong',
                               }}
                             >
-                              기존 웹사이트
+                              {t('common.channel.oneApp')}
                             </Badge>
                           </Box>
                         </Box>
@@ -675,7 +830,7 @@ function ProjectDetail() {
                           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.04)',
                           overflow: 'hidden',
                           borderRadius: '8px',
-                          outline: '1px #EEEFF1 solid',
+                          outline: '1px var(--outline) solid',
                           outlineOffset: '-1px',
                           justifyContent: 'space-between',
                           alignItems: 'center',
@@ -788,7 +943,7 @@ function ProjectDetail() {
         </DialogTitle>
         <DialogContent hdsProps>
           <Box sx={{ padding: '20px 0' }}>
-            <Typography sx={{ color: 'var(--on_surface_mid)' }}>프로젝트 설정 기능이 구현될 예정입니다.</Typography>
+            <Typography sx={{ color: 'var(--on_surface_mid)' }}>{t('projectDetail.dialogs.projectSettings.placeholder')}</Typography>
           </Box>
         </DialogContent>
         <DialogActions hdsProps>
@@ -808,7 +963,7 @@ function ProjectDetail() {
         </DialogTitle>
         <DialogContent hdsProps>
           <Box sx={{ padding: '20px 0' }}>
-            <Typography sx={{ color: 'var(--on_surface_mid)' }}>멤버 관리 기능이 구현될 예정입니다.</Typography>
+            <Typography sx={{ color: 'var(--on_surface_mid)' }}>{t('projectDetail.dialogs.members.placeholder')}</Typography>
           </Box>
         </DialogContent>
         <DialogActions hdsProps>
@@ -824,22 +979,419 @@ function ProjectDetail() {
       {/* 컨텐츠 추가 다이얼로그 */}
       <Dialog
         open={isAddContentOpen}
-        onClose={() => setIsAddContentOpen(false)}
+        onClose={handleCloseAddContentDialog}
         maxWidth={false}
         PaperProps={{
           sx: { width: '620px', height: 'auto' }
         }}
       >
-        <DialogTitle hdsProps={{ closeIcon: false }}>컨텐츠 추가</DialogTitle>
-        <DialogContent hdsProps>
-          <Typography sx={{ color: 'var(--on_surface_mid)' }}>
-            컨텐츠 추가 기능이 구현될 예정입니다.
-          </Typography>
+        <DialogTitle hdsProps={{ closeIcon: true, onClose: handleCloseAddContentDialog }}>{t('projectDetail.dialogs.addContent.title')}</DialogTitle>
+        <DialogContent hdsProps sx={{ paddingTop: '20px !important', paddingBottom: '0px !important' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* 프로젝트 정보 */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <Box sx={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <Typography sx={{ fontSize: 18, fontWeight: 700, lineHeight: '26px', color: 'var(--primary)' }}>
+                    CN7(AL23)_HEV_25FMC
+                  </Typography>
+                  <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'var(--on_surface_high)' }}>
+                    OA 25 ∙ AVANTE(CN7)
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Beauty Angle Cut 버튼 */}
+              <Box
+                sx={{
+                  background: 'var(--surface_container)',
+                  border: '1px solid var(--outline)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px 16px 8px 8px',
+                }}
+              >
+                <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <Box
+                    sx={{
+                      width: '34px',
+                      height: '34px',
+                      background: 'linear-gradient(180deg, #8333E6 40%, rgba(131, 51, 230, 0.85) 100%)',
+                      borderRadius: '4px',
+                      border: '1px solid rgba(0, 0, 0, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Ic_picture_filled size="16px" color="white" />
+                  </Box>
+                  <Typography sx={{ fontSize: 15, fontWeight: 700, lineHeight: '22px', color: 'var(--primary)' }}>
+                    Beauty Angle Cut
+                  </Typography>
+                </Box>
+                <Typography sx={{ fontSize: 12, fontWeight: 400, lineHeight: '18px', color: 'var(--on_surface_high)' }}>
+                  컨피규레이터 내, 외관 컨텐츠
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* 런칭 일정 */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <Box sx={{ display: 'flex', gap: '2px' }}>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--on_surface)' }}>
+                    {t('projectDetail.dialogs.addContent.launchDate')}
+                  </Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--red)' }}>
+                    *
+                  </Typography>
+                </Box>
+                <DatePicker
+                  hdsProps={{
+                    size: 'medium',
+                    isClear: true,
+                    helpText: undefined,
+                    isInvalid: false,
+                    isReadOnly: false
+                  }}
+                  selected={launchDate}
+                  onChange={(date: Date | null) => setLaunchDate(date)}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="0000-00-00"
+                />
+              </Box>
+
+              {/* 활성 채널 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <Box sx={{ display: 'flex', gap: '2px' }}>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--on_surface)' }}>
+                    {t('projectDetail.dialogs.addContent.activeChannel')}
+                  </Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--red)' }}>
+                    *
+                  </Typography>
+                </Box>
+                <Select
+                  multiple
+                  hdsProps={{
+                    size: 'medium',
+                    type: 'underline',
+                    multiple: true,
+                  }}
+                  placeholder={t('projectDetail.dialogs.addContent.selectChannel')}
+                  value={activeChannel}
+                  onChange={(e) => setActiveChannel(e.target.value as string[])}
+                  renderValue={(selected) => {
+                    const selectedArray = selected as string[]
+                    if (selectedArray.length === 0) {
+                      return (
+                        <Typography
+                          sx={{
+                            fontSize: '14px',
+                            fontWeight: 400,
+                            lineHeight: '22px',
+                            color: 'var(--on_surface_mid)',
+                          }}
+                        >
+                          {t('projectDetail.dialogs.addContent.selectChannel')}
+                        </Typography>
+                      )
+                    }
+                    return (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                        {selectedArray.map((value) => (
+                          <Box
+                            key={value}
+                            onClick={(e) => e.stopPropagation()}
+                            onMouseDown={(e) => e.stopPropagation()}
+                          >
+                            <Chip
+                              hdsProps={{
+                                label: value,
+                                size: 'medium',
+                                icon: undefined,
+                                type: 'fill_low',
+                              }}
+                              onDelete={(e) => {
+                                e?.stopPropagation()
+                                handleDeleteChannel(value)
+                              }}
+                              sx={{
+                                '& .MuiChip-deleteIcon': {
+                                  padding: '4px',
+                                  margin: '0 4px 0 -4px',
+                                  '&:hover': {
+                                    opacity: 0.7,
+                                  }
+                                }
+                              }}
+                            />
+                          </Box>
+                        ))}
+                      </Box>
+                    )
+                  }}
+                  style={{ width: '100%' }}
+                  sx={{
+                    '& .input_text': {
+                      fontSize: '14px',
+                      fontWeight: 400,
+                      lineHeight: '22px',
+                      color: 'var(--on_surface_mid)',
+                    },
+                    '& .input_box': {
+                      paddingTop: '4px !important',
+                    }
+                  }}
+                >
+                  <MenuItem hdsProps={{ size: 'medium', icon: false, nested: false, multiple: true }} value={t('common.channel.oneApp')}>
+                    {t('common.channel.oneApp')}
+                  </MenuItem>
+                  <MenuItem hdsProps={{ size: 'medium', icon: false, nested: false, multiple: true }} value={t('common.channel.oneWeb')}>
+                    {t('common.channel.oneWeb')}
+                  </MenuItem>
+                  <MenuItem hdsProps={{ size: 'medium', icon: false, nested: false, multiple: true }} value={t('common.channel.ivi')}>
+                    {t('common.channel.ivi')}
+                  </MenuItem>
+                  <MenuItem hdsProps={{ size: 'medium', icon: false, nested: false, multiple: true }} value={t('common.channel.legacyWeb')}>
+                    {t('common.channel.legacyWeb')}
+                  </MenuItem>
+                </Select>
+              </Box>
+
+              {/* 컨텐츠 접근 권한 */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <Box sx={{ display: 'flex', gap: '2px' }}>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--on_surface)' }}>
+                    {t('projectDetail.dialogs.addContent.accessPermission')}
+                  </Typography>
+                  <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: 'var(--red)' }}>
+                    *
+                  </Typography>
+                </Box>
+
+                {/* 선택된 멤버 Chip 표시 영역 */}
+                <Box
+                  sx={{
+                    minHeight: '22px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '4px',
+                    alignItems: 'center',
+                  }}
+                >
+                  {selectedMembers.size === 0 ? (
+                    <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px', color: 'var(--on_surface_mid)' }}>
+                      {t('projectDetail.dialogs.addContent.selectMembers')}
+                    </Typography>
+                  ) : (
+                    Array.from(selectedMembers).map((index) => {
+                      const member = sortedMembers[index]
+                      return (
+                        <Box
+                          key={index}
+                          onClick={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          <Chip
+                            hdsProps={{
+                              label: member.email,
+                              size: 'medium',
+                              icon: undefined,
+                              type: 'fill_low',
+                            }}
+                            onDelete={(e) => {
+                              e?.stopPropagation()
+                              handleDeleteMember(index)
+                            }}
+                            sx={{
+                              maxWidth: 'none',
+                              '& .MuiChip-label': {
+                                overflow: 'visible',
+                                textOverflow: 'clip',
+                              },
+                              '& .MuiChip-deleteIcon': {
+                                padding: '4px',
+                                margin: '0 4px 0 -4px',
+                                '&:hover': {
+                                  opacity: 0.7,
+                                }
+                              }
+                            }}
+                          />
+                        </Box>
+                      )
+                    })
+                  )}
+                </Box>
+
+                {/* 검색 필드 */}
+                <TextField
+                  type="text"
+                  placeholder={t('projectDetail.dialogs.addContent.searchMembers')}
+                  hdsProps={{
+                    size: 'medium',
+                    isClear: true,
+                    startIcon: (
+                      <>
+                        <Ic_search_bold size="16px" />
+                      </>
+                    ),
+                    endIcon: null,
+                  }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  fullWidth
+                />
+
+                {/* 테이블 */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '292px',
+                    maxHeight: '292px',
+                    overflow: sortedMembers.length === 0 ? 'hidden' : 'auto',
+                  }}
+                >
+                  <Table hdsProps={{ size: 'medium' }} stickyHeader>
+                    <TableHead>
+                      <TableRow sx={{ height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important' }}>
+                        <TableCell sx={{ width: '56px', padding: '6px 16px !important', height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important' }}>
+                          <Checkbox
+                            hdsProps={{ size: 'medium' }}
+                            checked={totalMembers > 0 && selectedMembers.size === totalMembers}
+                            indeterminate={selectedMembers.size > 0 && selectedMembers.size < totalMembers}
+                            onChange={handleSelectAll}
+                            disabled={totalMembers === 0}
+                            sx={{
+                              '& .label_checkbox': {
+                                padding: '0 !important',
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', padding: '6px 16px !important' }}>
+                          <TableSortLabel
+                            active={orderBy === 'email'}
+                            direction={orderBy === 'email' ? order : 'asc'}
+                            onClick={() => handleSort('email')}
+                          >
+                            {t('login.form.emailLabel')}
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell sx={{ width: '180px', height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', padding: '6px 16px !important' }}>
+                          <TableSortLabel
+                            active={orderBy === 'role'}
+                            direction={orderBy === 'role' ? order : 'asc'}
+                            onClick={() => handleSort('role')}
+                          >
+                            {t('projectDetail.dialogs.addContent.role')}
+                          </TableSortLabel>
+                        </TableCell>
+                        <TableCell sx={{ width: '120px', height: '36px !important', minHeight: '36px !important', maxHeight: '36px !important', padding: '6px 16px !important' }}>
+                          <TableSortLabel
+                            active={orderBy === 'company'}
+                            direction={orderBy === 'company' ? order : 'asc'}
+                            onClick={() => handleSort('company')}
+                          >
+                            {t('projectDetail.dialogs.addContent.company')}
+                          </TableSortLabel>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {sortedMembers.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={4} sx={{ border: 'none' }}>
+                            <Box
+                              sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '16px',
+                                padding: '80px 0',
+                              }}
+                            >
+                              <Ic_caution_bold size="40px" color="var(--on_surface_mid)" />
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                }}
+                              >
+                                <Typography
+                                  sx={{
+                                    fontSize: 14,
+                                    fontWeight: 400,
+                                    lineHeight: '22px',
+                                    color: 'var(--on_surface_mid)',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('project.empty.noSearchResult')}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        sortedMembers.map((member, index) => (
+                        <TableRow key={index}>
+                          <TableCell sx={{ padding: '0 16px' }}>
+                            <Checkbox
+                              hdsProps={{ size: 'medium' }}
+                              checked={selectedMembers.has(index)}
+                              onChange={() => handleSelectMember(index)}
+                              sx={{
+                                '& .label_checkbox': {
+                                  padding: '0 !important',
+                                }
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px' }}>
+                              {member.email}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              hdsProps={{
+                                size: 'medium',
+                                style: 'default',
+                                icon: getRoleIcon(member.role),
+                                type: 'strong',
+                              }}
+                            >
+                              {member.role}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Typography sx={{ fontSize: 14, fontWeight: 400, lineHeight: '22px' }}>
+                              {member.company}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         </DialogContent>
-        <DialogActions hdsProps>
+        <DialogActions hdsProps sx={{ paddingTop: '16px !important' }}>
           <Button
             hdsProps
-            onClick={() => setIsAddContentOpen(false)}
+            onClick={handleCloseAddContentDialog}
             sx={{
               minWidth: '0 !important',
               width: 'fit-content',
@@ -850,15 +1402,44 @@ function ProjectDetail() {
           </Button>
           <Button
             hdsProps={{ type: 'fill', style: 'primary' }}
+            disabled={!(launchDate && activeChannel.length > 0 && selectedMembers.size > 0)}
             onClick={() => {
-              // TODO: 컨텐츠 추가 로직
-              setIsAddContentOpen(false)
+              // 컨텐츠 추가 처리
+              if (projectId) {
+                const newAddedContents = new Set(addedContents)
+                newAddedContents.add(projectId)
+                setAddedContents(newAddedContents)
+                localStorage.setItem('added-contents', JSON.stringify(Array.from(newAddedContents)))
+                setShowSnackbar(true)
+              }
+              handleCloseAddContentDialog()
             }}
           >
-            컨텐츠 추가
+            {t('projectDetail.dialogs.addContent.addButton')}
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* 컨텐츠 추가 완료 스낵바 */}
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{
+          bottom: '40px !important',
+        }}
+      >
+        <SnackbarContent
+          hdsProps={{
+            type: 'dark_low',
+            isClose: true,
+            icon: true,
+          }}
+          message={t('projectDetail.dialogs.addContent.success')}
+          onClose={() => setShowSnackbar(false)}
+        />
+      </Snackbar>
     </>
   )
 }

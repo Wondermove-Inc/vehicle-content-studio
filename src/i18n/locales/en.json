@@ -9,7 +9,6 @@
       "oneApp": "One App",
       "oneWeb": "One Web",
       "ivi": "IVI",
-      "inStore": "In-Store",
       "legacyWeb": "Legacy Website"
     },
     "contentType": {
@@ -177,6 +176,27 @@
         "minutesAgo": "{{minutes}}m ago",
         "hoursAgo": "{{hours}}h ago",
         "daysAgo": "{{days}}d ago"
+      }
+    },
+    "dialogs": {
+      "projectSettings": {
+        "placeholder": "Project settings feature will be implemented soon."
+      },
+      "members": {
+        "placeholder": "Member management feature will be implemented soon."
+      },
+      "addContent": {
+        "title": "Add Content",
+        "launchDate": "Launch Date",
+        "activeChannel": "Active Channel",
+        "selectChannel": "Please select active channels.",
+        "accessPermission": "Content Access Permission",
+        "selectMembers": "Please select project members who can access Beauty Angle Cut content.",
+        "searchMembers": "Search Project Members",
+        "role": "Role",
+        "company": "Company",
+        "addButton": "Add Content",
+        "success": "Content has been added."
       }
     }
   },
