@@ -108,20 +108,34 @@ function AddProjectDialog({ open, onClose, onNext }: AddProjectDialogProps) {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: '16px',
+                gap: '4px',
                 padding: '24px 0',
                 flexGrow: 1,
                 alignSelf: 'stretch',
               }}
             >
-              <EmptyError
-                hdsProps={{
-                  size: 'small',
-                  title: undefined,
-                  description: t('project.addDialog.emptySearch'),
-                  buttons: undefined,
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  lineHeight: '22px',
+                  color: 'var(--on_surface)',
+                  textAlign: 'center',
                 }}
-              />
+              >
+                {t('project.addDialog.emptySearchTitle')}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: 14,
+                  fontWeight: 400,
+                  lineHeight: '22px',
+                  color: 'var(--on_surface_mid)',
+                  textAlign: 'center',
+                }}
+              >
+                {t('project.addDialog.emptySearchDesc')}
+              </Typography>
             </Box>
           ) : searchResults.length === 0 ? (
             // 검색 결과 없음

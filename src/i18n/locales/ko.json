@@ -98,6 +98,8 @@
       "title": "프로젝트 추가",
       "searchPlaceholder": "프로젝트, 모델, V-Bom 코드 검색",
       "emptySearch": "프로젝트 코드를 검색해 주세요\n(예시: CN7)",
+      "emptySearchTitle": "프로젝트 코드를 검색해 주세요",
+      "emptySearchDesc": "(예시: CN7)",
       "canCreateMY": "MY 생성 가능",
       "next": "다음"
     },
