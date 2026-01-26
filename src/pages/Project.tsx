@@ -9,7 +9,7 @@ import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
-import { Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, Logo } from '@hmg-fe/hmg-design-system'
+import { Badge, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TableSortLabel, TablePagination, EmptyError, Dialog, DialogTitle, DialogContent, DialogActions, Logo, Snackbar, SnackbarContent } from '@hmg-fe/hmg-design-system'
 import {
   Ic_world_filled,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
@@ -33,6 +33,7 @@ function Project() {
   const [isAddContentOpen, setIsAddContentOpen] = useState(false)
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
+  const [showSnackbar, setShowSnackbar] = useState(false)
 
   // 브랜드명 번역 함수
   const getBrandLabel = (brand: string): string => {
@@ -451,10 +452,31 @@ function Project() {
         onClose={() => setIsAddProjectOpen(false)}
         onNext={(projectCode) => {
           console.log('Selected project:', projectCode)
-          // TODO: 다음 단계 구현 (프로젝트 상세 정보 입력)
           setIsAddProjectOpen(false)
+          setShowSnackbar(true)
         }}
       />
+
+      {/* 프로젝트 추가 완료 스낵바 */}
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{
+          bottom: '40px !important',
+        }}
+      >
+        <SnackbarContent
+          hdsProps={{
+            type: 'dark_low',
+            isClose: true,
+            icon: true,
+          }}
+          message={t('project.addDialog.success')}
+          onClose={() => setShowSnackbar(false)}
+        />
+      </Snackbar>
 
       {/* 컨텐츠 추가 다이얼로그 */}
       <Dialog
