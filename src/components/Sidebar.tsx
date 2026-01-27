@@ -432,7 +432,14 @@ function Sidebar({
                 {Array.from(favorites).map((id) => (
                   <Box
                     key={id}
-                    onClick={() => onProjectSelect && onProjectSelect(id)}
+                    onClick={() => {
+                      // 프로젝트 상세 페이지로 이동
+                      navigate(`/project/${id}`)
+                      // 콜백이 있으면 함께 호출
+                      if (onProjectSelect) {
+                        onProjectSelect(id)
+                      }
+                    }}
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
@@ -489,7 +496,14 @@ function Sidebar({
                 {contentFavorites.map((content) => (
                   <Box
                     key={content.id}
-                    onClick={() => onContentSelect && onContentSelect(content.projectId, content.id.split('-').pop() || '')}
+                    onClick={() => {
+                      // 컨텐츠 상세 페이지로 이동
+                      navigate(`/project/${content.projectId}/content/${content.id}`)
+                      // 콜백이 있으면 함께 호출
+                      if (onContentSelect) {
+                        onContentSelect(content.projectId, content.id)
+                      }
+                    }}
                     sx={{
                       display: 'flex',
                       alignItems: 'center',

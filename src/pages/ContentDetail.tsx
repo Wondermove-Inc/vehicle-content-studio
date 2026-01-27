@@ -15,8 +15,9 @@ import Badge from '@hmg-fe/hmg-design-system/Badge'
 import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, List, ListItem, FormControlLabel } from '@hmg-fe/hmg-design-system'
 import { Ic_arrow_forward_regular, Ic_download_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
-import { MOCK_PROJECTS as sampleProjects } from '@/mocks/projects.mock'
+import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import { addRecentlyVisitedContent } from '@/utils/recentlyVisited'
+import { useFavorites } from '@/hooks/useFavorites'
 
 // 썸네일 이미지 목록
 const thumbnailImages = [
@@ -88,6 +89,9 @@ function ContentDetail() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState('preview')
+
+  // 즐겨찾기 데이터 (중앙 집중식 관리)
+  const { favorites, contentFavorites } = useFavorites()
 
   // 필터 상태
   const [country, setCountry] = useState('all')
@@ -190,6 +194,9 @@ function ContentDetail() {
         onMenuChange={setActiveMenu}
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
+        favorites={favorites}
+        projectNames={projectNames}
+        contentFavorites={contentFavorites}
       />
 
       {/* 메인 콘텐츠 */}
@@ -210,7 +217,7 @@ function ContentDetail() {
             flex: 1,
             width: '100%',
             minWidth: 0,
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--surface_container)',
             borderRadius: '10px',
             display: 'flex',
             flexDirection: 'column',

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import Sidebar from '@/components/Sidebar'
 import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
+import { useFavorites } from '@/hooks/useFavorites'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -20,18 +21,8 @@ function ContentRequest() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  // localStorage에서 즐겨찾기 초기화
-  const [favorites] = useState<Set<string>>(() => {
-    const saved = localStorage.getItem('project-favorites')
-    if (saved) {
-      try {
-        return new Set(JSON.parse(saved))
-      } catch {
-        return new Set()
-      }
-    }
-    return new Set()
-  })
+  // 즐겨찾기 데이터 (중앙 집중식 관리)
+  const { favorites, contentFavorites } = useFavorites()
 
   return (
     <Box
@@ -52,6 +43,7 @@ function ContentRequest() {
         onProjectSelect={undefined}
         favorites={favorites}
         projectNames={projectNames}
+        contentFavorites={contentFavorites}
       />
 
       {/* 메인 콘텐츠 */}
@@ -72,7 +64,7 @@ function ContentRequest() {
             flex: 1,
             width: '100%',
             minWidth: 0,
-            backgroundColor: '#ffffff',
+            backgroundColor: 'var(--surface_container)',
             borderRadius: '10px',
             display: 'flex',
             flexDirection: 'column',

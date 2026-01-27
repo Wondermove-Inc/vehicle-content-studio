@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Sidebar from '@/components/Sidebar'
+import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
+import { useFavorites } from '@/hooks/useFavorites'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
@@ -25,6 +27,9 @@ function Download() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
+  // 즐겨찾기 데이터 (중앙 집중식 관리)
+  const { favorites, contentFavorites } = useFavorites()
+
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
   }
@@ -37,7 +42,13 @@ function Download() {
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* 사이드바 */}
-      <Sidebar activeMenu={activeMenu} onMenuChange={setActiveMenu} />
+      <Sidebar
+        activeMenu={activeMenu}
+        onMenuChange={setActiveMenu}
+        favorites={favorites}
+        projectNames={projectNames}
+        contentFavorites={contentFavorites}
+      />
 
       {/* 메인 컨텐츠 영역 */}
       <Box
@@ -55,7 +66,7 @@ function Download() {
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#fff',
+            backgroundColor: 'var(--surface_container)',
             borderRadius: '10px',
             boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.02)',
             overflow: 'hidden',
@@ -93,7 +104,7 @@ function Download() {
             sx={{
               width: '280px',
               borderRight: '1px solid var(--outline)',
-              backgroundColor: '#fff',
+              backgroundColor: 'var(--surface_container)',
               padding: '16px 24px',
               flexShrink: 0,
             }}
@@ -256,7 +267,7 @@ function Download() {
                       {/* 주요 기능 */}
                       <Box
                         sx={{
-                          backgroundColor: '#fff',
+                          backgroundColor: 'var(--surface_container)',
                           border: '1px solid var(--outline)',
                           borderRadius: '8px',
                           padding: '12px 16px 16px 16px',
@@ -301,7 +312,7 @@ function Download() {
                       {/* 시스템 요구 사항 */}
                       <Box
                         sx={{
-                          backgroundColor: '#fff',
+                          backgroundColor: 'var(--surface_container)',
                           border: '1px solid var(--outline)',
                           borderRadius: '8px',
                           padding: '12px 16px 16px 16px',
