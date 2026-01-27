@@ -197,14 +197,12 @@ function ContentDetail() {
         sx={{
           flex: 1,
           minWidth: 0,
-          maxWidth: isSidebarCollapsed ? 'calc(100% - 72px)' : 'calc(100% - 260px)',
           display: 'flex',
           flexDirection: 'column',
           padding: '16px 16px 16px 0',
           gap: '10px',
           overflow: 'visible',
           backgroundColor: 'var(--surface_container_lowest)',
-          transition: 'max-width 0.2s ease',
         }}
       >
         <Box

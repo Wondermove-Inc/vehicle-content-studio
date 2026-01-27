@@ -16,6 +16,7 @@ import {
   Ic_picture_filled,
 } from '@hmg-fe/hmg-design-system/HmgIcon'
 import ServiceSettingsDialog from './ServiceSettingsDialog'
+import hmgLogo from '/images/Hyundai_Motor_Group_CI_sidebar.svg'
 
 // 사이드바 메뉴 아이템 컴포넌트
 interface SidebarItemProps {
@@ -131,21 +132,69 @@ function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    // 초기 상태: 화면 너비가 1280px 이하면 접힌 상태
-    return window.innerWidth <= 1280 || isCollapsed
+
+  // 사용자가 수동으로 토글했는지 추적 (localStorage에 저장하여 페이지 이동 시에도 유지)
+  const [userManuallyToggled, setUserManuallyToggled] = useState(() => {
+    const isNarrowScreen = window.innerWidth <= 1280
+    if (!isNarrowScreen) return false // 넓은 화면에서는 수동 토글 플래그 불필요
+
+    const saved = localStorage.getItem('sidebar-manual-toggle-narrow')
+    return saved === 'true'
   })
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const isNarrowScreen = window.innerWidth <= 1280
+
+    if (isNarrowScreen) {
+      // 좁은 화면: localStorage에서 사용자 설정 확인
+      const manuallyToggled = localStorage.getItem('sidebar-manual-toggle-narrow') === 'true'
+      const savedState = localStorage.getItem('sidebar-collapsed-narrow')
+
+      if (manuallyToggled && savedState !== null) {
+        // 사용자가 수동으로 설정한 상태가 있으면 복원
+        return savedState === 'true'
+      }
+      // 기본값: 좁은 화면에서는 접힌 상태
+      return true
+    }
+
+    // 넓은 화면: 외부 prop 사용
+    return isCollapsed
+  })
+
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
   const [isServiceSettingsOpen, setIsServiceSettingsOpen] = useState(false)
 
-  // 화면 너비 변경 감지 - 1280px 이하일 때 사이드바 자동 접기
+  // 화면 너비 변경 감지 - 1280px 경계를 넘을 때만 자동 접기
   useEffect(() => {
+    let previousWidth = window.innerWidth
+
     const handleResize = () => {
-      const shouldCollapse = window.innerWidth <= 1280
-      setIsSidebarCollapsed(shouldCollapse)
-      if (onCollapsedChange) {
-        onCollapsedChange(shouldCollapse)
+      const currentWidth = window.innerWidth
+      const wasNarrow = previousWidth <= 1280
+      const isNarrow = currentWidth <= 1280
+
+      // 1280px 경계를 넘었을 때만 자동으로 상태 변경
+      if (!wasNarrow && isNarrow) {
+        // 넓은 화면 → 좁은 화면: 자동으로 접기
+        setIsSidebarCollapsed(true)
+        setUserManuallyToggled(false) // 자동 접기이므로 수동 토글 플래그 리셋
+        localStorage.removeItem('sidebar-manual-toggle-narrow')
+        localStorage.removeItem('sidebar-collapsed-narrow')
+        if (onCollapsedChange) {
+          onCollapsedChange(true)
+        }
+      } else if (wasNarrow && !isNarrow && !userManuallyToggled) {
+        // 좁은 화면 → 넓은 화면: 사용자가 수동으로 토글하지 않았다면 자동으로 펼치기
+        setIsSidebarCollapsed(false)
+        localStorage.removeItem('sidebar-manual-toggle-narrow')
+        localStorage.removeItem('sidebar-collapsed-narrow')
+        if (onCollapsedChange) {
+          onCollapsedChange(false)
+        }
       }
+
+      previousWidth = currentWidth
     }
 
     // resize 이벤트 리스너 등록
@@ -155,18 +204,41 @@ function Sidebar({
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [onCollapsedChange])
+  }, [onCollapsedChange, userManuallyToggled])
 
-  // 외부에서 collapsed 상태가 변경되면 동기화 (단, 화면이 1280px 이하일 때는 무시)
+  // 외부에서 collapsed 상태가 변경되면 동기화
   useEffect(() => {
-    if (window.innerWidth > 1280) {
+    const isNarrowScreen = window.innerWidth <= 1280
+
+    // 좁은 화면에서 사용자가 수동으로 토글했다면 외부 prop 완전히 무시
+    if (isNarrowScreen && userManuallyToggled) {
+      return
+    }
+
+    // 넓은 화면에서는 항상 외부 prop 동기화
+    if (!isNarrowScreen) {
       setIsSidebarCollapsed(isCollapsed)
     }
-  }, [isCollapsed])
+  }, [isCollapsed, userManuallyToggled])
 
-  // collapsed 상태가 변경되면 부모에게 알림
+  // 사용자가 수동으로 collapsed 상태를 변경할 때
   const handleCollapsedChange = (collapsed: boolean) => {
     setIsSidebarCollapsed(collapsed)
+
+    const isNarrowScreen = window.innerWidth <= 1280
+
+    // 1280px 이하 화면에서 수동 토글한 경우 localStorage에 저장
+    if (isNarrowScreen) {
+      setUserManuallyToggled(true)
+      localStorage.setItem('sidebar-manual-toggle-narrow', 'true')
+      localStorage.setItem('sidebar-collapsed-narrow', collapsed.toString())
+    } else {
+      // 넓은 화면에서는 수동 토글 플래그와 저장 상태 제거
+      setUserManuallyToggled(false)
+      localStorage.removeItem('sidebar-manual-toggle-narrow')
+      localStorage.removeItem('sidebar-collapsed-narrow')
+    }
+
     if (onCollapsedChange) {
       onCollapsedChange(collapsed)
     }
@@ -230,8 +302,9 @@ function Sidebar({
         </Box>
         <Box
           component="img"
-          src="/images/Hyundai_Motor_Group_CI_sidebar.svg"
+          src={hmgLogo}
           alt="Hyundai Motor Group"
+          loading="eager"
           onClick={() => {
             onMenuChange('프로젝트')
             navigate('/project')
@@ -243,6 +316,7 @@ function Sidebar({
             transition: 'opacity 0.2s ease',
             pointerEvents: isSidebarCollapsed ? 'none' : 'auto',
             cursor: 'pointer',
+            willChange: 'opacity',
           }}
         />
       </Box>
