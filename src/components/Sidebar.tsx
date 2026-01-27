@@ -35,13 +35,15 @@ function SidebarItem({ icon, label, isActive, badge, collapsed, onClick }: Sideb
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: collapsed ? '10px 10px 10px 16px' : '10px 16px',
+        padding: '10px 16px',
         borderRadius: '6px',
         cursor: 'pointer',
         backgroundColor: isActive ? '#E9EAEC' : 'transparent',
-        transition: 'padding 0.2s ease',
+        transition: 'background-color 0.2s ease',
         overflow: 'hidden',
-        width: collapsed ? '46px' : 'auto',
+        justifyContent: 'flex-start',
+        height: '42px',
+        boxSizing: 'border-box',
         '&:hover': {
           backgroundColor: isActive ? '#E9EAEC' : '#EEEEEE',
         },
@@ -129,13 +131,37 @@ function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(isCollapsed)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    // 초기 상태: 화면 너비가 1280px 이하면 접힌 상태
+    return window.innerWidth <= 1280 || isCollapsed
+  })
   const [isFavoritesExpanded, setIsFavoritesExpanded] = useState(true)
   const [isServiceSettingsOpen, setIsServiceSettingsOpen] = useState(false)
 
-  // 외부에서 collapsed 상태가 변경되면 동기화
+  // 화면 너비 변경 감지 - 1280px 이하일 때 사이드바 자동 접기
   useEffect(() => {
-    setIsSidebarCollapsed(isCollapsed)
+    const handleResize = () => {
+      const shouldCollapse = window.innerWidth <= 1280
+      setIsSidebarCollapsed(shouldCollapse)
+      if (onCollapsedChange) {
+        onCollapsedChange(shouldCollapse)
+      }
+    }
+
+    // resize 이벤트 리스너 등록
+    window.addEventListener('resize', handleResize)
+
+    // cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [onCollapsedChange])
+
+  // 외부에서 collapsed 상태가 변경되면 동기화 (단, 화면이 1280px 이하일 때는 무시)
+  useEffect(() => {
+    if (window.innerWidth > 1280) {
+      setIsSidebarCollapsed(isCollapsed)
+    }
   }, [isCollapsed])
 
   // collapsed 상태가 변경되면 부모에게 알림
@@ -159,6 +185,8 @@ function Sidebar({
       navigate('/project')
     } else if (menu === '컨텐츠 요청') {
       navigate('/content-request')
+    } else if (menu === '다운로드') {
+      navigate('/download')
     }
   }
 
@@ -166,7 +194,7 @@ function Sidebar({
     <>
       <Box
         sx={{
-          width: isSidebarCollapsed ? '72px' : '260px',
+          width: isSidebarCollapsed ? '78px' : '260px',
           height: '100%',
           backgroundColor: 'var(--surface_container_lowest)',
           display: 'flex',
@@ -220,7 +248,7 @@ function Sidebar({
       </Box>
 
       {/* 메뉴 그룹 */}
-      <Box sx={{ padding: isSidebarCollapsed ? '0 10px 8px 16px' : '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
+      <Box sx={{ padding: '0 16px 8px 16px', transition: 'padding 0.2s ease' }}>
         <Stack spacing={0}>
           {/* 프로젝트 */}
           <SidebarItem
@@ -244,7 +272,7 @@ function Sidebar({
             label={t('common.menu.download')}
             isActive={activeMenu === '다운로드'}
             collapsed={isSidebarCollapsed}
-            onClick={() => onMenuChange('다운로드')}
+            onClick={() => handleMenuClick('다운로드')}
           />
           {/* 설정 */}
           <SidebarItem
@@ -257,7 +285,7 @@ function Sidebar({
       </Box>
 
       {/* 구분선 */}
-      <Box sx={{ padding: isSidebarCollapsed ? '0 10px 0 16px' : '0 16px', transition: 'padding 0.2s ease' }}>
+      <Box sx={{ padding: '0 16px', transition: 'padding 0.2s ease' }}>
         <Divider hdsProps={{ style: 'lowest' }} />
       </Box>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ProjectLayout from '@/components/ProjectLayout'
@@ -34,6 +34,8 @@ function Project() {
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false)
   const [selectedProjectForSettings, setSelectedProjectForSettings] = useState<string | null>(null)
   const [showSnackbar, setShowSnackbar] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const scrollTimeoutRef = useRef<number | null>(null)
 
   // 브랜드명 번역 함수
   const getBrandLabel = (brand: string): string => {
@@ -55,6 +57,15 @@ function Project() {
     const selected = searchParams.get('selected') || 'all'
     setSelectedProject(selected)
   }, [searchParams])
+
+  // 컴포넌트 언마운트 시 스크롤 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // 트리 아이템 ID → 프로젝트 코드 매핑 (3뎁스)
   const treeItemToProjectCode: Record<string, string> = {
@@ -167,6 +178,21 @@ function Project() {
     document.addEventListener('mouseup', handleMouseUp)
   }
 
+  const handleScroll = () => {
+    setIsScrolling(true)
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current)
+    }
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      setIsScrolling(false)
+    }, 1000)
+  }
+
+  // 1뎁스 브랜드 선택 여부 확인 (페이지네이션 고정 조건)
+  const isBrandSelected = selectedProject === 'hyundai' || selectedProject === 'kia' || selectedProject === 'genesis'
+
   return (
     <>
       <ProjectLayout
@@ -180,16 +206,51 @@ function Project() {
         onAddProject={() => setIsAddProjectOpen(true)}
       >
         {/* 우측 패널 - 테이블 */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
+        <Box
+          onScroll={!isBrandSelected ? handleScroll : undefined}
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: isBrandSelected ? 'hidden' : 'auto',
+            minWidth: 0,
+            minHeight: 0,
+            // 스크롤바 스타일링 - 스크롤 동작 중에만 표시 (1뎁스가 아닐 때만)
+            ...(!isBrandSelected && {
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'transparent',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: isScrolling ? 'rgba(0, 0, 0, 0.2)' : 'transparent',
+                borderRadius: '4px',
+                transition: 'background 0.2s ease',
+              },
+              '&::-webkit-scrollbar-thumb:hover': {
+                background: 'rgba(0, 0, 0, 0.3)',
+              },
+              // Firefox 지원
+              scrollbarWidth: 'thin',
+              scrollbarColor: isScrolling ? 'rgba(0, 0, 0, 0.2) transparent' : 'transparent transparent',
+            }),
+          }}
+        >
               {/* 최근 방문한 컨텐츠 섹션 - "전체" 선택 시에만 표시 */}
               {selectedProject === 'all' && (
-                <Box sx={{ flexShrink: 0, padding: '16px 24px 0', minWidth: 0 }}>
+                <Box sx={{ padding: '16px 24px 0', minWidth: 0 }}>
                   <RecentlyVisitedContents />
                 </Box>
               )}
 
-              {/* 테이블 영역 (스크롤 가능) */}
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '16px 24px 0', minHeight: 0 }}>
+              {/* 테이블 영역 */}
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '16px 24px 0',
+                ...(isBrandSelected && { flex: 1, overflow: 'hidden', minHeight: 0 }),
+              }}>
                 {/* 테이블 헤더 영역 */}
                 <Box
                   sx={{
@@ -259,25 +320,41 @@ function Project() {
                   <EmptyError hdsProps={{ size: 'small', title: undefined, description: t('project.empty.noContent'), buttons: undefined }} />
                 </Box>
               ) : (
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minHeight: 0 }}>
-              <TableContainer sx={{
-                flex: 1,
-                overflowY: 'auto',
-                overflowX: 'auto',
-                minHeight: 0,
-                '&::-webkit-scrollbar': {
-                  width: '8px',
-                  height: '8px',
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: 'transparent',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  background: 'var(--outline)',
-                  borderRadius: '4px',
-                },
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                ...(isBrandSelected && { flex: 1, overflow: 'hidden', minHeight: 0 }),
               }}>
-                <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'fixed', '& .MuiTableCell-root': { whiteSpace: 'nowrap' }, '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', height: '64px !important', minHeight: '64px !important', maxHeight: '64px !important' }, '& .MuiTableBody-root .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { height: '64px !important', display: 'flex', alignItems: 'center' } }}>
+              <TableContainer
+                onScroll={isBrandSelected ? handleScroll : undefined}
+                sx={{
+                  overflowX: 'auto',
+                  ...(isBrandSelected && {
+                    flex: 1,
+                    overflowY: 'auto',
+                    minHeight: 0,
+                    // 스크롤바 스타일링 - 1뎁스 선택 시 테이블 컨테이너에 적용
+                    '&::-webkit-scrollbar': {
+                      width: '8px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      background: 'transparent',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: isScrolling ? 'rgba(0, 0, 0, 0.2)' : 'transparent',
+                      borderRadius: '4px',
+                      transition: 'background 0.2s ease',
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                      background: 'rgba(0, 0, 0, 0.3)',
+                    },
+                    // Firefox 지원
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: isScrolling ? 'rgba(0, 0, 0, 0.2) transparent' : 'transparent transparent',
+                  }),
+                }}
+              >
+                <Table hdsProps={{ size: 'medium' }} sx={{ width: '100%', tableLayout: 'fixed', '& .MuiTableBody-root .MuiTableCell-root': { padding: '0 12px !important', minHeight: '64px', verticalAlign: 'middle' }, '& .MuiTableBody-root .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableBody-root .MuiTableCell-root .cell_text': { display: 'flex', alignItems: 'center' } }}>
                   <TableHead sx={{
                       position: 'sticky',
                       top: 0,
@@ -291,13 +368,13 @@ function Project() {
                       '& span': { fontSize: '14px !important' },
                       '& .label_medium': { fontSize: '14px !important' },
                     }}>
-                    <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important' }, '& .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
+                    <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important', whiteSpace: 'nowrap' }, '& .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
                       <TableCell sx={{ width: '7%', textAlign: 'center', '& .cell_text': { padding: '0 !important', display: 'flex', justifyContent: 'center', width: '100%', height: '40px', alignItems: 'center' } }}>{t('project.table.brand')}</TableCell>
-                      <TableCell sx={{ width: '11%' }}></TableCell>
-                      <TableCell sx={{ width: '10%' }}>{t('project.table.projectType')}</TableCell>
-                      <TableCell sx={{ width: '25%' }}>{t('project.table.projectCode')}</TableCell>
-                      <TableCell sx={{ width: '18%' }}>{t('project.table.contentType')}</TableCell>
-                      <TableCell sx={{ width: '13%' }}>
+                      <TableCell sx={{ width: '10%' }}></TableCell>
+                      <TableCell sx={{ width: '8%' }}>{t('project.table.projectType')}</TableCell>
+                      <TableCell sx={{ width: '28%' }}>{t('project.table.projectCode')}</TableCell>
+                      <TableCell sx={{ width: '17%' }}>{t('project.table.contentType')}</TableCell>
+                      <TableCell sx={{ width: '14%' }}>
                         <TableSortLabel
                           active={sopSortOrder !== null}
                           direction={sopSortOrder === 'asc' ? 'asc' : 'desc'}
@@ -346,14 +423,14 @@ function Project() {
                           },
                         }}
                       >
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                           <Box
                             sx={{
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               width: '100%',
-                              height: '64px',
+                              minHeight: '64px',
                               '& .cell_text': {
                                 width: 'fit-content !important',
                                 padding: '0 !important',
@@ -372,14 +449,32 @@ function Project() {
                             />
                           </Box>
                         </TableCell>
-                        <TableCell>{getBrandLabel(project.brand)}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>{getBrandLabel(project.brand)}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                           <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'strong' }}>
                             {project.projectType}
                           </Badge>
                         </TableCell>
-                        <TableCell>{project.projectCode}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{
+                          whiteSpace: 'normal !important',
+                          wordBreak: 'break-word',
+                          lineHeight: '1.5',
+                          padding: '12px !important',
+                          overflow: 'visible !important',
+                        }}>
+                          <Typography
+                            sx={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              lineHeight: '1.5',
+                              whiteSpace: 'normal',
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            {project.projectCode}
+                          </Typography>
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                           {project.contentType ? (
                             <Badge hdsProps={{
                               size: 'medium',
@@ -402,8 +497,10 @@ function Project() {
                             </Typography>
                           )}
                         </TableCell>
-                        <TableCell>{project.sop}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                          {project.sop}
+                        </TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                           {project.derivative ? (
                             <Badge hdsProps={{ size: 'medium', style: 'default', icon: false, type: 'outlined' }}>
                               {project.derivative}
@@ -438,7 +535,11 @@ function Project() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[10, 20, 50]}
                 hdsProps={{ size: 'xsmall', isRowsPerPage: true }}
-                sx={{ flexShrink: 0, height: '60px', minHeight: '60px' }}
+                sx={{
+                  height: '60px',
+                  minHeight: '60px',
+                  ...(isBrandSelected && { flexShrink: 0 }),
+                }}
               />
               </Box>
               )}
@@ -474,7 +575,6 @@ function Project() {
             icon: true,
           }}
           message={t('project.addDialog.success')}
-          onClose={() => setShowSnackbar(false)}
         />
       </Snackbar>
 

@@ -13,6 +13,7 @@ import ProjectDetail from './pages/ProjectDetail'
 import ContentRequest from './pages/ContentRequest'
 import ContentDetail from './pages/ContentDetail'
 import Preview from './pages/Preview'
+import Download from './pages/Download'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Permission, PermissionLevel } from './types/auth.types'
@@ -71,6 +72,16 @@ const router = createBrowserRouter([
         ]}
       >
         <ContentRequest />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/download',
+    element: (
+      <ProtectedRoute
+        requiredAnyPermission={[Permission.PROJECT_VIEW_ALL, Permission.PROJECT_VIEW_ASSIGNED]}
+      >
+        <Download />
       </ProtectedRoute>
     ),
   },
