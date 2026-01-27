@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
+import IconButton from '@hmg-fe/hmg-design-system/IconButton'
 import Select from '@hmg-fe/hmg-design-system/Select'
 import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import Tabs from '@hmg-fe/hmg-design-system/Tabs'
@@ -13,7 +14,7 @@ import CardActionArea from '@hmg-fe/hmg-design-system/CardActionArea'
 import CardContent from '@hmg-fe/hmg-design-system/CardContent'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
 import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, List, ListItem, FormControlLabel } from '@hmg-fe/hmg-design-system'
-import { Ic_arrow_forward_regular, Ic_download_bold } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { Ic_arrow_forward_regular, Ic_download_bold, Ic_world_filled, Ic_arrow_left_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
 import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import { addRecentlyVisitedContent } from '@/utils/recentlyVisited'
@@ -129,56 +130,6 @@ function ContentDetail() {
     }
   }, [contentData, projectId, contentId])
 
-  // Breadcrumb 생성 함수
-  const getBreadcrumb = (projectId: string | null | undefined, contentType: string): { id: string; name: string }[] => {
-    const path: { id: string; name: string }[] = [{ id: 'all', name: t('project.header.title') }]
-
-    if (!projectId || projectId === 'all') {
-      return path
-    }
-
-    const ancestors: string[] = []
-    let current = projectId
-    while (current && current !== 'all') {
-      ancestors.unshift(current)
-      current = parentMap[current]
-    }
-
-    for (const id of ancestors) {
-      if (id === 'hyundai') {
-        path.push({ id, name: t('common.brand.hyundai') })
-      } else if (id === 'kia') {
-        path.push({ id, name: t('common.brand.kia') })
-      } else if (id === 'genesis') {
-        path.push({ id, name: t('common.brand.genesis') })
-      } else {
-        path.push({ id, name: projectNames[id] || id })
-      }
-    }
-
-    // 컨텐츠 유형 추가 (contentType이 이미 VCM, Web CC 등으로 되어 있으므로 그대로 사용)
-    path.push({ id: 'content', name: contentType })
-
-    return path
-  }
-
-  // Breadcrumb 생성
-  const breadcrumb = contentData ? getBreadcrumb(projectId, contentData.contentType) : [{ id: 'all', name: t('project.header.title') }]
-
-  const handleBreadcrumbClick = (itemId: string) => {
-    if (itemId === 'content') return // 현재 페이지이므로 클릭 불가
-
-    // 클릭한 항목에 따라 적절한 경로로 이동
-    if (itemId === 'all') {
-      navigate('/project')
-    } else if (itemId === projectId) {
-      // 프로젝트 상세 페이지로 이동
-      navigate(`/project/${itemId}`)
-    } else {
-      // 선택된 프로젝트 ID로 프로젝트 목록 페이지 이동
-      navigate(`/project?selected=${itemId}`)
-    }
-  }
 
   return (
     <Box
@@ -228,59 +179,61 @@ function ContentDetail() {
             zIndex: 1,
           }}
         >
-          {/* 헤더 영역 - Breadcrumb */}
+          {/* 헤더 영역 - 뒤로가기 버튼 + 프로젝트 코드 + 컨텐츠 유형 뱃지 */}
           <Box
             sx={{
               alignSelf: 'stretch',
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              gap: '4px',
-              padding: '20px 20px 16px 24px',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '20px 20px 16px 12px',
               borderBottom: '1px solid var(--outline)',
               flexShrink: 0,
             }}
           >
-            <Box
+            <IconButton
+              onClick={() => navigate(-1)}
               sx={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                overflow: 'hidden',
+                width: '36px',
+                height: '36px',
+                padding: '6px',
+                borderRadius: '4px',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
               }}
             >
-              <Box
+              <Ic_arrow_left_regular size="24px" color="var(--on_surface)" />
+            </IconButton>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+              }}
+            >
+              <Typography
                 sx={{
-                  flex: 1,
-                  minWidth: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
+                  fontSize: 24,
+                  fontWeight: 600,
+                  lineHeight: '36px',
+                  color: 'var(--on_surface)',
                 }}
               >
-                {breadcrumb.map((item, index) => (
-                  <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {index > 0 && (
-                      <Ic_arrow_forward_regular size="20px" color="var(--on_surface_mid)" />
-                    )}
-                    <Typography
-                      onClick={() => handleBreadcrumbClick(item.id)}
-                      sx={{
-                        fontSize: 24,
-                        fontWeight: 600,
-                        lineHeight: '36px',
-                        color: 'var(--on_surface)',
-                        cursor: index === breadcrumb.length - 1 ? 'default' : 'pointer',
-                        '&:hover': {
-                          textDecoration: index === breadcrumb.length - 1 ? 'none' : 'underline',
-                        },
-                      }}
-                    >
-                      {item.name}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
+                {contentData?.projectCode}
+              </Typography>
+              {contentData?.contentType && (
+                <Badge
+                  hdsProps={{
+                    size: 'medium',
+                    style: 'purple',
+                    icon: <Ic_world_filled size="16px" color="currentColor" />,
+                    type: 'strong'
+                  }}
+                >
+                  {contentData.contentType}
+                </Badge>
+              )}
             </Box>
           </Box>
 
