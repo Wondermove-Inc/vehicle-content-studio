@@ -313,7 +313,7 @@
       "keyFeatures": "Key Features",
       "keyFeaturesDesc": "Asset management through DAMS integration and render farm batch rendering requests",
       "systemRequirements": "System Requirements",
-      "systemRequirementsDesc": "Unreal Engine 5.x or higher\nOS 0000, 00000\nHMG SSO account login\nUnreal Plugin Business User or 3D Modeler permission required"
+      "systemRequirementsDesc": "• Unreal Engine 5.x or higher\n• OS 0000, 00000\n• HMG SSO account login\n• Unreal Plugin Business User or 3D Modeler permission required"
     },
     "versionHistory": {
       "title": "Version History",
@@ -332,7 +332,26 @@
     },
     "manageDialog": {
       "title": "Application Management",
-      "placeholder": "Application management feature will be implemented soon."
+      "placeholder": "Application management feature will be implemented soon.",
+      "fields": {
+        "appName": "Application Name",
+        "version": "Version",
+        "application": "Application",
+        "manual": "User Manual",
+        "image": "Image (0000x0000px)",
+        "keyFeatures": "Key Features",
+        "systemRequirements": "System Requirements",
+        "versionChanges": "Version Changes"
+      },
+      "placeholders": {
+        "appName": "Unreal Plugin",
+        "keyFeatures": "Asset management through DAMS integration and render farm batch rendering requests",
+        "systemRequirements": "• Unreal Engine 5.x or higher\n• OS 0000, 00000\n• HMG SSO account login\n• Unreal Plugin Business User or 3D Modeler permission required",
+        "versionChanges": "Some features have been improved."
+      },
+      "buttons": {
+        "change": "Change"
+      }
     }
   }
 }

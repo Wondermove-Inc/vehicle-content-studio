@@ -41,7 +41,7 @@
     },
     "button": {
       "cancel": "취소",
-      "save": "저장하기",
+      "save": "저장",
       "collapse": "접기",
       "expand": "펼치기"
     }
@@ -314,7 +314,7 @@
       "keyFeatures": "주요 기능",
       "keyFeaturesDesc": "DAMS 연계를 통한 에셋 관리와 렌더팜 대량 렌더링 요청",
       "systemRequirements": "시스템 요구 사항",
-      "systemRequirementsDesc": "Unreal Engine 5.x 이상\nOS 0000, 00000\nHMG SSO 계정 로그인\n언리얼 플러그인 비즈니스 유저 혹은 3D 모델러 권한 필요"
+      "systemRequirementsDesc": "• Unreal Engine 5.x 이상\n• OS 0000, 00000\n• HMG SSO 계정 로그인\n• 언리얼 플러그인 비즈니스 유저 혹은 3D 모델러 권한 필요"
     },
     "versionHistory": {
       "title": "버전 변경 이력",
@@ -333,7 +333,26 @@
     },
     "manageDialog": {
       "title": "어플리케이션 관리",
-      "placeholder": "어플리케이션 관리 기능이 구현될 예정입니다."
+      "placeholder": "어플리케이션 관리 기능이 구현될 예정입니다.",
+      "fields": {
+        "appName": "어플리케이션 이름",
+        "version": "버전",
+        "application": "어플리케이션",
+        "manual": "사용자 매뉴얼",
+        "image": "이미지 (0000x0000px)",
+        "keyFeatures": "주요 기능",
+        "systemRequirements": "시스템 요구 사항",
+        "versionChanges": "버전 변경 내용"
+      },
+      "placeholders": {
+        "appName": "언리얼 플러그인",
+        "keyFeatures": "DAMS 연계를 통한 에셋 관리와 렌더팜 대량 렌더링 요청",
+        "systemRequirements": "• Unreal Engine 5.x 이상\n• OS 0000, 00000\n• HMG SSO 계정 로그인\n• 언리얼 플러그인 비즈니스 유저 혹은 3D 모델러 권한 필요",
+        "versionChanges": "일부 기능이 개선되었습니다."
+      },
+      "buttons": {
+        "change": "변경"
+      }
     }
   }
 }

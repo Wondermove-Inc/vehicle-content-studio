@@ -8,7 +8,7 @@ import { PermissionLevel } from '@/types/auth.types'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
-import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TablePagination, TableSortLabel, SimpleTreeView, TreeItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
+import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TablePagination, TableSortLabel, SimpleTreeView, TreeItem, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@hmg-fe/hmg-design-system'
 import { Ic_file_regular, Ic_check_regular, Ic_pencil_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 버전 변경 이력 더미 데이터
@@ -30,6 +30,24 @@ function Download() {
   const [isManageDialogOpen, setIsManageDialogOpen] = useState(false)
   const [versionSortOrder, setVersionSortOrder] = useState<'asc' | 'desc' | null>(null)
 
+  // 어플리케이션 관리 다이얼로그 초기값
+  const initialAppName = t('download.manageDialog.placeholders.appName')
+  const initialVersionMajor = '1'
+  const initialVersionMinor = '1'
+  const initialVersionPatch = '3'
+  const initialKeyFeatures = t('download.manageDialog.placeholders.keyFeatures')
+  const initialSystemRequirements = t('download.manageDialog.placeholders.systemRequirements')
+  const initialVersionChanges = t('download.manageDialog.placeholders.versionChanges')
+
+  // 어플리케이션 관리 다이얼로그 상태
+  const [appName, setAppName] = useState(initialAppName)
+  const [versionMajor, setVersionMajor] = useState(initialVersionMajor)
+  const [versionMinor, setVersionMinor] = useState(initialVersionMinor)
+  const [versionPatch, setVersionPatch] = useState(initialVersionPatch)
+  const [keyFeatures, setKeyFeatures] = useState(initialKeyFeatures)
+  const [systemRequirements, setSystemRequirements] = useState(initialSystemRequirements)
+  const [versionChanges, setVersionChanges] = useState(initialVersionChanges)
+
   // 즐겨찾기 데이터 (중앙 집중식 관리)
   const { favorites, contentFavorites } = useFavorites()
 
@@ -37,6 +55,15 @@ function Download() {
   const { user } = useAuth()
   const canManageApplication = user?.permissionLevel === PermissionLevel.L1_ADMIN ||
                                 user?.permissionLevel === PermissionLevel.L2_SERVICE_MANAGER
+
+  // 모든 필수 필드가 입력되었는지 확인
+  const isFormValid = appName.trim() !== '' &&
+                      versionMajor.trim() !== '' &&
+                      versionMinor.trim() !== '' &&
+                      versionPatch.trim() !== '' &&
+                      keyFeatures.trim() !== '' &&
+                      systemRequirements.trim() !== '' &&
+                      versionChanges.trim() !== ''
 
   // 언어별 썸네일 이미지
   const thumbnailImage = i18n.language === 'ko'
@@ -58,6 +85,18 @@ function Download() {
       if (prev === 'asc') return 'desc'
       return null
     })
+  }
+
+  // 다이얼로그 닫기 시 초기값으로 복원
+  const handleCloseDialog = () => {
+    setIsManageDialogOpen(false)
+    setAppName(initialAppName)
+    setVersionMajor(initialVersionMajor)
+    setVersionMinor(initialVersionMinor)
+    setVersionPatch(initialVersionPatch)
+    setKeyFeatures(initialKeyFeatures)
+    setSystemRequirements(initialSystemRequirements)
+    setVersionChanges(initialVersionChanges)
   }
 
   return (
@@ -512,22 +551,400 @@ function Download() {
     {/* 어플리케이션 관리 다이얼로그 */}
     <Dialog
       open={isManageDialogOpen}
-      onClose={() => setIsManageDialogOpen(false)}
-      maxWidth="md"
-      fullWidth
+      onClose={(event, reason) => {
+        // 배경 클릭 시에는 닫히지 않음
+        if (reason === 'backdropClick') {
+          return
+        }
+        handleCloseDialog()
+      }}
+      PaperProps={{
+        sx: {
+          maxWidth: '400px',
+          width: '400px',
+        }
+      }}
     >
-      <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsManageDialogOpen(false) }}>
+      <DialogTitle hdsProps={{ closeIcon: true, onClose: handleCloseDialog }}>
         {t('download.manageDialog.title')}
       </DialogTitle>
-      <DialogContent hdsProps>
-        <Box sx={{ padding: '20px 0' }}>
-          <Typography sx={{ color: 'var(--on_surface_mid)' }}>
-            {t('download.manageDialog.placeholder')}
-          </Typography>
+      <DialogContent
+        hdsProps
+        sx={{
+          paddingTop: '18px',
+          paddingBottom: '0px',
+          overflow: 'hidden',
+          '&:hover': {
+            overflow: 'auto',
+          },
+          // 스크롤바 스타일링 - 호버 시에만 표시
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'rgba(0, 0, 0, 0.2)',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            background: 'rgba(0, 0, 0, 0.3)',
+          },
+          // Firefox 지원
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+        }}
+      >
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+        }}>
+          {/* 어플리케이션 이름 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.appName')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <TextField
+              fullWidth
+              value={appName}
+              onChange={(e) => setAppName(e.target.value)}
+              hdsProps={{ size: 'medium' }}
+            />
+          </Box>
+
+          {/* 버전 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.version')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <TextField
+                sx={{ width: '62px' }}
+                value={versionMajor}
+                onChange={(e) => setVersionMajor(e.target.value)}
+                hdsProps={{ size: 'medium' }}
+              />
+              <Typography sx={{ fontSize: 15, lineHeight: '22px', color: '#3b3b3b', width: '5px' }}>
+                .
+              </Typography>
+              <TextField
+                sx={{ width: '62px' }}
+                value={versionMinor}
+                onChange={(e) => setVersionMinor(e.target.value)}
+                hdsProps={{ size: 'medium' }}
+              />
+              <Typography sx={{ fontSize: 15, lineHeight: '22px', color: '#3b3b3b', width: '5px' }}>
+                .
+              </Typography>
+              <TextField
+                sx={{ width: '62px' }}
+                value={versionPatch}
+                onChange={(e) => setVersionPatch(e.target.value)}
+                hdsProps={{ size: 'medium' }}
+              />
+            </Box>
+          </Box>
+
+          {/* 어플리케이션 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.application')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #d1d1d1',
+              borderRadius: '4px',
+              padding: '4px 4px 4px 8px',
+              backgroundColor: 'var(--surface_container)',
+            }}>
+              <Typography sx={{ flex: 1, fontSize: 14, lineHeight: '22px', color: '#3b3b3b' }}>
+                unrealeditor.pak
+              </Typography>
+              <input
+                type="file"
+                id="application-file-input"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    console.log('Application file selected:', file.name)
+                  }
+                }}
+              />
+              <Button
+                hdsProps={{ size: 'xsmall', type: 'outline', icon: false, style: 'primary' }}
+                onClick={() => document.getElementById('application-file-input')?.click()}
+                sx={{
+                  minWidth: '0 !important',
+                  '& .MuiButton-root': {
+                    minWidth: '0 !important',
+                  },
+                }}
+              >
+                {t('download.manageDialog.buttons.change')}
+              </Button>
+            </Box>
+          </Box>
+
+          {/* 사용자 매뉴얼 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.manual')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #d1d1d1',
+              borderRadius: '4px',
+              padding: '4px 4px 4px 8px',
+              backgroundColor: 'var(--surface_container)',
+            }}>
+              <Typography sx={{ flex: 1, fontSize: 14, lineHeight: '22px', color: '#3b3b3b' }}>
+                manual.pdf
+              </Typography>
+              <input
+                type="file"
+                id="manual-file-input"
+                accept=".pdf"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    console.log('Manual file selected:', file.name)
+                  }
+                }}
+              />
+              <Button
+                hdsProps={{ size: 'xsmall', type: 'outline', icon: false, style: 'primary' }}
+                onClick={() => document.getElementById('manual-file-input')?.click()}
+                sx={{
+                  minWidth: '0 !important',
+                  '& .MuiButton-root': {
+                    minWidth: '0 !important',
+                  },
+                }}
+              >
+                {t('download.manageDialog.buttons.change')}
+              </Button>
+            </Box>
+          </Box>
+
+          {/* 이미지 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.image')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #d1d1d1',
+              borderRadius: '4px',
+              padding: '4px 4px 4px 8px',
+              backgroundColor: 'var(--surface_container)',
+            }}>
+              <Typography sx={{ flex: 1, fontSize: 14, lineHeight: '22px', color: '#3b3b3b' }}>
+                unrealeditor.jpg
+              </Typography>
+              <input
+                type="file"
+                id="image-file-input"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    console.log('Image file selected:', file.name)
+                  }
+                }}
+              />
+              <Button
+                hdsProps={{ size: 'xsmall', type: 'outline', icon: false, style: 'primary' }}
+                onClick={() => document.getElementById('image-file-input')?.click()}
+                sx={{
+                  minWidth: '0 !important',
+                  '& .MuiButton-root': {
+                    minWidth: '0 !important',
+                  },
+                }}
+              >
+                {t('download.manageDialog.buttons.change')}
+              </Button>
+            </Box>
+          </Box>
+
+          {/* 주요 기능 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.keyFeatures')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              value={keyFeatures}
+              onChange={(e) => setKeyFeatures(e.target.value)}
+              hdsProps={{ size: 'medium' }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  paddingRight: '0 !important',
+                },
+                '& textarea': {
+                  resize: 'none',
+                  paddingRight: '20px',
+                  boxSizing: 'border-box',
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    background: 'rgba(0, 0, 0, 0.3)',
+                  },
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+                },
+              }}
+            />
+          </Box>
+
+          {/* 시스템 요구 사항 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.systemRequirements')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              value={systemRequirements}
+              onChange={(e) => setSystemRequirements(e.target.value)}
+              hdsProps={{ size: 'medium' }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  paddingRight: '0 !important',
+                },
+                '& textarea': {
+                  resize: 'none',
+                  paddingRight: '20px',
+                  boxSizing: 'border-box',
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    background: 'rgba(0, 0, 0, 0.3)',
+                  },
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+                },
+              }}
+            />
+          </Box>
+
+          {/* 버전 변경 내용 */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#0e0f11' }}>
+                {t('download.manageDialog.fields.versionChanges')}
+              </Typography>
+              <Typography sx={{ fontSize: 14, fontWeight: 700, lineHeight: '22px', color: '#ce302c' }}>
+                *
+              </Typography>
+            </Box>
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              value={versionChanges}
+              onChange={(e) => setVersionChanges(e.target.value)}
+              hdsProps={{ size: 'medium' }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  paddingRight: '0 !important',
+                },
+                '& textarea': {
+                  resize: 'none',
+                  paddingRight: '20px',
+                  boxSizing: 'border-box',
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    background: 'rgba(0, 0, 0, 0.3)',
+                  },
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+                },
+              }}
+            />
+          </Box>
         </Box>
       </DialogContent>
-      <DialogActions hdsProps>
-        <Button hdsProps onClick={() => setIsManageDialogOpen(false)}>
+      <DialogActions hdsProps sx={{ paddingTop: '16px' }}>
+        <Button
+          hdsProps
+          onClick={handleCloseDialog}
+          sx={{
+            width: 'fit-content',
+            minWidth: 'unset !important'
+          }}
+        >
           {t('common.button.cancel')}
         </Button>
         <Button
@@ -535,6 +952,11 @@ function Download() {
           onClick={() => {
             // TODO: 어플리케이션 관리 로직
             setIsManageDialogOpen(false)
+          }}
+          disabled={!isFormValid}
+          sx={{
+            width: 'fit-content',
+            minWidth: 'unset !important'
           }}
         >
           {t('common.button.save')}
