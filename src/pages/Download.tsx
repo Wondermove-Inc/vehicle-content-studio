@@ -1,34 +1,47 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from '@/components/Sidebar'
 import { PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useAuth } from '@/contexts/AuthContext'
+import { PermissionLevel } from '@/types/auth.types'
 import Box from '@hmg-fe/hmg-design-system/Box'
 import Typography from '@hmg-fe/hmg-design-system/Typography'
 import Button from '@hmg-fe/hmg-design-system/Button'
-import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TablePagination } from '@hmg-fe/hmg-design-system'
-import { Ic_check_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
-
-// 썸네일 이미지 URL (실제 이미지로 교체 필요)
-const thumbnailImage = 'https://www.figma.com/api/mcp/asset/614e727a-4f5d-4e01-a7f7-c34c5aa69649'
+import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, TablePagination, TableSortLabel, SimpleTreeView, TreeItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@hmg-fe/hmg-design-system'
+import { Ic_file_regular, Ic_check_regular, Ic_pencil_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 
 // 버전 변경 이력 더미 데이터
 const versionHistory = [
-  { version: '1.1.3', changes: '000 기능이 개선되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.1.2', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.1.1', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.1.0', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.0.2', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.0.1', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
-  { version: '1.0.0', changes: '000 버그가 픽스되었습니다.', date: 'YYYY-MM-DD HH:MM:SS (UTC+9)' },
+  { version: '1.1.3', date: '2024-12-15 14:23:45 (UTC+9)' },
+  { version: '1.1.2', date: '2024-11-28 09:15:20 (UTC+9)' },
+  { version: '1.1.1', date: '2024-11-10 16:42:33 (UTC+9)' },
+  { version: '1.1.0', date: '2024-10-25 11:30:18 (UTC+9)' },
+  { version: '1.0.2', date: '2024-09-18 13:55:09 (UTC+9)' },
+  { version: '1.0.1', date: '2024-09-05 10:20:41 (UTC+9)' },
+  { version: '1.0.0', date: '2024-08-20 15:00:00 (UTC+9)' },
 ]
 
 function Download() {
-  const [activeMenu, setActiveMenu] = useState('다운로드')
+  const { t, i18n } = useTranslation()
+  const [activeMenu, setActiveMenu] = useState(t('common.menu.download'))
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false)
+  const [versionSortOrder, setVersionSortOrder] = useState<'asc' | 'desc' | null>(null)
 
   // 즐겨찾기 데이터 (중앙 집중식 관리)
   const { favorites, contentFavorites } = useFavorites()
+
+  // 권한 체크 - L1, L2만 어플리케이션 관리 버튼 표시
+  const { user } = useAuth()
+  const canManageApplication = user?.permissionLevel === PermissionLevel.L1_ADMIN ||
+                                user?.permissionLevel === PermissionLevel.L2_SERVICE_MANAGER
+
+  // 언어별 썸네일 이미지
+  const thumbnailImage = i18n.language === 'ko'
+    ? '/images/app_thumbnail_kr.png'
+    : '/images/app_thumbnail_en.png'
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage)
@@ -39,7 +52,16 @@ function Download() {
     setPage(0)
   }
 
+  const handleVersionSort = () => {
+    setVersionSortOrder(prev => {
+      if (prev === null) return 'asc'
+      if (prev === 'asc') return 'desc'
+      return null
+    })
+  }
+
   return (
+    <>
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       {/* 사이드바 */}
       <Sidebar
@@ -73,21 +95,16 @@ function Download() {
           }}
         >
           {/* 페이지 헤더 */}
-          <Box
-            sx={{
-              padding: '24px 24px 16px 24px',
-              borderBottom: '1px solid var(--outline)',
-            }}
-          >
+          <Box sx={{ padding: '20px 20px 16px 24px', borderBottom: '1px solid var(--outline)' }}>
             <Typography
               sx={{
                 fontSize: 24,
-                fontWeight: 700,
+                fontWeight: 600,
                 lineHeight: '36px',
-                color: 'var(--on_surface_high)',
+                color: 'var(--on_surface)',
               }}
             >
-              다운로드
+              {t('download.title')}
             </Typography>
           </Box>
 
@@ -102,31 +119,59 @@ function Download() {
           {/* 좌측 패널 - 플러그인 트리 */}
           <Box
             sx={{
-              width: '280px',
+              width: '240px',
               borderRight: '1px solid var(--outline)',
               backgroundColor: 'var(--surface_container)',
               padding: '16px 24px',
               flexShrink: 0,
             }}
           >
-            <Box
+            <SimpleTreeView
+              hdsProps={{ size: 'medium', type: 'line' }}
+              selectedItems="unreal-plugin"
               sx={{
-                backgroundColor: 'var(--surface_container_lowest)',
-                borderRadius: '4px',
-                padding: '10px 16px',
+                '& .MuiTreeItem-content': {
+                  height: '38px',
+                  minHeight: '38px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  borderRadius: '4px',
+                  padding: '0 10px',
+                },
+                '& .MuiTreeItem-content.Mui-selected': {
+                  backgroundColor: '#f5f5f5',
+                  '&:hover': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                },
+                '& .MuiTreeItem-iconContainer': {
+                  display: 'none',
+                },
+                '& .MuiTreeItem-label': {
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingLeft: 0,
+                  marginLeft: '10px',
+                },
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  lineHeight: '22px',
-                  color: '#111',
-                }}
-              >
-                언리얼 플러그인
-              </Typography>
-            </Box>
+              <TreeItem
+                itemId="unreal-plugin"
+                label={
+                  <Typography
+                    sx={{
+                      fontSize: 15,
+                      fontWeight: 700,
+                      lineHeight: '22px',
+                      color: '#111111',
+                    }}
+                  >
+                    {t('download.plugin.title')}
+                  </Typography>
+                }
+                hdsProps={{ type: 'default' }}
+              />
+            </SimpleTreeView>
           </Box>
 
           {/* 메인 컨텐츠 */}
@@ -162,9 +207,9 @@ function Download() {
             }}
           >
             {/* 플러그인 정보 섹션 */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* 헤더 */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
                 <Typography
                   sx={{
                     fontSize: 18,
@@ -173,8 +218,22 @@ function Download() {
                     color: '#111',
                   }}
                 >
-                  언리얼 플러그인
+                  {t('download.plugin.title')}
                 </Typography>
+
+                {/* 어플리케이션 관리 버튼 - L1, L2 권한만 표시 */}
+                {canManageApplication && (
+                  <Button
+                    hdsProps={{
+                      size: 'medium',
+                      type: 'outline',
+                      icon: <Ic_pencil_regular size="16px" />,
+                    }}
+                    onClick={() => setIsManageDialogOpen(true)}
+                  >
+                    {t('download.plugin.manage')}
+                  </Button>
+                )}
               </Box>
 
               {/* 플러그인 카드 */}
@@ -188,16 +247,16 @@ function Download() {
                     padding: '12px 16px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '8px',
+                    gap: '12px',
                   }}
                 >
                   {/* 카드 헤더 */}
-                  <Box sx={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <Typography
                       sx={{
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: 700,
-                        lineHeight: '26px',
+                        lineHeight: '24px',
                         color: '#949494',
                       }}
                     >
@@ -206,17 +265,17 @@ function Download() {
                     <Typography
                       sx={{
                         flex: 1,
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: 700,
-                        lineHeight: '26px',
+                        lineHeight: '24px',
                         color: '#333',
                       }}
                     >
-                      HMG 차량 컨텐츠 제작을 위한 언리얼 플러그인
+                      {t('download.plugin.description')}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '8px' }}>
                       <Button hdsProps={{ size: 'medium' }}>
-                        사용자 매뉴얼 다운로드
+                        {t('download.plugin.downloadManual')}
                       </Button>
                       <Button
                         hdsProps={{
@@ -225,7 +284,7 @@ function Download() {
                           type: 'fill',
                         }}
                       >
-                        설치 파일 다운로드
+                        {t('download.plugin.downloadInstaller')}
                       </Button>
                     </Box>
                   </Box>
@@ -236,12 +295,10 @@ function Download() {
                     <Box
                       sx={{
                         width: '364px',
-                        height: '318px',
-                        backgroundColor: '#333',
+                        height: '226px',
                         borderRadius: '8px',
                         border: '1px solid var(--outline)',
                         overflow: 'hidden',
-                        position: 'relative',
                         flexShrink: 0,
                       }}
                     >
@@ -250,41 +307,34 @@ function Download() {
                         src={thumbnailImage}
                         alt="언리얼 플러그인 썸네일"
                         sx={{
-                          position: 'absolute',
-                          top: '19px',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          width: '223px',
-                          height: '299px',
-                          borderRadius: '8px',
-                          boxShadow: '0px 0px 2px 0px rgba(34,34,34,0.1), 0px 24px 22px 0px rgba(34,34,34,0.05)',
+                          width: '364px',
+                          height: '226px',
+                          display: 'block',
                         }}
                       />
                     </Box>
 
                     {/* 정보 카드들 */}
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', minHeight: '226px' }}>
                       {/* 주요 기능 */}
                       <Box
                         sx={{
                           backgroundColor: 'var(--surface_container)',
                           border: '1px solid var(--outline)',
                           borderRadius: '8px',
-                          padding: '12px 16px 16px 16px',
+                          padding: '12px 16px 12px 16px',
                           boxShadow: '0px 4px 12px 0px rgba(34,34,34,0.1)',
                         }}
                       >
                         <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '4px' }}>
                           <Box
                             sx={{
-                              width: '24px',
-                              height: '24px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                             }}
                           >
-                            <Ic_check_regular size="20px" color="#121416" />
+                            <Ic_file_regular size="16px" color="#121416" />
                           </Box>
                           <Typography
                             sx={{
@@ -294,7 +344,7 @@ function Download() {
                               color: '#121416',
                             }}
                           >
-                            주요 기능
+                            {t('download.plugin.keyFeatures')}
                           </Typography>
                         </Box>
                         <Typography
@@ -305,31 +355,30 @@ function Download() {
                             color: '#676d79',
                           }}
                         >
-                          DAMS 연계를 통한 에셋 관리와 렌더팜 대량 렌더링 요청
+                          {t('download.plugin.keyFeaturesDesc')}
                         </Typography>
                       </Box>
 
                       {/* 시스템 요구 사항 */}
                       <Box
                         sx={{
+                          flex: 1,
                           backgroundColor: 'var(--surface_container)',
                           border: '1px solid var(--outline)',
                           borderRadius: '8px',
-                          padding: '12px 16px 16px 16px',
+                          padding: '12px 16px 12px 16px',
                           boxShadow: '0px 4px 12px 0px rgba(34,34,34,0.1)',
                         }}
                       >
                         <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '4px' }}>
                           <Box
                             sx={{
-                              width: '24px',
-                              height: '24px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                             }}
                           >
-                            <Ic_check_regular size="20px" color="#121416" />
+                            <Ic_check_regular size="16px" color="#121416" />
                           </Box>
                           <Typography
                             sx={{
@@ -339,7 +388,7 @@ function Download() {
                               color: '#121416',
                             }}
                           >
-                            시스템 요구 사항
+                            {t('download.plugin.systemRequirements')}
                           </Typography>
                         </Box>
                         <Typography
@@ -349,15 +398,10 @@ function Download() {
                             fontWeight: 400,
                             lineHeight: '22px',
                             color: '#676d79',
+                            whiteSpace: 'pre-line',
                           }}
                         >
-                          Unreal Engine 5.x 이상
-                          <br />
-                          OS 0000, 00000
-                          <br />
-                          HMG SSO 계정 로그인
-                          <br />
-                          언리얼 플러그인 비즈니스 유저 혹은 3D 모델러 권한 필요
+                          {t('download.plugin.systemRequirementsDesc')}
                         </Typography>
                       </Box>
                     </Box>
@@ -365,36 +409,79 @@ function Download() {
                 </Box>
 
                 {/* 버전 변경 이력 */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Typography
                     sx={{
                       fontSize: 15,
                       fontWeight: 700,
                       lineHeight: '22px',
                       color: '#3b3b3b',
+                      marginBottom: '12px',
                     }}
                   >
-                    버전 변경 이력
+                    {t('download.versionHistory.title')}
                   </Typography>
 
                   {/* 테이블 */}
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ width: '200px', fontWeight: 700 }}>버전</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>버전 변경 내용</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>업데이트 일시</TableCell>
+                  <TableContainer sx={{ width: '100%' }}>
+                    <Table sx={{ width: '100%', tableLayout: 'fixed' }}>
+                      <TableHead sx={{
+                        height: '40px !important',
+                        minHeight: '40px !important',
+                        maxHeight: '40px !important',
+                      }}>
+                        <TableRow sx={{
+                          height: '40px !important',
+                          minHeight: '40px !important',
+                          maxHeight: '40px !important',
+                          '& .MuiTableCell-root': {
+                            height: '40px !important',
+                            minHeight: '40px !important',
+                            maxHeight: '40px !important',
+                            padding: '0 12px !important',
+                          }
+                        }}>
+                          <TableCell sx={{ width: '120px', fontWeight: 700 }}>
+                            <TableSortLabel
+                              active={versionSortOrder !== null}
+                              direction={versionSortOrder === 'asc' ? 'asc' : 'desc'}
+                              onClick={handleVersionSort}
+                            >
+                              {t('download.versionHistory.version')}
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell sx={{ width: '45%', fontWeight: 700 }}>{t('download.versionHistory.changes')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('download.versionHistory.updateDate')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {versionHistory
+                        {[...versionHistory]
+                          .sort((a, b) => {
+                            if (!versionSortOrder) return 0
+                            const compareResult = a.version.localeCompare(b.version, undefined, { numeric: true })
+                            return versionSortOrder === 'asc' ? compareResult : -compareResult
+                          })
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                           .map((row) => (
                             <TableRow key={row.version}>
-                              <TableCell>{row.version}</TableCell>
-                              <TableCell sx={{ color: '#6b6b6b' }}>{row.changes}</TableCell>
-                              <TableCell sx={{ color: '#6b6b6b' }}>{row.date}</TableCell>
+                              <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.version}</TableCell>
+                              <TableCell sx={{
+                                color: '#6b6b6b',
+                                whiteSpace: 'normal !important',
+                                wordBreak: 'break-word',
+                                padding: '12px !important',
+                              }}>
+                                <Typography sx={{
+                                  fontSize: 14,
+                                  fontWeight: 400,
+                                  lineHeight: '1.5',
+                                  whiteSpace: 'normal',
+                                  wordBreak: 'break-word',
+                                }}>
+                                  {t(`download.versionHistory.versions.${row.version}`)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell sx={{ color: '#6b6b6b', whiteSpace: 'nowrap' }}>{row.date}</TableCell>
                             </TableRow>
                           ))}
                       </TableBody>
@@ -421,6 +508,40 @@ function Download() {
         </Box>
       </Box>
     </Box>
+
+    {/* 어플리케이션 관리 다이얼로그 */}
+    <Dialog
+      open={isManageDialogOpen}
+      onClose={() => setIsManageDialogOpen(false)}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle hdsProps={{ closeIcon: true, onClose: () => setIsManageDialogOpen(false) }}>
+        {t('download.manageDialog.title')}
+      </DialogTitle>
+      <DialogContent hdsProps>
+        <Box sx={{ padding: '20px 0' }}>
+          <Typography sx={{ color: 'var(--on_surface_mid)' }}>
+            {t('download.manageDialog.placeholder')}
+          </Typography>
+        </Box>
+      </DialogContent>
+      <DialogActions hdsProps>
+        <Button hdsProps onClick={() => setIsManageDialogOpen(false)}>
+          {t('common.button.cancel')}
+        </Button>
+        <Button
+          hdsProps={{ type: 'fill', style: 'primary' }}
+          onClick={() => {
+            // TODO: 어플리케이션 관리 로직
+            setIsManageDialogOpen(false)
+          }}
+        >
+          {t('common.button.save')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+    </>
   )
 }
 

@@ -96,18 +96,8 @@ function ProjectDetail() {
   const [showSnackbar, setShowSnackbar] = useState(false)
   const [showProjectSnackbar, setShowProjectSnackbar] = useState(false)
 
-  // 컨텐츠 추가 여부 상태 (localStorage 기반)
-  const [addedContents, setAddedContents] = useState<Set<string>>(() => {
-    const saved = localStorage.getItem('added-contents')
-    if (saved) {
-      try {
-        return new Set(JSON.parse(saved))
-      } catch {
-        return new Set()
-      }
-    }
-    return new Set()
-  })
+  // 컨텐츠 추가 여부 상태 (세션 전용 - 새로고침 시 초기화)
+  const [addedContents, setAddedContents] = useState<Set<string>>(new Set())
 
   // 검색어 상태
   const [searchQuery, setSearchQuery] = useState('')
@@ -245,11 +235,24 @@ function ProjectDetail() {
   const projectName = projectId ? projectNames[projectId] : null
 
   // contentId가 있으면 해당 컨텐츠의 hasContent 상태 확인
-  let actualHasContent = projectData?.hasContent || false
+  let actualHasContent = false
   if (contentId && projectData) {
+    // contentId가 명시적으로 있으면 해당 컨텐츠 확인
     const specificContent = MOCK_PROJECTS.find(p => p.id === parseInt(contentId))
     if (specificContent) {
       actualHasContent = !!(specificContent.contentType && specificContent.contentType.trim() !== '')
+    }
+  } else if (projectData && projectId) {
+    // contentId가 없으면 해당 프로젝트의 첫 번째 컨텐츠를 찾아봄
+    const projectCode = TREE_ITEM_TO_PROJECT_CODE[projectId]
+    if (projectCode) {
+      const firstContent = MOCK_PROJECTS.find(p =>
+        p.projectCode === projectCode &&
+        p.contentType &&
+        p.contentType.trim() !== ''
+      )
+      // 첫 번째 컨텐츠가 있으면 true, 없으면 false (컨텐츠 추가 화면 표시)
+      actualHasContent = !!firstContent
     }
   }
   // 컨텐츠를 추가한 경우 true로 설정
@@ -356,6 +359,16 @@ function ProjectDetail() {
     const contentKey = `${projectId}-${contentId}`
     return contentFavorites.some(f => f.id === contentKey)
   }
+
+  // 오래된 localStorage 키 정리 (마이그레이션)
+  useEffect(() => {
+    const oldKeys = ['added-contents', 'added-contents-v2']
+    oldKeys.forEach(key => {
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key)
+      }
+    })
+  }, [])
 
   // 잘못된 projectId(all, 브랜드, 2뎁스)로 접근 시 /project로 리다이렉트
   useEffect(() => {
@@ -611,6 +624,27 @@ function ProjectDetail() {
                     {actualHasContent ? (
                       /* 컨텐츠 카드 */
                       <Box
+                        onClick={() => {
+                          if (!projectId) return
+
+                          // contentId가 있으면 사용하고, 없으면 해당 프로젝트의 첫 번째 컨텐츠 ID 찾기
+                          let targetContentId = contentId
+                          if (!targetContentId) {
+                            const projectCode = TREE_ITEM_TO_PROJECT_CODE[projectId]
+                            const projectContent = MOCK_PROJECTS.find(p =>
+                              p.projectCode === projectCode &&
+                              p.contentType &&
+                              p.contentType.trim() !== ''
+                            )
+                            if (projectContent) {
+                              targetContentId = String(projectContent.id)
+                            }
+                          }
+
+                          if (targetContentId) {
+                            navigate(`/project/${projectId}/content/${targetContentId}`)
+                          }
+                        }}
                         sx={{
                           width: '220px',
                           background: 'white',
@@ -620,6 +654,12 @@ function ProjectDetail() {
                           overflow: 'hidden',
                           display: 'flex',
                           flexDirection: 'column',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                          '&:hover': {
+                            transform: 'translateY(-4px)',
+                            boxShadow: '0px 8px 20px rgba(34, 34, 34, 0.15)',
+                          },
                         }}
                       >
                         {/* 이미지 섹션 */}
@@ -1412,7 +1452,6 @@ function ProjectDetail() {
                 const newAddedContents = new Set(addedContents)
                 newAddedContents.add(projectId)
                 setAddedContents(newAddedContents)
-                localStorage.setItem('added-contents', JSON.stringify(Array.from(newAddedContents)))
                 setShowSnackbar(true)
               }
               handleCloseAddContentDialog()

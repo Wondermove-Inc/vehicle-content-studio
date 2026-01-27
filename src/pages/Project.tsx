@@ -259,15 +259,15 @@ function Project() {
                     alignItems: 'center',
                     gap: '8px',
                     flexShrink: 0,
-                    marginBottom: '16px',
+                    marginBottom: '12px',
                   }}
                 >
                 {/* 좌측: 제목 */}
                 <Typography
                   sx={{
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: 700,
-                    lineHeight: '30px',
+                    lineHeight: '26px',
                     color: 'var(--primary)',
                   }}
                 >
@@ -371,8 +371,8 @@ function Project() {
                     <TableRow sx={{ height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', '& .MuiTableCell-root': { padding: '0 12px !important', height: '40px !important', minHeight: '40px !important', maxHeight: '40px !important', lineHeight: '40px !important', whiteSpace: 'nowrap' }, '& .MuiTableCell-root:first-child': { padding: '0 !important' }, '& .MuiTableCell-root:nth-child(2)': { paddingLeft: '0 !important' }, '& .MuiTableCell-root .cell_text': { height: '40px !important', display: 'flex', alignItems: 'center' } }}>
                       <TableCell sx={{ width: '7%', textAlign: 'center', '& .cell_text': { padding: '0 !important', display: 'flex', justifyContent: 'center', width: '100%', height: '40px', alignItems: 'center' } }}>{t('project.table.brand')}</TableCell>
                       <TableCell sx={{ width: '10%' }}></TableCell>
-                      <TableCell sx={{ width: '8%' }}>{t('project.table.projectType')}</TableCell>
-                      <TableCell sx={{ width: '28%' }}>{t('project.table.projectCode')}</TableCell>
+                      <TableCell sx={{ width: '10%' }}>{t('project.table.projectType')}</TableCell>
+                      <TableCell sx={{ width: '26%' }}>{t('project.table.projectCode')}</TableCell>
                       <TableCell sx={{ width: '17%' }}>{t('project.table.contentType')}</TableCell>
                       <TableCell sx={{ width: '14%' }}>
                         <TableSortLabel
@@ -412,6 +412,7 @@ function Project() {
                         key={project.id}
                         onClick={() => {
                           if (projectTreeId) {
+                            // 모든 경우에 contentId를 전달 (컨텐츠 유무는 ProjectDetail에서 판단)
                             navigate(`/project/${projectTreeId}?contentId=${project.id}`)
                           }
                         }}

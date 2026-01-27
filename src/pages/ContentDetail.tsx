@@ -112,16 +112,17 @@ function ContentDetail() {
         '원앱': 'oneApp',
         '원웹': 'oneWeb',
         'IVI': 'ivi',
+        'In-Store': 'inStore',
         '기존 홈페이지': 'legacyWeb',
       }
 
-      const channels = contentData.activeChannels.map(ch => channelMap[ch] || ch)
+      const channels = contentData.activeChannels.map(ch => channelMap[ch] || ch.toLowerCase().replace(/[^a-z]/g, ''))
 
       addRecentlyVisitedContent({
         id: contentId,
         projectId: projectId,
         projectCode: contentData.projectCode,
-        contentType: contentData.contentType || 'Unknown',
+        contentType: contentData.contentType || 'Beauty Angle Cut',
         thumbnailUrl: contentData.thumbnail,
         channels: channels,
       })

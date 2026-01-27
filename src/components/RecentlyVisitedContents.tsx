@@ -23,9 +23,10 @@ function RecentlyVisitedContents() {
     localStorage.removeItem('recently-visited-contents')
     localStorage.removeItem('recently-visited-contents-v2')
     localStorage.removeItem('recently-visited-contents-v3')
+    localStorage.removeItem('recently-visited-contents-v4')
 
     const loadRecentContents = () => {
-      const saved = localStorage.getItem('recently-visited-contents-v4')
+      const saved = localStorage.getItem('recently-visited-contents-v5')
       if (saved) {
         try {
           const parsed = JSON.parse(saved)
@@ -34,14 +35,26 @@ function RecentlyVisitedContents() {
             .map((item: any) => ({
               ...item,
               visitedAt: new Date(item.visitedAt),
-              // inStore 채널 필터링
-              channels: item.channels?.filter((ch: string) => ch !== 'inStore') || [],
+              // contentType 정규화 (Unknown -> Beauty Angle Cut)
+              contentType: item.contentType === 'Unknown' ? 'Beauty Angle Cut' : item.contentType,
+              // channels 정규화: 없으면 기본값, inStore 필터링
+              channels: (item.channels && item.channels.length > 0)
+                ? item.channels
+                    .filter((ch: string) => ch !== 'inStore')
+                    .map((ch: string) => {
+                      // 'In-Store' 같은 잘못된 값 정리
+                      if (ch === 'In-Store') return 'inStore'
+                      return ch
+                    })
+                : ['oneApp', 'oneWeb'], // channels가 없거나 비어있으면 기본값
             }))
             .sort((a: RecentlyVisitedContent, b: RecentlyVisitedContent) =>
               b.visitedAt.getTime() - a.visitedAt.getTime()
             )
             .slice(0, 8)
           setRecentContents(sorted)
+          // 정규화된 데이터 다시 저장
+          localStorage.setItem('recently-visited-contents-v5', JSON.stringify(sorted))
         } catch (error) {
           console.error('Failed to parse recently visited contents:', error)
         }
@@ -140,7 +153,7 @@ function RecentlyVisitedContents() {
           },
         ]
         setRecentContents(sampleData)
-        localStorage.setItem('recently-visited-contents-v4', JSON.stringify(sampleData))
+        localStorage.setItem('recently-visited-contents-v5', JSON.stringify(sampleData))
       }
     }
 
@@ -280,7 +293,7 @@ function RecentlyVisitedContents() {
             padding: '4px 8px !important',
           }}
         >
-          {isCollapsed ? '펼치기' : '접기'}
+          {isCollapsed ? t('common.button.expand') : t('common.button.collapse')}
         </Button>
       </Box>
 

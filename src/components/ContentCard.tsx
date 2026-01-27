@@ -18,6 +18,14 @@ function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCard
   // car_06.png 이미지인지 확인
   const isCar06 = data.thumbnailUrl?.includes('car_06.png')
 
+  // 채널 번역 함수
+  const getChannelLabel = (channel: string) => {
+    const key = `common.channel.${channel}`
+    const translated = t(key)
+    // 번역 키가 그대로 반환되면 원래 채널명 사용
+    return translated === key ? channel : translated
+  }
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     onFavoriteToggle?.(data.id, data.contentType)
@@ -210,7 +218,7 @@ function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCard
               },
             }}
           >
-            {data.contentType}
+            {data.contentType === 'Beauty Angle Cut' ? t('common.contentType.beautyAngleCut') : data.contentType}
           </Badge>
 
           {/* 타임스탬프 */}
@@ -247,7 +255,7 @@ function ContentCard({ data, onFavoriteToggle, onClick, timestamp }: ContentCard
                   type: 'strong',
                 }}
               >
-                {t(`common.channel.${channel}`) || channel}
+                {getChannelLabel(channel)}
               </Badge>
             ))}
           </Box>
