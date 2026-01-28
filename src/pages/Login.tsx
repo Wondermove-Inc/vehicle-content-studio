@@ -1620,7 +1620,22 @@ function Login() {
           </Button>
           <Button
             onClick={handleSsoRequest}
-            disabled={!ssoFormData.name.trim() || !ssoFormData.email.trim() || !ssoFormData.password.trim() || !ssoFormData.passwordConfirm.trim() || !ssoFormData.company.trim() || !ssoFormData.department.trim() || !ssoFormData.position.trim() || !ssoFormData.phone.trim() || !ssoFormData.reason.trim()}
+            disabled={
+              !ssoFormData.name.trim() ||
+              !ssoFormData.email.trim() ||
+              !ssoFormData.password.trim() ||
+              !ssoFormData.passwordConfirm.trim() ||
+              !ssoFormData.company.trim() ||
+              !ssoFormData.department.trim() ||
+              !ssoFormData.position.trim() ||
+              !ssoFormData.phone.trim() ||
+              !ssoFormData.reason.trim() ||
+              !passwordRules.hasUpperAndLower ||
+              !passwordRules.hasNumber ||
+              !passwordRules.hasSpecial ||
+              !passwordRules.hasMinLength ||
+              passwordMismatch
+            }
             hdsProps={{ size: 'medium', style: 'primary', type: 'fill' }}
             sx={{
               fontFamily: 'Asta Sans, sans-serif',
@@ -1631,7 +1646,22 @@ function Login() {
               paddingRight: '12px',
               borderRadius: '4px',
               backgroundColor: '#111111',
-              color: (ssoFormData.name.trim() && ssoFormData.email.trim() && ssoFormData.password.trim() && ssoFormData.passwordConfirm.trim() && ssoFormData.company.trim() && ssoFormData.department.trim() && ssoFormData.position.trim() && ssoFormData.phone.trim() && ssoFormData.reason.trim()) ? '#FFFFFF' : '#828282',
+              color: (
+                ssoFormData.name.trim() &&
+                ssoFormData.email.trim() &&
+                ssoFormData.password.trim() &&
+                ssoFormData.passwordConfirm.trim() &&
+                ssoFormData.company.trim() &&
+                ssoFormData.department.trim() &&
+                ssoFormData.position.trim() &&
+                ssoFormData.phone.trim() &&
+                ssoFormData.reason.trim() &&
+                passwordRules.hasUpperAndLower &&
+                passwordRules.hasNumber &&
+                passwordRules.hasSpecial &&
+                passwordRules.hasMinLength &&
+                !passwordMismatch
+              ) ? '#FFFFFF' : '#828282',
             }}
           >
             {t('login.ssoRequest.button.submit')}
