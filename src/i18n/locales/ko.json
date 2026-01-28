@@ -234,6 +234,10 @@
     }
   },
   "contentDetail": {
+    "badge": {
+      "activeChannel": "활성 채널",
+      "version": "버전"
+    },
     "tabs": {
       "preview": "미리보기",
       "contentSettings": "컨텐츠 설정",

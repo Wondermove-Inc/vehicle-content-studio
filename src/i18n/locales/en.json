@@ -233,6 +233,10 @@
     }
   },
   "contentDetail": {
+    "badge": {
+      "activeChannel": "Active Channel",
+      "version": "Version"
+    },
     "tabs": {
       "preview": "Preview",
       "contentSettings": "Content Settings",

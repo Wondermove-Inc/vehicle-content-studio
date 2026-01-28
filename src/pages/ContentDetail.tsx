@@ -20,13 +20,10 @@ import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames } from '
 import { addRecentlyVisitedContent } from '@/utils/recentlyVisited'
 import { useFavorites } from '@/hooks/useFavorites'
 
-// 썸네일 이미지 목록
-const thumbnailImages = [
-  '/images/car_01.png',
-  '/images/car_02.png',
-  '/images/car_03.png',
-  '/images/car_04.png',
-  '/images/car_05.png',
+// 카메라 ID 목록 (실제 이미지 파일명 기준)
+const cameraIds = [
+  'C001', 'C002', 'C003', 'C004', 'C005', 'C006', 'C008',
+  'C041', 'C042', 'C043', 'C044', 'C045', 'C046', 'C048'
 ]
 
 // 트리 아이템 ID -> 이름 매핑
@@ -222,7 +219,6 @@ function ContentDetail() {
               alignItems: 'center',
               gap: '8px',
               padding: '20px 20px 16px 12px',
-              borderBottom: '1px solid var(--outline)',
               flexShrink: 0,
             }}
           >
@@ -245,49 +241,166 @@ function ContentDetail() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
+                width: '100%',
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: 24,
-                  fontWeight: 600,
-                  lineHeight: '36px',
-                  color: 'var(--on_surface)',
-                }}
-              >
-                {contentData?.projectCode}
-              </Typography>
-              {contentData?.contentType && (
-                <Badge
-                  hdsProps={{
-                    size: 'medium',
-                    style: 'purple',
-                    icon: <Ic_world_filled size="16px" color="currentColor" />,
-                    type: 'strong'
-                  }}
-                >
-                  {contentData.contentType}
-                </Badge>
-              )}
-              {/* 즐겨찾기 아이콘 */}
+              {/* 좌측 그룹 */}
               <Box
-                onClick={handleFavoriteToggle}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    opacity: 0.7,
-                  },
+                  gap: '10px',
                 }}
-                aria-label="즐겨찾기"
               >
-                {isContentFavorite ? (
-                  <Ic_star_filled size="20px" color="var(--yellow)" />
-                ) : (
-                  <Ic_star_regular size="20px" color="var(--on_surface_mid)" />
+                <Typography
+                  sx={{
+                    fontSize: 24,
+                    fontWeight: 600,
+                    lineHeight: '36px',
+                    color: 'var(--on_surface)',
+                  }}
+                >
+                  {contentData?.projectCode}
+                </Typography>
+                {contentData?.contentType && (
+                  <Badge
+                    hdsProps={{
+                      size: 'medium',
+                      style: 'purple',
+                      icon: <Ic_world_filled size="16px" color="currentColor" />,
+                      type: 'strong'
+                    }}
+                  >
+                    {contentData.contentType}
+                  </Badge>
                 )}
+                {/* 즐겨찾기 아이콘 */}
+                <Box
+                  onClick={handleFavoriteToggle}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      opacity: 0.7,
+                    },
+                  }}
+                  aria-label="즐겨찾기"
+                >
+                  {isContentFavorite ? (
+                    <Ic_star_filled size="20px" color="var(--yellow)" />
+                  ) : (
+                    <Ic_star_regular size="20px" color="var(--on_surface_mid)" />
+                  )}
+                </Box>
+              </Box>
+
+              {/* 우측 그룹 */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginLeft: 'auto',
+                }}
+              >
+                {/* 활성 채널 뱃지 */}
+                {contentData?.activeChannels && contentData.activeChannels.length > 0 && (
+                  <Badge
+                    hdsProps={{
+                      size: 'small',
+                      style: 'default',
+                      icon: false,
+                      type: 'strong',
+                    }}
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        position: 'static',
+                        transform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          fontWeight: 400,
+                          lineHeight: '18px',
+                          color: 'var(--on_surface_mid)',
+                        }}
+                      >
+                        {t('contentDetail.badge.activeChannel')}
+                      </Typography>
+                      <Box
+                        sx={{
+                          width: '1px',
+                          height: '10px',
+                          backgroundColor: 'var(--outline_low)',
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontSize: '12px',
+                          fontWeight: 400,
+                          lineHeight: '18px',
+                        }}
+                      >
+                        {contentData.activeChannels.join(', ')}
+                      </Typography>
+                    </Box>
+                  </Badge>
+                )}
+                {/* 버전 뱃지 */}
+                <Badge
+                  hdsProps={{
+                    size: 'small',
+                    style: 'default',
+                    icon: false,
+                    type: 'strong',
+                  }}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      position: 'static',
+                      transform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                    },
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        lineHeight: '18px',
+                        color: 'var(--on_surface_mid)',
+                      }}
+                    >
+                      {t('contentDetail.badge.version')}
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: '1px',
+                        height: '10px',
+                        backgroundColor: 'var(--outline_low)',
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        fontWeight: 400,
+                        lineHeight: '18px',
+                      }}
+                    >
+                      0.1.4
+                    </Typography>
+                  </Box>
+                </Badge>
               </Box>
             </Box>
           </Box>
@@ -295,11 +408,8 @@ function ContentDetail() {
           {/* 탭 영역 */}
           <Box
             sx={{
-              padding: '16px 20px 0 20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '16px',
+              padding: '0 20px',
+              borderBottom: '1px solid var(--outline)',
             }}
           >
             <Tabs
@@ -337,10 +447,106 @@ function ContentDetail() {
               }}
             >
               <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.preview')} value="preview" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.contentSettings')} value="contentSettings" sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.visualConceptCreation')} value="visualConceptCreation" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', mr: '16px !important', fontSize: '16px !important' }} />
-              <Tab hdsProps={{ size: 'medium' }} label={t('contentDetail.tabs.visualProduction')} value="visualProduction" disabled sx={{ px: '0 !important', pt: '5px !important', pb: '9px !important', fontSize: '16px !important' }} />
             </Tabs>
+          </Box>
+
+          {/* 컨텐츠 필터 섹션 */}
+          <Box
+            sx={{
+              padding: '16px 20px 16px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* 국가 */}
+              <Select
+                value={country}
+                onChange={(e) => setCountry(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '140px' }}
+              >
+                <MenuItem hdsProps value="all">{t('contentDetail.filter.country.all')}</MenuItem>
+                <MenuItem hdsProps value="kr">{t('contentDetail.filter.country.kr')}</MenuItem>
+                <MenuItem hdsProps value="us">{t('contentDetail.filter.country.us')}</MenuItem>
+                <MenuItem hdsProps value="eu">{t('contentDetail.filter.country.eu')}</MenuItem>
+              </Select>
+
+              {/* FSC */}
+              <Select
+                value={fsc}
+                onChange={(e) => setFsc(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '140px' }}
+              >
+                <MenuItem hdsProps value="all">{t('contentDetail.filter.fsc.all')}</MenuItem>
+                <MenuItem hdsProps value="fsc1">{t('contentDetail.filter.fsc.fsc1')}</MenuItem>
+                <MenuItem hdsProps value="fsc2">{t('contentDetail.filter.fsc.fsc2')}</MenuItem>
+              </Select>
+
+              {/* 외장 */}
+              <Select
+                value={exterior}
+                onChange={(e) => setExterior(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '140px' }}
+              >
+                <MenuItem hdsProps value="all">{t('contentDetail.filter.exterior.all')}</MenuItem>
+                <MenuItem hdsProps value="white">{t('contentDetail.filter.exterior.white')}</MenuItem>
+                <MenuItem hdsProps value="black">{t('contentDetail.filter.exterior.black')}</MenuItem>
+                <MenuItem hdsProps value="silver">{t('contentDetail.filter.exterior.silver')}</MenuItem>
+              </Select>
+
+              {/* 내장 */}
+              <Select
+                value={interior}
+                onChange={(e) => setInterior(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '140px' }}
+              >
+                <MenuItem hdsProps value="all">{t('contentDetail.filter.interior.all')}</MenuItem>
+                <MenuItem hdsProps value="black">{t('contentDetail.filter.interior.black')}</MenuItem>
+                <MenuItem hdsProps value="beige">{t('contentDetail.filter.interior.beige')}</MenuItem>
+              </Select>
+
+              {/* 포맷 */}
+              <Select
+                value={format}
+                onChange={(e) => setFormat(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '140px' }}
+              >
+                <MenuItem hdsProps value="all">{t('contentDetail.filter.format.all')}</MenuItem>
+                <MenuItem hdsProps value="png">{t('contentDetail.filter.format.png')}</MenuItem>
+                <MenuItem hdsProps value="jpg">{t('contentDetail.filter.format.jpg')}</MenuItem>
+                <MenuItem hdsProps value="webp">{t('contentDetail.filter.format.webp')}</MenuItem>
+              </Select>
+
+              {/* 정렬 순서 */}
+              <Select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as string)}
+                hdsProps={{ size: 'medium', type: 'outline' }}
+                sx={{ minWidth: '180px' }}
+              >
+                <MenuItem hdsProps value="camera_asc">{t('contentDetail.filter.sort.cameraAsc')}</MenuItem>
+                <MenuItem hdsProps value="camera_desc">{t('contentDetail.filter.sort.cameraDesc')}</MenuItem>
+                <MenuItem hdsProps value="recent">{t('contentDetail.filter.sort.recent')}</MenuItem>
+                <MenuItem hdsProps value="comment_desc">{t('contentDetail.filter.sort.commentDesc')}</MenuItem>
+              </Select>
+            </Box>
+
+            {/* 일괄 다운로드 버튼 */}
             <Button
               hdsProps={{
                 size: 'medium',
@@ -356,98 +562,10 @@ function ContentDetail() {
             </Button>
           </Box>
 
-          {/* 컨텐츠 필터 섹션 */}
-          <Box
-            sx={{
-              padding: '16px 20px 0 20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              flexWrap: 'wrap',
-            }}
-          >
-            {/* 국가 */}
-            <Select
-              value={country}
-              onChange={(e) => setCountry(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">{t('contentDetail.filter.country.all')}</MenuItem>
-              <MenuItem hdsProps value="kr">{t('contentDetail.filter.country.kr')}</MenuItem>
-              <MenuItem hdsProps value="us">{t('contentDetail.filter.country.us')}</MenuItem>
-              <MenuItem hdsProps value="eu">{t('contentDetail.filter.country.eu')}</MenuItem>
-            </Select>
-
-            {/* FSC */}
-            <Select
-              value={fsc}
-              onChange={(e) => setFsc(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">{t('contentDetail.filter.fsc.all')}</MenuItem>
-              <MenuItem hdsProps value="fsc1">{t('contentDetail.filter.fsc.fsc1')}</MenuItem>
-              <MenuItem hdsProps value="fsc2">{t('contentDetail.filter.fsc.fsc2')}</MenuItem>
-            </Select>
-
-            {/* 외장 */}
-            <Select
-              value={exterior}
-              onChange={(e) => setExterior(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">{t('contentDetail.filter.exterior.all')}</MenuItem>
-              <MenuItem hdsProps value="white">{t('contentDetail.filter.exterior.white')}</MenuItem>
-              <MenuItem hdsProps value="black">{t('contentDetail.filter.exterior.black')}</MenuItem>
-              <MenuItem hdsProps value="silver">{t('contentDetail.filter.exterior.silver')}</MenuItem>
-            </Select>
-
-            {/* 내장 */}
-            <Select
-              value={interior}
-              onChange={(e) => setInterior(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">{t('contentDetail.filter.interior.all')}</MenuItem>
-              <MenuItem hdsProps value="black">{t('contentDetail.filter.interior.black')}</MenuItem>
-              <MenuItem hdsProps value="beige">{t('contentDetail.filter.interior.beige')}</MenuItem>
-            </Select>
-
-            {/* 포맷 */}
-            <Select
-              value={format}
-              onChange={(e) => setFormat(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '140px' }}
-            >
-              <MenuItem hdsProps value="all">{t('contentDetail.filter.format.all')}</MenuItem>
-              <MenuItem hdsProps value="png">{t('contentDetail.filter.format.png')}</MenuItem>
-              <MenuItem hdsProps value="jpg">{t('contentDetail.filter.format.jpg')}</MenuItem>
-              <MenuItem hdsProps value="webp">{t('contentDetail.filter.format.webp')}</MenuItem>
-            </Select>
-
-            {/* 정렬 순서 */}
-            <Select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as string)}
-              hdsProps={{ size: 'medium', type: 'outline' }}
-              sx={{ minWidth: '180px' }}
-            >
-              <MenuItem hdsProps value="camera_asc">{t('contentDetail.filter.sort.cameraAsc')}</MenuItem>
-              <MenuItem hdsProps value="camera_desc">{t('contentDetail.filter.sort.cameraDesc')}</MenuItem>
-              <MenuItem hdsProps value="recent">{t('contentDetail.filter.sort.recent')}</MenuItem>
-              <MenuItem hdsProps value="comment_desc">{t('contentDetail.filter.sort.commentDesc')}</MenuItem>
-            </Select>
-          </Box>
-
           {/* 탭 내용 영역 - 차 이미지 카드 그리드 */}
           <Box
             sx={{
               flex: 1,
-              pt: '16px',
               px: '20px',
               pb: '20px',
               overflow: 'auto',
@@ -473,11 +591,11 @@ function ContentDetail() {
             >
               {/* 샘플 차 이미지 카드들 */}
               {(() => {
-                // 카드 인덱스 배열 생성
-                const cardIndices = Array.from({ length: 16 }, (_, i) => i + 1)
+                // 카메라 ID 인덱스 배열 생성
+                const cameraIndices = cameraIds.map((_, i) => i)
 
                 // 정렬 적용
-                const sortedIndices = [...cardIndices].sort((a, b) => {
+                const sortedIndices = [...cameraIndices].sort((a, b) => {
                   switch (sortOrder) {
                     case 'camera_asc':
                       return a - b
@@ -485,11 +603,11 @@ function ContentDetail() {
                       return b - a
                     case 'recent':
                       // 수정일 패턴 인덱스가 낮을수록 최근
-                      return ((a - 1) % 8) - ((b - 1) % 8)
+                      return (a % 8) - (b % 8)
                     case 'comment_desc':
                       // 코멘트 개수가 많은 순
-                      const commentA = ((a - 1) % 15) + 1
-                      const commentB = ((b - 1) % 15) + 1
+                      const commentA = (a % 15) + 1
+                      const commentB = (b % 15) + 1
                       return commentB - commentA
                     default:
                       return a - b
@@ -512,12 +630,11 @@ function ContentDetail() {
                 }
 
                 return sortedIndices.map((index) => {
-                  // 코멘트 개수 생성 로직 (1-15 사이의 랜덤한 값)
-                  const commentCount = ((index - 1) % 15) + 1
+                  const cameraId = cameraIds[index]
 
                   return (
                   <Card
-                    key={index}
+                    key={cameraId}
                     hdsProps={{ type: 'action' }}
                     sx={{
                       position: 'relative',
@@ -528,18 +645,6 @@ function ContentDetail() {
                       },
                     }}
                   >
-                    {/* 코멘트 개수 Badge */}
-                    <Badge
-                      hdsProps={{ size: 'medium', style: 'default', isDigit: true }}
-                      sx={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        zIndex: 1,
-                      }}
-                    >
-                      {commentCount}
-                    </Badge>
                     <CardActionArea
                       hdsProps
                       onClick={() => {
@@ -549,20 +654,20 @@ function ContentDetail() {
                             contentData,
                             projectId,
                             contentType: contentData.contentType,
-                            totalImages: 16,
+                            totalImages: cameraIds.length,
                           },
                         })
                       }}
                     >
                       <CardContent
                         hdsProps={{
-                          title: `C${String(index).padStart(3, '0')}`,
-                          description: getModifiedTime(index - 1),
+                          title: cameraId,
+                          description: getModifiedTime(index),
                         image: (
                           <Box
                             component="img"
-                            src={thumbnailImages[(contentData?.id ?? 0) % thumbnailImages.length]}
-                            alt={`Car ${index}`}
+                            src={`/images/camera_id/${cameraId}.png`}
+                            alt={cameraId}
                             sx={{
                               width: 'calc(100% + 32px)',
                               height: '140px',
