@@ -93,8 +93,44 @@
     },
     "sso": {
       "notMember": "Not a Hyundai Motor Group member?",
-      "description": "Vehicle Content Studio requires Hyundai Motor Group SSO registration.",
-      "contact": "If you need to register, please contact us at the email below."
+      "description": "Vehicle Content Studio is available after Hyundai Motor Group SSO registration.",
+      "contact": "If you are an unregistered partner company employee, please click the button below to request account creation.",
+      "requestButton": "Request SSO Account Creation"
+    },
+    "ssoRequest": {
+      "title": "SSO Account Creation Request",
+      "description": "Please fill in all information according to the form below and request account creation.",
+      "nameLabel": "Name",
+      "emailLabel": "ID (Email)",
+      "passwordLabel": "Password",
+      "passwordConfirmLabel": "Password Confirmation",
+      "regionLabel": "Region",
+      "companyLabel": "Company",
+      "departmentLabel": "Department",
+      "positionLabel": "Position",
+      "phoneLabel": "Mobile Phone",
+      "reasonLabel": "Request Reason",
+      "namePlaceholder": "Enter name",
+      "emailPlaceholder": "Enter company email",
+      "passwordPlaceholder": "Enter password",
+      "passwordConfirmPlaceholder": "Re-enter password",
+      "regionPlaceholder": "Select region",
+      "companyPlaceholder": "Enter company name",
+      "departmentPlaceholder": "Enter department",
+      "positionPlaceholder": "Enter position",
+      "phonePlaceholder": "Enter phone number (include -)",
+      "reasonPlaceholder": "Enter account creation request reason",
+      "passwordRules": {
+        "uppercase": "At least one uppercase/lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character",
+        "length": "Minimum 8 characters"
+      },
+      "passwordMismatch": "Passwords do not match",
+      "button": {
+        "submit": "Request Account Creation",
+        "cancel": "Cancel"
+      }
     },
     "divider": "or",
     "footer": {
