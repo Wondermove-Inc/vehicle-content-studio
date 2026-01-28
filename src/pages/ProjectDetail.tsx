@@ -287,79 +287,6 @@ function ProjectDetail() {
 
   const isFavorite = projectId ? favorites.has(projectId) : false
 
-  // 컨텐츠 즐겨찾기 관련
-  const [contentFavorites, setContentFavorites] = useState<Array<{
-    id: string
-    type: string
-    projectCode: string
-    projectId: string
-  }>>(() => {
-    const defaultFavorites = [
-      {
-        id: 'hev-25-fmc-beauty-angle-cut-1',
-        type: 'Beauty Angle Cut',
-        projectCode: 'CN7I(AL23)_HEV_25FMC',
-        projectId: 'hev-25-fmc',
-      },
-      {
-        id: 'hev-26-my-beauty-angle-cut-2',
-        type: 'Beauty Angle Cut',
-        projectCode: 'CN7I(AL23)_HEV_26MY',
-        projectId: 'hev-26-my',
-      },
-      {
-        id: 'gv80-26-my-beauty-angle-cut-3',
-        type: 'Beauty Angle Cut',
-        projectCode: 'GV80_26MY',
-        projectId: 'gv80-26-my',
-      },
-    ]
-
-    const saved = localStorage.getItem('content-favorites')
-    if (saved) {
-      try {
-        return JSON.parse(saved)
-      } catch {
-        // 파싱 실패시 기본값 저장 후 반환
-        localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
-        return defaultFavorites
-      }
-    }
-    // localStorage에 데이터가 없으면 기본값 저장 후 반환
-    localStorage.setItem('content-favorites', JSON.stringify(defaultFavorites))
-    return defaultFavorites
-  })
-
-  const toggleContentFavorite = (contentId: string, contentType: string) => {
-    if (!projectId || !projectData) return
-
-    const contentKey = `${projectId}-${contentId}`
-    const existingIndex = contentFavorites.findIndex(f => f.id === contentKey)
-
-    let newFavorites
-    if (existingIndex >= 0) {
-      // 이미 즐겨찾기에 있으면 제거
-      newFavorites = contentFavorites.filter((_, idx) => idx !== existingIndex)
-    } else {
-      // 없으면 추가
-      newFavorites = [...contentFavorites, {
-        id: contentKey,
-        type: contentType,
-        projectCode: projectData.code,
-        projectId: projectId,
-      }]
-    }
-
-    setContentFavorites(newFavorites)
-    localStorage.setItem('content-favorites', JSON.stringify(newFavorites))
-  }
-
-  const isContentFavorite = (contentId: string) => {
-    if (!projectId) return false
-    const contentKey = `${projectId}-${contentId}`
-    return contentFavorites.some(f => f.id === contentKey)
-  }
-
   // 오래된 localStorage 키 정리 (마이그레이션)
   useEffect(() => {
     const oldKeys = ['added-contents', 'added-contents-v2']
@@ -693,34 +620,6 @@ function ProjectDetail() {
                                 objectFit: 'cover',
                               }}
                             />
-                          </Box>
-
-                          {/* 별 아이콘 (우측 상단) */}
-                          <Box
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleContentFavorite('beauty-angle-cut-1', 'Beauty Angle Cut')
-                            }}
-                            sx={{
-                              position: 'absolute',
-                              top: '4px',
-                              right: '4px',
-                              width: '32px',
-                              height: '32px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              cursor: 'pointer',
-                              '&:hover': {
-                                opacity: 0.8,
-                              },
-                            }}
-                          >
-                            {isContentFavorite('beauty-angle-cut-1') ? (
-                              <Ic_star_filled size="20px" color="var(--yellow)" />
-                            ) : (
-                              <Ic_star_filled size="20px" color="white" />
-                            )}
                           </Box>
                         </Box>
 
@@ -1122,7 +1021,6 @@ function ProjectDetail() {
                   hdsProps={{
                     size: 'medium',
                     type: 'underline',
-                    multiple: true,
                   }}
                   placeholder={t('projectDetail.dialogs.addContent.selectChannel')}
                   value={activeChannel}
@@ -1479,7 +1377,6 @@ function ProjectDetail() {
             icon: true,
           }}
           message={t('projectDetail.dialogs.addContent.success')}
-          onClose={() => setShowSnackbar(false)}
         />
       </Snackbar>
 
@@ -1511,7 +1408,6 @@ function ProjectDetail() {
             icon: true,
           }}
           message={t('project.addDialog.success')}
-          onClose={() => setShowProjectSnackbar(false)}
         />
       </Snackbar>
     </>

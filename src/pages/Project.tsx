@@ -127,8 +127,11 @@ function Project() {
     if (contentType === 'none') {
       // "컨텐츠 없음" 선택 시: contentType이 없거나 빈 문자열인 항목만 표시
       contentTypeMatch = !project.contentType || project.contentType.trim() === ''
+    } else if (contentType === 'beautyAngleCut') {
+      // "Beauty Angle Cut" 선택 시: contentType이 있는 항목만 표시
+      contentTypeMatch = !!project.contentType && project.contentType.trim() !== ''
     }
-    // "all"과 "beautyAngleCut"은 모두 전체 표시 (실제로는 모든 컨텐츠가 Beauty Angle Cut으로 표시됨)
+    // "all"은 전체 표시 (필터링 없음)
 
     return projectMatch && contentTypeMatch
   })

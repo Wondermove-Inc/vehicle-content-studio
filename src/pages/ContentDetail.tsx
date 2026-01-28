@@ -14,7 +14,7 @@ import CardActionArea from '@hmg-fe/hmg-design-system/CardActionArea'
 import CardContent from '@hmg-fe/hmg-design-system/CardContent'
 import Badge from '@hmg-fe/hmg-design-system/Badge'
 import { Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, Radio, List, ListItem, FormControlLabel } from '@hmg-fe/hmg-design-system'
-import { Ic_arrow_forward_regular, Ic_download_bold, Ic_world_filled, Ic_arrow_left_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
+import { Ic_arrow_forward_regular, Ic_download_bold, Ic_world_filled, Ic_arrow_left_regular, Ic_star_filled, Ic_star_regular } from '@hmg-fe/hmg-design-system/HmgIcon'
 import Sidebar from '../components/Sidebar'
 import { MOCK_PROJECTS as sampleProjects, PROJECT_NAMES as projectNames } from '@/mocks/projects.mock'
 import { addRecentlyVisitedContent } from '@/utils/recentlyVisited'
@@ -94,6 +94,9 @@ function ContentDetail() {
   // 즐겨찾기 데이터 (중앙 집중식 관리)
   const { favorites, contentFavorites } = useFavorites()
 
+  // 현재 컨텐츠가 즐겨찾기인지 확인
+  const isContentFavorite = contentFavorites.some(fav => fav.id === contentId)
+
   // 필터 상태
   const [country, setCountry] = useState('all')
   const [fsc, setFsc] = useState('all')
@@ -104,6 +107,38 @@ function ContentDetail() {
 
   // contentId로 프로젝트 데이터 찾기
   const contentData = sampleProjects.find(p => p.id === Number(contentId))
+
+  // 즐겨찾기 토글 함수
+  const handleFavoriteToggle = () => {
+    if (!contentData || !contentId) return
+
+    const saved = localStorage.getItem('content-favorites')
+    let favorites = []
+    if (saved) {
+      try {
+        favorites = JSON.parse(saved)
+      } catch (error) {
+        favorites = []
+      }
+    }
+
+    const existingIndex = favorites.findIndex((f: any) => f.id === contentId)
+    if (existingIndex >= 0) {
+      // 제거
+      favorites.splice(existingIndex, 1)
+    } else {
+      // 추가
+      favorites.push({
+        id: contentId,
+        type: contentData.contentType || 'Beauty Angle Cut',
+        projectCode: contentData.projectCode,
+        projectId: projectId || '',
+      })
+    }
+
+    localStorage.setItem('content-favorites', JSON.stringify(favorites))
+    // localStorage 변경으로 useFavorites 훅이 자동으로 업데이트됨
+  }
 
   // 컨텐츠 방문 기록 추가
   useEffect(() => {
@@ -234,6 +269,26 @@ function ContentDetail() {
                   {contentData.contentType}
                 </Badge>
               )}
+              {/* 즐겨찾기 아이콘 */}
+              <Box
+                onClick={handleFavoriteToggle}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    opacity: 0.7,
+                  },
+                }}
+                aria-label="즐겨찾기"
+              >
+                {isContentFavorite ? (
+                  <Ic_star_filled size="20px" color="var(--yellow)" />
+                ) : (
+                  <Ic_star_regular size="20px" color="var(--on_surface_mid)" />
+                )}
+              </Box>
             </Box>
           </Box>
 
