@@ -14,6 +14,8 @@ import Table from '@hmg-fe/hmg-design-system/Table'
 import TableBody from '@hmg-fe/hmg-design-system/TableBody'
 import TableRow from '@hmg-fe/hmg-design-system/TableRow'
 import TableCell from '@hmg-fe/hmg-design-system/TableCell'
+import Select from '@hmg-fe/hmg-design-system/Select'
+import MenuItem from '@hmg-fe/hmg-design-system/MenuItem'
 import {
   Ic_view_regular,
   Ic_view_hidden_regular,
@@ -35,8 +37,23 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPermissionDialog, setShowPermissionDialog] = useState(false)
   const [showPendingDialog, setShowPendingDialog] = useState(false)
+  const [showSsoRequestDialog, setShowSsoRequestDialog] = useState(false)
   const [requestReason, setRequestReason] = useState('')
   const [unauthorizedUser, setUnauthorizedUser] = useState<User | null>(null)
+  const [ssoFormData, setSsoFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+    region: '',
+    company: '',
+    department: '',
+    position: '',
+    phone: '',
+    reason: '',
+  })
+  const [showSsoPassword, setShowSsoPassword] = useState(false)
+  const [showSsoPasswordConfirm, setShowSsoPasswordConfirm] = useState(false)
 
   // 이미 로그인된 사용자는 프로젝트 페이지로 리다이렉트
   useEffect(() => {
@@ -96,6 +113,48 @@ function Login() {
     setRequestReason('')
   }
 
+  const handleSsoRequest = () => {
+    // SSO 계정 생성 요청 로직 (실제로는 API 호출)
+    console.log('SSO Account Creation requested:', ssoFormData)
+
+    // 다이얼로그 닫고 폼 데이터 초기화
+    setShowSsoRequestDialog(false)
+    setSsoFormData({
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      region: '',
+      company: '',
+      department: '',
+      position: '',
+      phone: '',
+      reason: '',
+    })
+    setShowSsoPassword(false)
+    setShowSsoPasswordConfirm(false)
+
+    // TODO: 성공 메시지 표시 또는 승인 대기 다이얼로그 표시
+  }
+
+  const handleCancelSsoRequest = () => {
+    setShowSsoRequestDialog(false)
+    setSsoFormData({
+      name: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      region: '',
+      company: '',
+      department: '',
+      position: '',
+      phone: '',
+      reason: '',
+    })
+    setShowSsoPassword(false)
+    setShowSsoPasswordConfirm(false)
+  }
+
   return (
     <Box
       sx={{
@@ -116,7 +175,7 @@ function Login() {
           justifyContent: 'center',
           paddingLeft: '16px',
           paddingRight: '16px',
-          paddingTop: '170px',
+          paddingTop: '150px',
           paddingBottom: '16px',
         }}
       >
@@ -289,11 +348,11 @@ function Login() {
                 {t('login.sso.notMember')}
               </Typography>
             </Stack>
-            <Stack spacing={0.25}>
+            <Stack spacing={1.5}>
               <Typography
                 sx={{
                   fontFamily: 'Asta Sans, sans-serif',
-                  fontSize: '15px',
+                  fontSize: '14px',
                   fontWeight: 400,
                   lineHeight: '22px',
                   color: '#656B76',
@@ -303,22 +362,18 @@ function Login() {
                 <br />
                 {t('login.sso.contact')}
               </Typography>
-              <Typography
-                component="a"
-                href="mailto:aaa@hyundai.com"
+              <Button
+                hdsProps={{ size: 'medium', type: 'outline', icon: false, style: undefined }}
+                onClick={() => setShowSsoRequestDialog(true)}
                 sx={{
                   fontFamily: 'Asta Sans, sans-serif',
                   fontSize: '14px',
-                  fontWeight: 400,
-                  color: '#1347AF',
-                  textDecoration: 'none',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                  },
+                  fontWeight: 700,
+                  width: 'fit-content',
                 }}
               >
-                aaa@hyundai.com
-              </Typography>
+                {t('login.sso.requestButton')}
+              </Button>
             </Stack>
           </Stack>
         </Stack>
@@ -828,6 +883,553 @@ function Login() {
             }}
           >
             {t('login.permissionPending.button.confirm')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* SSO 계정 생성 요청 다이얼로그 */}
+      <Dialog
+        open={showSsoRequestDialog}
+        onClose={() => {}}
+        PaperProps={{
+          sx: {
+            width: '480px',
+            borderRadius: '8px',
+            boxShadow: '0px 0px 2px 0px rgba(34, 34, 34, 0.1), 0px 24px 22px 0px rgba(34, 34, 34, 0.05)',
+          }
+        }}
+      >
+        <DialogTitle
+          sx={{
+            padding: '0 !important',
+            margin: '0 !important',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'center',
+              minHeight: '60px',
+              paddingLeft: '24px',
+              paddingRight: '10px',
+              backgroundColor: '#FFFFFF',
+              borderBottom: '1px solid #F0F0F0',
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '16px',
+              fontWeight: 700,
+              lineHeight: '24px',
+              color: '#111111',
+            }}
+          >
+            <Box
+              component="span"
+              sx={{
+                flex: '1 0 0',
+                minWidth: 0,
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              {t('login.ssoRequest.title')}
+            </Box>
+            <IconButton
+              onClick={handleCancelSsoRequest}
+              sx={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '4px',
+                flexShrink: 0,
+                padding: 0,
+              }}
+            >
+              <Ic_close_bold size="24px" />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            padding: '18px 24px 0 24px !important',
+            margin: '0 !important',
+          }}
+        >
+          <Stack spacing={2}>
+            <Typography
+              sx={{
+                fontFamily: 'Asta Sans, sans-serif',
+                fontSize: '14px',
+                fontWeight: 400,
+                lineHeight: '22px',
+                color: '#0E0F11',
+              }}
+            >
+              {t('login.ssoRequest.description')}
+            </Typography>
+
+            {/* 이름 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.nameLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.name}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, name: e.target.value })}
+                placeholder={t('login.ssoRequest.namePlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* ID (Email) */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.emailLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.email}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, email: e.target.value })}
+                placeholder={t('login.ssoRequest.emailPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* 비밀번호 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.passwordLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                type={showSsoPassword ? 'text' : 'password'}
+                value={ssoFormData.password}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, password: e.target.value })}
+                placeholder={t('login.ssoRequest.passwordPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowSsoPassword(!showSsoPassword)}
+                        edge="end"
+                        size="small"
+                      >
+                        {showSsoPassword ? (
+                          <Ic_view_hidden_regular size="20px" />
+                        ) : (
+                          <Ic_view_regular size="20px" />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Stack spacing={0.25} sx={{ paddingLeft: '4px' }}>
+                <Typography sx={{ fontSize: '12px', color: '#656B76', fontFamily: 'Asta Sans, sans-serif' }}>
+                  • {t('login.ssoRequest.passwordRules.uppercase')}
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: '#656B76', fontFamily: 'Asta Sans, sans-serif' }}>
+                  • {t('login.ssoRequest.passwordRules.number')}
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: '#656B76', fontFamily: 'Asta Sans, sans-serif' }}>
+                  • {t('login.ssoRequest.passwordRules.special')}
+                </Typography>
+                <Typography sx={{ fontSize: '12px', color: '#656B76', fontFamily: 'Asta Sans, sans-serif' }}>
+                  • {t('login.ssoRequest.passwordRules.length')}
+                </Typography>
+              </Stack>
+            </Stack>
+
+            {/* 비밀번호 확인 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.passwordConfirmLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                type={showSsoPasswordConfirm ? 'text' : 'password'}
+                value={ssoFormData.passwordConfirm}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, passwordConfirm: e.target.value })}
+                placeholder={t('login.ssoRequest.passwordConfirmPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowSsoPasswordConfirm(!showSsoPasswordConfirm)}
+                        edge="end"
+                        size="small"
+                      >
+                        {showSsoPasswordConfirm ? (
+                          <Ic_view_hidden_regular size="20px" />
+                        ) : (
+                          <Ic_view_regular size="20px" />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Stack>
+
+            {/* 권역 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.regionLabel')}
+              </Typography>
+              <Select
+                value={ssoFormData.region}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, region: e.target.value as string })}
+                displayEmpty
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  borderRadius: '4px',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#D1D1D1',
+                  },
+                }}
+              >
+                <MenuItem value="" disabled>
+                  <Typography sx={{ color: '#949494', fontSize: '14px', fontFamily: 'Asta Sans, sans-serif' }}>
+                    {t('login.ssoRequest.regionPlaceholder')}
+                  </Typography>
+                </MenuItem>
+                <MenuItem value="KR">KR</MenuItem>
+                <MenuItem value="US">US</MenuItem>
+                <MenuItem value="EU">EU</MenuItem>
+                <MenuItem value="CN">CN</MenuItem>
+              </Select>
+            </Stack>
+
+            {/* 회사 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.companyLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.company}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, company: e.target.value })}
+                placeholder={t('login.ssoRequest.companyPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* 부서 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.departmentLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.department}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, department: e.target.value })}
+                placeholder={t('login.ssoRequest.departmentPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* 직위 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.positionLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.position}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, position: e.target.value })}
+                placeholder={t('login.ssoRequest.positionPlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* 이동 전화 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.phoneLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.phone}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, phone: e.target.value })}
+                placeholder={t('login.ssoRequest.phonePlaceholder')}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& input::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+
+            {/* 요청 사유 */}
+            <Stack spacing={0.5}>
+              <Typography
+                sx={{
+                  fontFamily: 'Asta Sans, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#0E0F11',
+                }}
+              >
+                {t('login.ssoRequest.reasonLabel')} <Box component="span" sx={{ color: '#F13E3E' }}>*</Box>
+              </Typography>
+              <TextField
+                value={ssoFormData.reason}
+                onChange={(e) => setSsoFormData({ ...ssoFormData, reason: e.target.value })}
+                placeholder={t('login.ssoRequest.reasonPlaceholder')}
+                multiline
+                rows={3}
+                fullWidth
+                hdsProps={{ size: 'medium' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    '& fieldset': {
+                      borderColor: '#D1D1D1',
+                    },
+                  },
+                  '& textarea': {
+                    resize: 'none',
+                  },
+                  '& textarea::placeholder': {
+                    color: '#949494',
+                    fontFamily: 'Asta Sans, sans-serif',
+                    fontSize: '14px',
+                  },
+                }}
+              />
+            </Stack>
+          </Stack>
+        </DialogContent>
+        <DialogActions
+          sx={{
+            padding: '16px 24px 24px 24px !important',
+            margin: '0 !important',
+            justifyContent: 'flex-end',
+            gap: '8px',
+            '& > :not(:first-of-type)': {
+              marginLeft: '0 !important',
+            },
+          }}
+        >
+          <Button
+            onClick={handleCancelSsoRequest}
+            hdsProps={{ size: 'medium', style: 'strong', type: 'outline' }}
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 700,
+              height: '36px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              borderRadius: '4px',
+              borderColor: '#D1D1D1',
+              width: 'fit-content',
+              minWidth: 'unset !important',
+            }}
+          >
+            {t('login.ssoRequest.button.cancel')}
+          </Button>
+          <Button
+            onClick={handleSsoRequest}
+            disabled={!ssoFormData.name.trim() || !ssoFormData.email.trim() || !ssoFormData.password.trim() || !ssoFormData.passwordConfirm.trim() || !ssoFormData.company.trim() || !ssoFormData.department.trim() || !ssoFormData.position.trim() || !ssoFormData.phone.trim() || !ssoFormData.reason.trim()}
+            hdsProps={{ size: 'medium', style: 'primary', type: 'fill' }}
+            sx={{
+              fontFamily: 'Asta Sans, sans-serif',
+              fontSize: '14px',
+              fontWeight: 700,
+              height: '36px',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              borderRadius: '4px',
+              backgroundColor: '#111111',
+              color: (ssoFormData.name.trim() && ssoFormData.email.trim() && ssoFormData.password.trim() && ssoFormData.passwordConfirm.trim() && ssoFormData.company.trim() && ssoFormData.department.trim() && ssoFormData.position.trim() && ssoFormData.phone.trim() && ssoFormData.reason.trim()) ? '#FFFFFF' : '#828282',
+            }}
+          >
+            {t('login.ssoRequest.button.submit')}
           </Button>
         </DialogActions>
       </Dialog>
