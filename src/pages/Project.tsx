@@ -274,9 +274,11 @@ function Project() {
                     color: 'var(--primary)',
                   }}
                 >
-                  {selectedProject === 'hyundai' ? t('common.brand.hyundai') :
+                  {selectedProject === 'all' ? t('project.tree.recentUpdates') :
+                   selectedProject === 'hyundai' ? t('common.brand.hyundai') :
                    selectedProject === 'kia' ? t('common.brand.kia') :
                    selectedProject === 'genesis' ? t('common.brand.genesis') :
+                   selectedProject && projectNames[selectedProject] ? projectNames[selectedProject] :
                    t('project.tree.recentUpdates')}
                 </Typography>
 

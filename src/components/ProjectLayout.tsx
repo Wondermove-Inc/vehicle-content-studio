@@ -168,6 +168,26 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
     return result
   }
 
+  // 검색어 하이라이트 함수
+  const highlightSearchQuery = (text: string, query: string) => {
+    if (!query.trim()) return text
+
+    const parts = text.split(new RegExp(`(${query})`, 'gi'))
+    return (
+      <>
+        {parts.map((part, index) =>
+          part.toLowerCase() === query.toLowerCase() ? (
+            <Box key={index} component="span" sx={{ fontWeight: 900 }}>
+              {part}
+            </Box>
+          ) : (
+            part
+          )
+        )}
+      </>
+    )
+  }
+
   const filteredTreeData = filterTree(treeData, searchQuery)
 
   // 이전 localStorage 키 정리 (마운트 시 한 번만 실행)
@@ -579,7 +599,7 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
                                     alignItems: 'center',
                                   }}
                                 >
-                                  {brand.label} ({brand.count})
+                                  {highlightSearchQuery(brand.label, searchQuery)} ({brand.count})
                                 </Typography>
                               }
                               hdsProps={{ type: 'default' }}
@@ -588,7 +608,20 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
                                 <TreeItem
                                   key={model.id}
                                   itemId={model.id}
-                                  label={`${model.label} (${model.count})`}
+                                  label={
+                                    <Typography
+                                      sx={{
+                                        fontSize: 15,
+                                        fontWeight: 500,
+                                        lineHeight: 1,
+                                        color: '#111111',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      {highlightSearchQuery(model.label, searchQuery)} ({model.count})
+                                    </Typography>
+                                  }
                                   hdsProps={{ type: 'default' }}
                                 >
                                   {model.children?.map((project) => (
@@ -606,7 +639,7 @@ function ProjectLayout({ children, selectedProject, onProjectSelect, onAddProjec
                                             alignItems: 'center',
                                           }}
                                         >
-                                          {project.label}
+                                          {highlightSearchQuery(project.label, searchQuery)}
                                         </Typography>
                                       }
                                       hdsProps={{ type: 'default' }}
