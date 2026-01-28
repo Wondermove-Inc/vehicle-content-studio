@@ -25,6 +25,11 @@ export const MOCK_USERS: User[] = [
     organization: null,
     createdAt: '2024-01-01T00:00:00Z',
     lastLoginAt: undefined,
+    region: 'KR',
+    company: '현대자동차',
+    department: '사업부',
+    position: '책임',
+    phone: '010-1234-5678',
   },
   {
     id: 'user-001',

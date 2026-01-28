@@ -68,11 +68,16 @@
       "general": "An error occurred during login. Please contact the administrator. (Code:{{code}})"
     },
     "permissionRequest": {
-      "title": "Login Permission Request",
+      "title": "System Access Permission Request",
       "description": "You do not have system access permission. Please fill out the form below to request access approval.",
       "emailLabel": "ID (Email)",
+      "regionLabel": "Region",
+      "companyLabel": "Company",
+      "departmentLabel": "Department",
+      "positionLabel": "Position",
+      "phoneLabel": "Mobile Phone",
       "reasonLabel": "Request Reason",
-      "reasonPlaceholder": "Enter permission request reason",
+      "reasonPlaceholder": "Enter system access permission request reason",
       "button": {
         "submit": "Request Permission",
         "cancel": "Cancel"
@@ -80,7 +85,7 @@
       "success": "Permission request has been submitted. You can use the system after approval."
     },
     "permissionPending": {
-      "title": "Login Permission Pending",
+      "title": "System Access Permission Pending",
       "description": "Your permission request is under review.\nOnce approved, you can immediately access the Vehicle Content Studio.",
       "button": {
         "confirm": "Confirm"
@@ -154,9 +159,9 @@
       "noDerivative": "N/A"
     },
     "tree": {
-      "allProjects": "Recent Projects & Contents",
+      "allProjects": "All Projects",
       "searchPlaceholder": "Search project",
-      "recentUpdates": "Recently Updated Projects"
+      "recentUpdates": "All Projects"
     },
     "empty": {
       "noSearchResult": "No search results found.",

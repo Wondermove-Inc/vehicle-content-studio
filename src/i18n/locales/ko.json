@@ -69,11 +69,16 @@
       "general": "로그인 처리 중 오류가 발생했습니다. 관리자에게 문의하세요. (Code:{{code}})"
     },
     "permissionRequest": {
-      "title": "로그인 권한 요청",
+      "title": "시스템 접속 권한 요청",
       "description": "차량 컨텐츠 제작 시스템에 접속 권한 등록이 필요한 계정입니다. 요청 사유를 작성한 후 권한을 요청해 주세요.",
       "emailLabel": "ID (Email)",
+      "regionLabel": "권역",
+      "companyLabel": "회사",
+      "departmentLabel": "부서",
+      "positionLabel": "직위",
+      "phoneLabel": "이동전화",
       "reasonLabel": "요청 사유",
-      "reasonPlaceholder": "권한 요청 사유 입력",
+      "reasonPlaceholder": "시스템 접속 권한 요청 사유 입력",
       "button": {
         "submit": "권한 요청",
         "cancel": "취소"
@@ -81,7 +86,7 @@
       "success": "권한 요청이 완료되었습니다. 승인 후 이용 가능합니다."
     },
     "permissionPending": {
-      "title": "로그인 권한 승인 대기",
+      "title": "시스템 접속 권한 승인 대기",
       "description": "권한 승인 요청을 검토 중입니다.\n승인 완료 시 차량 컨텐츠 제작 지원 시스템을 바로 이용하실 수 있습니다.",
       "button": {
         "confirm": "확인"
@@ -155,9 +160,9 @@
       "noDerivative": "해당없음"
     },
     "tree": {
-      "allProjects": "최근 프로젝트 & 컨텐츠",
+      "allProjects": "전체 프로젝트",
       "searchPlaceholder": "프로젝트 검색",
-      "recentUpdates": "최근 업데이트된 프로젝트"
+      "recentUpdates": "전체 프로젝트"
     },
     "empty": {
       "noSearchResult": "검색 결과가 없습니다.",

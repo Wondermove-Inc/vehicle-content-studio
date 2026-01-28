@@ -100,6 +100,12 @@ export interface User {
   assignedProjects?: string[] // GROUP_3 (L4, L5) 전용 - 배정된 프로젝트 ID 목록
   createdAt?: string
   lastLoginAt?: string
+  // 권한 요청 다이얼로그용 추가 정보
+  region?: string // 권역 (예: KR, US, EU)
+  company?: string // 회사 (예: 현대자동차, 기아)
+  department?: string // 부서 (예: 사업부, 디자인팀)
+  position?: string // 직위 (예: 책임, 매니저)
+  phone?: string // 이동전화 (예: 010-1234-5678)
 }
 
 /**
